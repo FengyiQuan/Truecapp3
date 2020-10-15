@@ -16,6 +16,7 @@ public class Rating {
   private int stars;
   private String message;
 
+
   public String getId() {
     return id;
   }

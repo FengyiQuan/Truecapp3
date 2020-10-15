@@ -13,6 +13,7 @@ import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -31,6 +32,9 @@ public class Object {
   private ObjectType objectType;
   private String title;
   private String description;
+
+  @ManyToOne
+  private Category category;
   @CreatedDate
   @Temporal(TemporalType.TIMESTAMP)
   private Date dateCreated;
@@ -96,11 +100,22 @@ public class Object {
     this.productArea = productArea;
   }
 
-  public Object(List<Photo> photo, ObjectType objectType, String title, String description, Date dateCreated, Area productArea) {
-    this.photos = photo;
+
+  public Category getCategory() {
+    return category;
+  }
+
+  public void setCategory(Category category) {
+    this.category = category;
+  }
+
+  public Object(List<Photo> photos, ObjectType objectType, String title, String description,
+                Category category, Date dateCreated, Area productArea) {
+    this.photos = photos;
     this.objectType = objectType;
     this.title = title;
     this.description = description;
+    this.category = category;
     this.dateCreated = dateCreated;
     this.productArea = productArea;
   }

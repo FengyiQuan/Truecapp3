@@ -21,6 +21,10 @@ public class Category {
   private String id;
   private String name;
 
+  @OneToMany(mappedBy = "category")
+  private List<Object> objects;
+
+
   public String getId() {
     return id;
   }
@@ -38,11 +42,25 @@ public class Category {
   }
 
 
+  public List<Object> getObjects() {
+    return objects;
+  }
+
+  public void setObjects(List<Object> objects) {
+    this.objects = objects;
+  }
+
   public Category(String name) {
     this.name = name;
+    this.objects = new ArrayList<>();
   }
 
 
   public Category() {
+  }
+
+  public Category(String name, List<Object> objects) {
+    this.name = name;
+    this.objects = objects;
   }
 }

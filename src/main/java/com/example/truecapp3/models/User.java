@@ -47,6 +47,7 @@ public class User implements Serializable {
   private List<Credit> credits;
   private int currentCreditsCount;
 
+
   @OneToMany
   private List<Rating> ratings;
   private int successfulTradesCount;
@@ -60,6 +61,15 @@ public class User implements Serializable {
   private Date deleteUser;
   @OneToMany
   private List<Notification> notifications;
+
+
+  public int getCurrentCreditsCount() {
+    return currentCreditsCount;
+  }
+
+  public void setCurrentCreditsCount(int currentCreditsCount) {
+    this.currentCreditsCount = currentCreditsCount;
+  }
 
   public String getName() {
     return name;
@@ -223,9 +233,9 @@ public class User implements Serializable {
 
   public User(String name, String lastName, String address, String cellphone, Date birthday,
               String email, String password, List<Object> products, List<Object> services,
-              Photo profilePic, Photo idPic, List<Credit> credits, List<Rating> ratings,
-              int successfulTradesCount, List<Donation> donations, UserType userType, Date newUser,
-              Date deleteUser, List<Notification> notifications) {
+              Photo profilePic, Photo idPic, List<Credit> credits, int currentCreditsCount,
+              List<Rating> ratings, int successfulTradesCount, List<Donation> donations,
+              UserType userType, Date newUser, Date deleteUser, List<Notification> notifications) {
     this.name = name;
     this.lastName = lastName;
     this.address = address;
@@ -238,6 +248,7 @@ public class User implements Serializable {
     this.profilePic = profilePic;
     this.idPic = idPic;
     this.credits = credits;
+    this.currentCreditsCount = currentCreditsCount;
     this.ratings = ratings;
     this.successfulTradesCount = successfulTradesCount;
     this.donations = donations;

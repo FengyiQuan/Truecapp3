@@ -11,4 +11,5 @@ import org.springframework.stereotype.Repository;
 public interface RatingRepository extends JpaRepository<Rating, String> {
   @Query("SELECT a FROM Rating a WHERE a.id = :id")
   Rating getRatingById(@Param("id") String id);
+
 }
