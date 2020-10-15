@@ -1,5 +1,6 @@
 package com.example.truecapp3.services;
 
+import com.example.truecapp3.errors.ServiceError;
 import com.example.truecapp3.models.Rating;
 import com.example.truecapp3.repositories.RatingRepository;
 
@@ -24,11 +25,11 @@ public class RatingService {
     ratingRepository.deleteById(id);
   }
 
-  public Rating updateRatingById(String id, Rating updatedRating) {
+  public Rating updateRatingById(String id, Rating updatedRating) throws ServiceError {
     if (ratingRepository.findById(id).isPresent()) {
       return ratingRepository.save(updatedRating);
     } else {
-      return null;
+      throw new ServiceError("Rating does not exist.");
     }
   }
 }

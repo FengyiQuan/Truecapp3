@@ -33,7 +33,9 @@ public class Transaction {
   @Temporal(TemporalType.TIMESTAMP)
   private Date transactionDate;
   @OneToOne
-  private Object object;
+  private Object sellerObject;
+  @OneToOne
+  private Object receiverObject;
   @Temporal(TemporalType.TIMESTAMP)
   private Date deliveryDate;
   private String message;
@@ -88,13 +90,6 @@ public class Transaction {
     this.transactionDate = transactionDate;
   }
 
-  public Object getObject() {
-    return object;
-  }
-
-  public void setObject(Object object) {
-    this.object = object;
-  }
 
   public Date getDeliveryDate() {
     return deliveryDate;
@@ -160,15 +155,31 @@ public class Transaction {
     this.typeOfTransaction = typeOfTransaction;
   }
 
-  public Transaction(User seller, User receiver, Area area, Date transactionDate, Object object,
-                     Date deliveryDate, String message, Rating user1, Rating user2,
-                     TransactionState state, Date offerDate, Date cancelDate,
-                     TransactionType typeOfTransaction) {
+  public Object getSellerObject() {
+    return sellerObject;
+  }
+
+  public void setSellerObject(Object sellerObject) {
+    this.sellerObject = sellerObject;
+  }
+
+  public Object getReceiverObject() {
+    return receiverObject;
+  }
+
+  public void setReceiverObject(Object receiverObject) {
+    this.receiverObject = receiverObject;
+  }
+
+  public Transaction(User seller, User receiver, Area area, Date transactionDate, Object sellerObject,
+                     Object receiverObject, Date deliveryDate, String message, Rating user1, Rating user2,
+                     TransactionState state, Date offerDate, Date cancelDate, TransactionType typeOfTransaction) {
     this.seller = seller;
     this.receiver = receiver;
     this.area = area;
     this.transactionDate = transactionDate;
-    this.object = object;
+    this.sellerObject = sellerObject;
+    this.receiverObject = receiverObject;
     this.deliveryDate = deliveryDate;
     this.message = message;
     this.user1 = user1;
