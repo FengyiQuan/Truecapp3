@@ -18,6 +18,8 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+// TODO: user, rating, notif, msg.
+
 @Entity
 @Table(name = "users")
 public class User implements Serializable {
@@ -41,9 +43,9 @@ public class User implements Serializable {
   private Photo profilePic;
   @OneToOne
   private Photo idPic;
-
   @OneToMany
   private List<Credit> credits;
+  private int currentCreditsCount;
 
   @OneToMany
   private List<Rating> ratings;

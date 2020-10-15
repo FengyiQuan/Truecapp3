@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset=utf-8>
+    <meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no">
+    <meta name=description
+        content="Quick Website UI Kit is an innovative HTML template solution which combines beautiful design and flawless functionality.">
+    <meta name=author content=Webpixels>
+    <title>truecApp</title>
+
+    <style>
+        @keyframes hidePreloader {
+            0% {
+                width: 100%;
+                height: 100%
+            }
+
+            100% {
+                width: 0;
+                height: 0
+            }
+        }
+
+        body>div.preloader {
+            position: fixed;
+            background: #fff;
+            width: 100%;
+            height: 100%;
+            z-index: 1071;
+            opacity: 0;
+            transition: opacity .5s ease;
+            overflow: hidden;
+            pointer-events: none;
+            display: flex;
+            align-items: center;
+            justify-content: center
+        }
+
+        body:not(.loaded)>div.preloader {
+            opacity: 1
+        }
+
+        body:not(.loaded) {
+            overflow: hidden
+        }
+
+        body.loaded>div.preloader {
+            animation: hidePreloader .5s linear .5s forwards
+        }
+    </style>
+
+    <script>window.addEventListener("load", function () {
+            setTimeout(function () {
+                document.querySelector("body").classList.add("loaded")
+            }, 300)
+        })</script>
+
+    <link rel=icon href="assets/img/brand/favicon.png" type="image/png">
+    <link rel="stylesheet" href="assets/libs/@fancyapps/fancybox/dist/jquery.fancybox.min.css" type="text/css">    
+    <link rel=stylesheet href="assets/libs/@fortawesome/fontawesome-free/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css?family=Nunito:400,600,700,800|Roboto:400,500,700" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/quick-website.css" id="stylesheet">
+    <script src="click.js"></script>
+</head>
+
+<body>
+    <!-- Loading -->
+    <div class=preloader>
+        <div class="spinner-border text-primary" role=status>
+            <span class=sr-only>Loading...</span>
+        </div>
+    </div>
+
+    <!-- <div id="myModal" class="modal fade" role="dialog" aria-labeledby="myModal" aria-hidden="true" tab-index="-1">
+        <div class="modal-dialog">
+
+            Modal content
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close"
+                        data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Modal Header</h4>
+                </div>
+                <div class="modal-body">
+                    <p>Some text in the modal.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default"
+                        data-dismiss="modal">Close</button>
+                </div>
+            </div>
+
+        </div>
+    </div> -->
+
+<!-- Modal Pop Up
+<tr th:each="productosU : ${productosU}">
+    <div class="modal modal-primary fade" id="myModal" tabindex="-1" role="dialog"
+    aria-labelledby="myModal" aria-hidden="true">
+        <div class="modal modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    Para Gabi
+                    <form id="iniciarOferta" action="/iniciarOferta" method="POST" enctype="multipart/form-data">
+                        <div class="py-3 px-5 text-center">
+                            <h5 class="heading h4 mt-4">Elegí qué querés truecar</h5>
+                            <div class=mt-4>
+                                <select class="custom-select">
+                                    <option selected>Tus objetos para truecar</option>
+                                    <option><td th:text="${productosU.titulo}" th:value="${productosU.id}" name="idProducto1"></option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="py-3 text-center">
+                            <button type="submit" class="btn btn-sm btn-dark text-center"
+                            data-dismiss="modal">Enviar oferta</button>
+                        </div>
+                            <div class="py-3 text-center">
+                            <button type="submit" class="btn btn-sm btn-dark text-center"
+                            data-dismiss="modal" th:ref="${'/iniciarOferta/'+productosU.id+'&'+ ">Enviar oferta</button>
+                        </div>
+                    </form>                   
+                </div>                
+            </div>
+        </div>
+    </div>
+</tr> -->
+  
+    <!-- Header -->
+    <header class="" id=header-main>
+        <nav class="navbar navbar-main navbar-expand-lg shadow navbar-light" id=navbar-main>
+            <div class=container>
+                <button class="navbar-toggler order-lg-2 ml-n3 ml-lg-0" type=button data-toggle=collapse
+                    data-target=#navbar-main-collapse aria-controls=navbar-main-collapse aria-expanded=false
+                    aria-label="Toggle navigation">
+                    <span class=navbar-toggler-icon></span>
+                </button>
+                <a class="navbar-brand" href="/"> truecApp </a>
+                <div class="collapse navbar-collapse navbar-collapse-overlay order-lg-3" id=navbar-main-collapse>
+                    <div class=position-relative>
+                        <button class=navbar-toggler type=button data-toggle=collapse data-target=#navbar-main-collapse
+                            aria-controls=navbar-main-collapse aria-expanded=false aria-label="Toggle navigation">
+                            <i data-feather=x></i>
+                        </button>
+                    </div>
+                    <ul class="navbar-nav align-items-lg-center d-none d-lg-flex ml-lg-auto">
+                        <li class="nav-item dropdown dropdown-animate">
+                            <a class="nav-link nav-link-icon px-2" href="#" role="button" data-toggle="dropdown"
+                                aria-haspopup="true" aria-expanded="false">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" class="feather feather-settings">
+                                    <circle cx="12" cy="12" r="3"></circle>
+                                    <path
+                                        d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z">
+                                    </path>
+                                </svg>
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-sm dropdown-menu-right dropdown-menu-arrow p-3">
+                                <h6 class="dropdown-header px-0 mb-2 text-primary">
+                                    <td
+                                        th:text="${'Hola ' + session.UsuarioSession.nombre + ' ' + session.UsuarioSession.apellido}">
+                                    </td>
+                                </h6>
+                                <a href="user_home" class="dropdown-item">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round" class="feather feather-user">
+                                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                        <circle cx="12" cy="7" r="4"></circle>
+                                    </svg>
+                                    <span>Mi perfil</span>
+                                </a>
+                                <a href="../../pages/account/billing.html" class="dropdown-item">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round" class="feather feather-credit-card">
+                                        <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
+                                        <line x1="1" y1="10" x2="23" y2="10"></line>
+                                    </svg>
+                                    <span>Créditos</span>
+                                </a>
+                                <a href="user_home" class="dropdown-item">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round" class="feather feather-activity">
+                                        <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+                                    </svg>
+                                    <span>Truecar</span>
+                                </a>
+                                <div class="dropdown-divider"></div>
+                                <a href="Perfil_Usuario" class="dropdown-item">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round" class="feather feather-settings">
+                                        <circle cx="12" cy="12" r="3"></circle>
+                                        <path
+                                            d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z">
+                                        </path>
+                                    </svg>
+                                    <span>Configuración</span>
+                                </a>
+                                <a href="/logout" class="dropdown-item">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round" class="feather feather-log-out">
+                                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                                        <polyline points="16 17 21 12 16 7"></polyline>
+                                        <line x1="21" y1="12" x2="9" y2="12"></line>
+                                    </svg>
+                                    <span>Salir</span>
+                                </a>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <div class="order-lg-4 ml-lg-3">
+                    <a class="" href=#modal-profile role=button data-toggle=modal>
+                        <span class="avatar rounded-circle">
+                            <img alt="Perfil3" th:src="@{'/fotoPerfil/'+${session.UsuarioSession.id}}">
+                        </span>
+                    </a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <section class="slice py-5 bg-section-secondary">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="row mx-n12">                   
+                        <tr th:each="producto : ${productos}">
+                            <div class="col-sm-6 col-lg-4">
+                                <div class="card mb-3" style="display:flex">
+                                    <div class="d-block">
+                                        <img class="card-img-top" th:src="@{'/fotoProducto/'+${producto.id}}">
+                                        <!-- <img class="card-img-top" src="assets/img/bowie01.png"> -->
+                                    </div>
+                                    <form id="iniciarOferta" action="/iniciarOferta" method="GET" enctype="multipart/form-data">
+                                            <!-- titulo -->         <a href="#" class="h5 stretched-link lh-150"><td th:text="${producto.titulo}" th:value="${producto.id}" name="idProducto2"></td></a>
+                                            <!-- descripcion -->    <p class="mb-4 lh-170"><td th:text="${producto.descripcion}"></td></p>
+                                        <div class="card-body pt-3">
+                                            <div class="row align-items-center">
+                                                <div class="col-auto">
+                                                    <span class="avatar avatar-sm bg-primary rounded-circle">
+                                                        <img th:src="@{'/fotoPerfil/'+${producto.usuario.id}}">
+                                                    </span> 
+                                                    <span class="text-sm mb-0 avatar-content">
+                                                        <td th:text="${producto.usuario.nombre+ ' ' + producto.usuario.apellido}"></td>
+                                                    </span>
+                                                </div>
+                                            </div> 
+                                                <div class="text-right pt-3">
+                                                    <button type="submit" class="btn btn-xs mt-4 btn-outline-primary"
+                                                    data-dismiss="modal">Enviar</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </tr>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-4 text-center">
+                <a href="#" class="btn btn-neutral">Ver más</a>
+            </div>
+        </div>
+    </section>
+
+    <footer class="position-relative" id="footer-main">
+        <div class="footer pt-lg-7 footer-dark bg-dark">
+            <!-- SVG forma -->
+            <div class="shape-container shape-line shape-position-top shape-orientation-inverse">
+                <svg width="2560px" height="100px" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" preserveAspectRatio="none" x="0px" y="0px" viewBox="0 0 2560 100" style="enable-background:new 0 0 2560 100;" xml:space="preserve">
+                    <polygon points="2560 0 2560 100 0 100"></polygon>
+                </svg>
+            </div>
+            <!-- Footer -->
+            <div class="container pt-4">
+                <div class="row">
+                    <div class="col-lg-4 mb-5 mb-lg-0">
+                        <!-- truecapp -->
+                        <a href="home"> truecApp </a>
+                        <!-- descripcion -->
+                        <p class="mt-4 text-sm opacity-8 pr-lg-4">TruecApp es la nueva plataforma online para cambiar lo que quieras en Mendoza, ayudando a cualquier fundación que vos elijas.</p>
+                    </div>
+                    <div class="col-lg-2 col-6 col-sm-4 ml-lg-auto mb-5 mb-lg-0">
+                        <h6 class="heading mb-3">Cuenta</h6>
+                        <ul class="list-unstyled">
+                            <li><a href="#">Perfil</a></li>
+                            <li><a href="#">Créditos</a></li>
+                            <li><a href="#">Trueques</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-lg-2 col-6 col-sm-4 mb-5 mb-lg-0">
+                        <h6 class="heading mb-3">Acerca de</h6>
+                        <ul class="list-unstyled">
+                            <li><a href="#">Servicios</a></li>
+                            <li><a href="#">Precios</a></li>
+                            <li><a href="#">Contacto</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-lg-2 col-6 col-sm-4 mb-5 mb-lg-0">
+                        <h6 class="heading mb-3">Egg</h6>
+                        <ul class="list-unstyled">
+                            <li><a href="#">Communidad</a></li>
+                            <li><a href="#">Más Info</a></li>
+                            <li><a href="#">Support</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <hr class="divider divider-fade divider-dark my-4">
+                <!-- Firma -->
+                <div class="row align-items-center pb-4">
+                    <div class="col-md-12">
+                        <div class="copyright text-sm font-weight-bold text-center text-md-left">
+                            &copy; 2020 <a href="https://eggeducacion.com" class="font-weight-bold" target="_blank">Egg Educación</a>. Creado por Oscar Alfaro, Gonzalo Bazan, Aaron Bortnic, Gabriel Itzcovichs, Juan Marmilli, Emilia Módolo, Marcos Oropel y Yamil Tahan.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Core JS  -->
+    <script src="assets/libs/jquery/dist/jquery.min.js"></script>
+    <script src="assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="assets/libs/svg-injector/dist/svg-injector.min.js"></script>
+    <script src="assets/libs/feather-icons/dist/feather.min.js"></script>
+    <script src="assets/libs/in-view/dist/in-view.min.js"></script>
+    <script src="assets/libs/sticky-kit/dist/sticky-kit.min.js"></script>
+    <script src="assets/libs/imagesloaded/imagesloaded.pkgd.min.js"></script>
+    <script src="assets/libs/isotope-layout/dist/isotope.pkgd.min.js"></script>
+    <script src="assets/libs/@fancyapps/fancybox/dist/jquery.fancybox.min.js"></script>
+    <script>feather.replace({width:"1em",height:"1em"})</script>        
+    <!-- Quick JS -->
+    <script src="assets/js/quick-website.js"></script>
+    <!-- Feather Icons -->
+    <script>
+        feather.replace({
+            'width': '1em',
+            'height': '1em'
+        })
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+    <section class="slice py-5 bg-section-secondary">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="row mx-n12">                   
+                        <div class="col-sm-6 col-lg-4">
+                            <div class="card mb-3">
+                                <div class="d-block">
+                                    <img class="card-img-top" th:src="@{'/fotoProducto/'+${producto.id}}">
+                                    <!-- <img class="card-img-top" src="assets/img/bowie01.png"> -->
+                                </div>
+                                <div class="card-body pt-3">
+                                    <div class="row align-items-center">
+                                        <div class="col-auto">
+                                            <span class="avatar avatar-sm bg-primary rounded-circle">
+                                                <img th:src="@{'/fotoPerfil/'+${producto.usuario.id}}">
+                                            </span> 
+                                            <span class="text-sm mb-0 avatar-content">
+                                                <td th:text="${producto.usuario.nombre+ ' ' + producto.usuario.apellido}"></td>
+                                            </span>
+                                        </div>
+                                    </div> 
+                                    <div class="text-right pt-3">
+                                        <select href="#" class="btn custom-select btn-s btn-neutral btn-icon"
+                                            id="iniciarOferta" action="/iniciarOferta" method="POST" enctype="multipart/form-data">
+                                                <option selected>Truecar</option>
+                                                <option><td th:text="${productosU.titulo}" th:value="${productosU.id}" name="idProducto1"></option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-4 text-center">
+                <a href="#" class="btn btn-neutral">Ver más</a>
+            </div>
+        </div>
+    </section>
+
+</html>

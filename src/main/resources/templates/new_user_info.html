@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <meta name="description" content="">
+        <meta name="author" content="Webpixels">
+        <title>truecApp</title>
+        <!-- Preloader -->
+        <style>
+            @keyframes hidePreloader {
+                0% {
+                    width: 100%;
+                    height: 100%;
+                }
+
+                100% {
+                    width: 0;
+                    height: 0;
+                }
+            }
+
+            body>div.preloader {
+                position: fixed;
+                background: white;
+                width: 100%;
+                height: 100%;
+                z-index: 1071;
+                opacity: 0;
+                transition: opacity .5s ease;
+                overflow: hidden;
+                pointer-events: none;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            body:not(.loaded)>div.preloader {
+                opacity: 1;
+            }
+
+            body:not(.loaded) {
+                overflow: hidden;
+            }
+
+            body.loaded>div.preloader {
+                animation: hidePreloader .5s linear .5s forwards;
+            }
+        </style>
+        <script>
+            window.addEventListener("load", function () {
+                setTimeout(function () {
+                    document.querySelector('body').classList.add('loaded');
+                }, 300);
+            });
+        </script>
+        <!-- Favicon -->
+        <link rel="icon" href="assets/img/brand/favicon.png" type="image/png"><!-- Font Awesome -->
+        <link rel="stylesheet" href="assets/libs/@fortawesome/fontawesome-free/css/all.min.css">
+        <!-- Quick CSS -->
+        <link rel="stylesheet" href="assets/css/quick-website.css" id="stylesheet">
+    </head>
+
+    <section class="section-half-rounded bg-cover bg-size--cover py-4 py-sm-0" style="background-color:#008aff">
+        <div class="container-fluid d-flex flex-column">
+            <div class="row align-items-center min-vh-100">
+                <div class="col-md-6 col-lg-5 col-xl-5 mx-auto">
+                    <div class="card shadow-lg border-0 mb-0">
+                        <div class="card-body py-5 px-sm-5">
+                                <div class="mb-6 text-center">
+                                    <h6 class="h2">Completá tu información</h6>
+                                </div>
+
+                                <form action="/completarRegistro" method="POST" enctype="multipart/form-data">
+                                    <p th:text="${exito}" style="color:green;"></p>
+                                    <p th:text="${error}" style="color:red;"></p>
+
+                                    <div class="row mx-n2">
+                                        <div class="col-12 col-lg px-2">
+                                            <div class="form-group">
+                                                <label class="form-control-label">Calle</label>
+                                                <div class="input-group">
+                                                    <input class="form-control form-control" type="text" name="calle" placeholder="Calle" required="">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-12 col-lg-3 px-2">
+                                            <div class="form-group">
+                                                <label class="form-control-label">Casa Nº</label>
+                                                <div class="input-group">
+                                                    <input class="form-control form-control" type="text" name="numeroCasa" placeholder="Casa nº" required="">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row mx-n2">
+                                        <div class="col-12 col-lg px-2">
+                                            <div class="form-group">
+                                                <label class="form-control-label">Teléfono</label>
+                                                <div class="input-group">
+                                                    <input class="form-control form-control" type="tel" name="telefono" placeholder="Número de teléfono" required="">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-12 col-lg-5 px-2">
+                                            <div class="form-group">
+                                                <label class="form-control-label">Localidad</label>
+                                                <select class="custom-select" name="zona">
+                                                    <option placeholder="Departamento" name="departamento">Localidad</option>
+                                                    <option value="1">Mendoza</option>
+                                                    <option value="2">Guaymallén</option>
+                                                    <option value="3">Godoy Cruz</option>
+                                                    <option value="4">Las Heras</option>
+                                                    <option value="5">Luján de Cuyo</option>
+                                                    <option value="6">Maipú</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <hr class="my-3">
+                                    <div class="row mx-n2">
+                                        <div class="col-12 col-lg px-2">
+                                            <div class="form-group">
+                                                <label class="form-control-label">Subí una foto de tu DNI</label>
+                                                <div class="input-group">
+                                                    <input type="file" class="form-control btn btn-sm btn-soft-info" name="dni" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-12 col-lg px-2">
+                                            <div class="form-group">
+                                                <label class="form-control-label">Subí una foto de perfil</label>
+                                                <div class="input-group">
+                                                    <input type="file" class="form-control btn btn-sm btn-soft-info" name="perfil" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="mt-4">
+                                            <button type="submit" class="btn btn-block btn-primary">Continuar</button>
+                                        </div>
+                                    </div>            
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </section>
+        <!-- Core JS  -->
+        <script src="assets/libs/jquery/dist/jquery.min.js"></script>
+        <script src="assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="assets/libs/svg-injector/dist/svg-injector.min.js"></script>
+        <script src="assets/libs/feather-icons/dist/feather.min.js"></script>
+        <!-- Quick JS -->
+        <script src="assets/js/quick-website.js"></script>
+        <!-- Feather Icons -->
+        <script>
+            feather.replace({
+                'width': '1em',
+                'height': '1em'
+            })
+        </script>
+    </body>
+
+</html>
