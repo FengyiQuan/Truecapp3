@@ -60,7 +60,11 @@ public class User implements Serializable {
   @Temporal(TemporalType.TIMESTAMP)
   private Date deleteUser;
   @OneToMany
+  private List <Transaction> transactions;
+  @OneToMany
   private List<Notification> notifications;
+  private boolean emailVerified;
+  private boolean isFirstTime;
 
 
   public int getCurrentCreditsCount() {
@@ -69,6 +73,22 @@ public class User implements Serializable {
 
   public void setCurrentCreditsCount(int currentCreditsCount) {
     this.currentCreditsCount = currentCreditsCount;
+  }
+
+  public boolean isEmailVerified() {
+    return emailVerified;
+  }
+
+  public void setEmailVerified(boolean emailVerified) {
+    this.emailVerified = emailVerified;
+  }
+
+  public boolean isFirstTime() {
+    return isFirstTime;
+  }
+
+  public void setFirstTime(boolean firstTime) {
+    isFirstTime = firstTime;
   }
 
   public String getName() {
@@ -235,7 +255,8 @@ public class User implements Serializable {
               String email, String password, List<Object> products, List<Object> services,
               Photo profilePic, Photo idPic, List<Credit> credits, int currentCreditsCount,
               List<Rating> ratings, int successfulTradesCount, List<Donation> donations,
-              UserType userType, Date newUser, Date deleteUser, List<Notification> notifications) {
+              UserType userType, Date newUser, Date deleteUser, List<Notification> notifications,
+              boolean emailVerified, boolean isFirstTime) {
     this.name = name;
     this.lastName = lastName;
     this.address = address;
@@ -256,8 +277,18 @@ public class User implements Serializable {
     this.newUser = newUser;
     this.deleteUser = deleteUser;
     this.notifications = notifications;
+    this.emailVerified = emailVerified;
+    this.isFirstTime = isFirstTime;
   }
 
   public User() {
+  }
+
+  public List<Transaction> getTransactions() {
+    return transactions;
+  }
+
+  public void setTransactions(List<Transaction> transactions) {
+    this.transactions = transactions;
   }
 }
