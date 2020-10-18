@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-public interface MessageRepository extends JpaRepository<Message, Integer> {
+public interface MessageRepository extends JpaRepository<Message, String> {
 
   @Query("SELECT msg FROM Message msg WHERE (msg.sender = :sender AND msg.receiver = :receiver) "
          + "OR (msg.sender = :receiver AND msg.receiver = :sender) ORDER BY sending_time")

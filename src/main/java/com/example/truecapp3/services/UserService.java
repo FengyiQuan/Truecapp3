@@ -1,8 +1,12 @@
 package com.example.truecapp3.services;
 
 import com.example.truecapp3.enums.CreditType;
+import com.example.truecapp3.enums.ObjectType;
 import com.example.truecapp3.errors.ServiceError;
+import com.example.truecapp3.models.Area;
 import com.example.truecapp3.models.Credit;
+import com.example.truecapp3.models.Object;
+import com.example.truecapp3.models.Photo;
 import com.example.truecapp3.models.User;
 import com.example.truecapp3.repositories.CreditRepository;
 import com.example.truecapp3.repositories.ObjectRepository;
@@ -10,6 +14,7 @@ import com.example.truecapp3.repositories.TransactionRepository;
 import com.example.truecapp3.repositories.UserRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -26,6 +31,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Date;
+import java.util.Optional;
 
 import javax.mail.MessagingException;
 import javax.servlet.http.HttpSession;
@@ -49,715 +55,362 @@ public class UserService implements UserDetailsService {
   private CreditRepository creditRepository;
 
   //la primera vez que se crea un usuario, no se crea con todos los datos, si no con lo minimo
-//  @Transactional
-//  public void createNewUser(String name, String lastName, String mail, String pwd) throws ServiceError, MessagingException {
-//    validar(name, lastName, "0", mail, pwd);
-//
-//    User user = new User();
-//    user.setName(name);
-//    user.setLastName(lastName);
-//    user.setEmail(mail);
-//    String encode = new BCryptPasswordEncoder().encode(pwd);
-//    user.setPassword(encode);
-//    user.setNewUser(new Date());
-//    user.setFirstTime(true);
-//    user.setEmailVerified(false);
-////    user.setListaTransacciones(new ArrayList<>());
-//    user.setCredits(new ArrayList<>());
-//    Credit credit = new Credit();
-//    credit.setCreditType(CreditType.PURCHASED);
-//    user.getCredits().add(credit);
-//    creditRepository.save(credit);
-//    userRepository.save(user);
-//
-//    //    notificacionServicio.enviar("Bienvenidos a nuestra plataforma" + user.getNombre() + "! Esperemos que disfrutes mucho de nuestro proyecto.", "Te damos la bienvenida a TruecAPP, " + user.getNombre(), "bortnicaaron@gmail.com");
-//    notificationService.sendMail("Bienvenidos a nuestra plataforma", user);
-//  }
+  @Transactional
+  public void createNewUser(String name, String lastName, String mail, String pwd) throws ServiceError, MessagingException {
+    validar(name, lastName, "0", mail, pwd);
 
-  @Override
-  public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
-    return null;
+    User user = new User();
+    user.setName(name);
+    user.setLastName(lastName);
+    user.setEmail(mail);
+    String encode = new BCryptPasswordEncoder().encode(pwd);
+    user.setPassword(encode);
+    user.setNewUser(new Date());
+    user.setFirstTime(true);
+    user.setEmailVerified(false);
+    user.setTransactions(new ArrayList<>());
+    user.setCredits(new ArrayList<>());
+    Credit credit = new Credit();
+    credit.setCreditType(CreditType.PURCHASED);
+    user.getCredits().add(credit);
+    creditRepository.save(credit);
+    userRepository.save(user);
+
+    //    notificacionServicio.enviar("Bienvenidos a nuestra plataforma" + user.getNombre() + "! Esperemos que disfrutes mucho de nuestro proyecto.", "Te damos la bienvenida a TruecAPP, " + user.getNombre(), "bortnicaaron@gmail.com");
+    notificationService.sendMail("Bienvenidos a nuestra plataforma", user);
   }
 
-//  @Transactional
-//  public void modificarUsuario(MultipartFile fotoPerfil, MultipartFile fotoDNI, String id,
-//                               String nombre, String apellido, String documento, String telefono,
-//                               Date fechaNacimiento, String calle, String numeroCasa, Zona zona,
-//                               String mail, String clave, String clave2) throws ServiceError {
-//    //validar(nombre, apellido, "0", mail,clave);
-////        if (!clave.equals(clave2)) {
-////           throw new ErrorServicio("Las contraseñas deben coincidir");
-////
-////        }
-////
-//
-//    Optional<Usuario> respuesta = userRepository.findById(id);
-//
-//    if (respuesta.isPresent()) {
-//      Usuario usuario = respuesta.get();
-//
-//      usuario.setNombre(nombre);
-//      usuario.setApellido(apellido);
-//      usuario.setDocumento(documento);
-//      usuario.setTelefono(telefono);
-//      usuario.setMail(mail);
-//      String encriptada = new BCryptPasswordEncoder().encode(clave);
-//      usuario.setClave(encriptada);
-//      usuario.setFechaNacimiento(fechaNacimiento);
-//      usuario.setCalle(calle);
-//      usuario.setNumeroCasa(numeroCasa);
-//      usuario.setZona(zona);
-//      String idFoto = usuario.getFotoPerfil().getId();
-//      if (idFoto != null) {
-//        Foto foto = photoService.Actualizar(idFoto, fotoPerfil);
-//        usuario.setFotoPerfil(foto);
-//      } else {
-//        Foto foto = photoService.Guardar(fotoPerfil);
-//        usuario.setFotoPerfil(foto);
-//      }
-//
-//      if (fotoDNI != null) {
-//        Foto fotodni = photoService.Guardar(fotoDNI);
-//        usuario.setFotoDNI(fotodni);
-//      }
-//
-//      userRepository.save(usuario);
-//    } else {
-//      throw new ServiceError("No se encontró el usuario solicitado");
-//
-//    }
-//
-//  }
-//
-//  @Transactional
-//  public void completarUsuario(MultipartFile fotoPerfil, MultipartFile fotoDNI, String id,
-//                               String calle, String numeroCasa, String telefono) throws ServiceError {
-//    //validar(nombre, apellido, "0", mail,clave);
-////        if (!clave.equals(clave2)) {
-////           throw new ErrorServicio("Las contraseñas deben coincidir");
-////
-////        }
-////
-//
-//    Optional<Usuario> respuesta = userRepository.findById(id);
-//
-//    if (respuesta.isPresent()) {
-//      Usuario usuario = respuesta.get();
-//
-//      usuario.setTelefono(telefono);
-//
-//      usuario.setCalle(calle);
-//      usuario.setNumeroCasa(numeroCasa);
-//
-//      if (fotoPerfil != null) {
-//        Foto foto = photoService.Guardar(fotoPerfil);
-//        usuario.setFotoPerfil(foto);
-//      }
-//
-//      if (fotoDNI != null) {
-//        Foto fotodni = photoService.Guardar(fotoDNI);
-//        usuario.setFotoDNI(fotodni);
-//      }
-//      usuario.setIsFirstTime(false);
-//      userRepository.save(usuario);
-//    } else {
-//      throw new ServiceError("No se encontró el usuario solicitado");
-//
-//    }
-//
-//  }
-//
-//  //si solo queremos guardar la foto del usuario.
-//  @Transactional
-//  public void GuardarFotoPerfil(MultipartFile archivo, String idUsuario) throws ServiceError {
-//
-//    Optional<Usuario> respuesta = userRepository.findById(idUsuario);
-//
-//    if (respuesta.isPresent()) {
-//      Usuario usuario = respuesta.get();
-//
-//      Foto foto = photoService.Guardar(archivo);
-//      usuario.setFotoPerfil(foto);
-//      userRepository.save(usuario);
-//    } else {
-//      throw new ServiceError("No se encontró el usuario solicitado");
-//
-//    }
-//
-//  }
-//
-//  @Transactional
-//  public void GuardarFotoDNI(MultipartFile archivo, String idUsuario) throws ServiceError {
-//
-//    Optional<Usuario> respuesta = userRepository.findById(idUsuario);
-//
-//    if (respuesta.isPresent()) {
-//      Usuario usuario = respuesta.get();
-//
-//      Foto foto = photoService.Guardar(archivo);
-//      usuario.setFotoDNI(foto);
-//      userRepository.save(usuario);
-//    } else {
-//      throw new ServiceError("No se encontró el usuario solicitado");
-//
-//    }
-//
-//  }
-//
-//  //si es necesario encontrar a un usuario por su id.
-//  public Usuario consultarUsuarioID(String ID) throws ServiceError {
-//    Optional<Usuario> respuesta = userRepository.findById(ID);
-//    if (respuesta.isPresent()) {
-//      Usuario usuario = respuesta.get();
-//      return usuario;
-//    } else {
-//      throw new ServiceError("Ese usuario no existe");
-//    }
-//  }
-//
-//  @Async
-//  public void enviarMailVerificacion(String ID) throws ServiceError {
-//    Optional<Usuario> respuesta = userRepository.findById(ID);
-//    if (respuesta.isPresent()) {
-//      Usuario usuario = respuesta.get();
-//      System.out.println(usuario.getMail());
-//      System.out.println(usuario.getId());
-//      notificationService.send("Gracias por completar tu registro! " + usuario.getNombre()
-//                               + "! Para Verificar tu mail haz click aquí: http://localhost:8081/verificarUsuario/"
-//                               + usuario.getId(), "Verifica tu mail para poder comenzar a truecar!", usuario.getMail());
-//
-//    } else {
-//      throw new ServiceError("Ese usuario no existe");
-//    }
-//  }
-//
-//  //una vez que el mail se verifica, se corre este metodo.
-//  @Transactional
-//  public void EmailVerificado(String ID) throws ServiceError {
-//    Optional<Usuario> respuesta = userRepository.findById(ID);
-//    if (respuesta.isPresent()) {
-//      Usuario usuario = respuesta.get();
-//      usuario.setEmailVerified(Boolean.TRUE);
-//      userRepository.save(usuario);
-//    } else {
-//      throw new ServiceError("Ese usuario no existe");
-//    }
-//  }
-//
-//  //correr este metodo cuando el usuario se loguea correctamente a la plataforma. esto
-//  //sirve para darle un mensaje de bienvenida.
-//  @Transactional
-//  public void SetFirstTime(String ID) throws ServiceError {
-//    Optional<Usuario> respuesta = userRepository.findById(ID);
-//    if (respuesta.isPresent()) {
-//      Usuario usuario = respuesta.get();
-//      usuario.setIsFirstTime(Boolean.FALSE);
-//      userRepository.save(usuario);
-//    } else {
-//      throw new ServiceError("Ese usuario no existe");
-//    }
-//  }
-//
-//  //este metodo devuelve un booleano, de si ese mail ya existe en la base de datos
-//  public Boolean verificarEmail(String mail) {
-//    try {
-//      String id = userRepository.buscarUsuarioPorMail(mail.toLowerCase()).getId();
-//      System.out.println("");
-//      Optional<Usuario> respuesta = userRepository.findById(id);
-//      Usuario usuario = respuesta.get();
-//
-//      if (respuesta.isPresent()) {
-//        System.out.println("Usuario encontrado");
-//        return true;
-//      } else {
-//        System.out.println("Usuario no encontrado");
-//        return false;
-//      }
-////          throw new ErrorServicio("Hola, "+usuario.getNombre()+" "+usuario.getApellido()+"! Parece que ya tenés cuenta con nosotros. Porqué no probas Iniciando Sesión?");
-//
-//    } catch (Exception e) {
-//      return false;
-//    }
-//
-//  }
-//
-//  //verifica que ambas claves sean las mismas
-//  public void verificarClave(String Clave1, String Clave2) throws ServiceError {
-//    if (Clave1.equals(Clave2)) {
-//      System.out.println("Contraseñas OK");
-//
-//    } else {
-//      throw new ServiceError("Las contraseñas deben coincidir");
-//
-//    }
-//
-//  }
-//
-//  @Transactional
-//  public void bajaUsuario(String ID) throws ServiceError {
-//    Optional<Usuario> respuesta = userRepository.findById(ID);
-//    if (respuesta.isPresent()) {
-//      Usuario usuario = respuesta.get();
-//      usuario.setFechaBaja(new Date());
-//      userRepository.save(usuario);
-//    } else {
-//      throw new ServiceError("Ese usuario no existe");
-//    }
-//  }
-//
-//  @Transactional
-//  public void rehabilitarUsuario(String ID) throws ServiceError {
-//    Optional<Usuario> respuesta = userRepository.findById(ID);
-//    if (respuesta.isPresent()) {
-//      Usuario usuario = respuesta.get();
-//      usuario.setFechaBaja(null);
-//      userRepository.save(usuario);
-//    } else {
-//      throw new ServiceError("Ese usuario no existe");
-//    }
-//  }
-//
-//  @Transactional
-//  public void cargarProducto(String userId, String productID) throws ServiceError {
-//    Optional<Usuario> respuesta = userRepository.findById(userId);
-//    if (respuesta.isPresent()) {
-//      Usuario usuario = respuesta.get();
-//
-//      Optional<Producto> respuestaProducto = objectRepository.findById(productID);
-//      if (respuestaProducto.isPresent()) {
-//
-//        Producto producto = respuestaProducto.get();
-//
-//        if (usuario.getListaProductos() == null) {
-//          List<Producto> listaNueva = new ArrayList<Producto>();
-//          usuario.setListaProductos(listaNueva);
+
+  @Transactional
+  public void modificarUsuario(MultipartFile fotoPerfil, MultipartFile fotoDNI, String id,
+                               String nombre, String apellido, String telefono,
+                               Date fechaNacimiento, String address, Area zona,
+                               String mail, String clave, String clave2) throws ServiceError {
+    //validar(nombre, apellido, "0", mail,clave);
+//        if (!clave.equals(clave2)) {
+//           throw new ErrorServicio("Las contraseñas deben coincidir");
 //
 //        }
-//        List<Producto> listaActualizada = usuario.getListaProductos();
-//        if (listaActualizada.contains(producto)) {
-//          listaActualizada.remove(producto);
-//          listaActualizada.add(producto);
-//        } else {
-//          listaActualizada.add(producto);
-//        }
 //
-//        usuario.setListaProductos(listaActualizada);
-//
-//      } else {
-//
-//        throw new ServiceError("Ese Producto no existe");
-//
-//      }
-//
-//      userRepository.save(usuario);
-//    } else {
-//      throw new ServiceError("Ese usuario no existe");
-//    }
-//
-//  }
-//
-//  private void validar(String nombre, String apellido, String documento, String mail, String clave) throws ServiceError {
-//    if (nombre == null || nombre.isEmpty()) {
-//      throw new ServiceError("El nombre no puede ser vacío");
-//
-//    }
-//    if (apellido == null || apellido.isEmpty()) {
-//      throw new ServiceError("El apellido no puede ser vacío");
-//
-//    }
-//    if (documento == null || documento.isEmpty()) {
-//      throw new ServiceError("El documento no puede estar vacío");
-//
-//    }
-//    if (mail == null || mail.isEmpty()) {
-//      throw new ServiceError("Debe indicar una dirección de correo electrónico");
-//
-//    }
-//    if (clave == null || clave.length() < 6) {
-//      throw new ServiceError("La clave debe contener al menos 6 caracteres.");
-//
-//    }
-//
-//  }
-//
-//  @Override
-//  public UserDetails loadUserByUsername(String mail) throws UsernameNotFoundException {
-//    Usuario usuario = userRepository.buscarUsuarioPorMail(mail);
-//    if (usuario != null) {
-//      List<GrantedAuthority> permisos = new ArrayList<>();
-//      GrantedAuthority p1 = new SimpleGrantedAuthority("ROLE_CLIENTE");
-//      permisos.add(p1);
-//
-//      ServletRequestAttributes attr = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
-//      HttpSession session = attr.getRequest().getSession();
-//      session.setAttribute("UsuarioSession", usuario);
-//
-//      User user = new User(usuario.getMail(), usuario.getClave(), permisos);
-//      return user;
-//    } else {
-//      return null;  @Autowired
-//      private UserRepository usuarioRespositorio;
-//
-//      @Autowired
-//      private ObjectRepository productoRepositorio;
-//      @Autowired
-//      private PhotoService fotoServicio;
-//      @Autowired
-//      private NotificationService notificacionServicio;
-//      @Autowired
-//      private TransactionRepository transaccionRepositorio;
-//
-//      @Autowired
-//      private CreditRepository creditoRepositorio;
-//
-//      //la primera vez que se crea un usuario, no se crea con todos los datos, si no con lo minimo
-//      @Transactional
-//      public void nuevoUsuario(String nombre, String apellido, String mail, String clave) throws ServiceError, MessagingException {
-//        validar(nombre, apellido, "0", mail, clave);
-//
-//        Usuario usuario = new Usuario();
-//        usuario.setNombre(nombre);
-//        usuario.setApellido(apellido);
-//
-//        usuario.setMail(mail);
-//        String encriptada = new BCryptPasswordEncoder().encode(clave);
-//        usuario.setClave(encriptada);
-//        usuario.setFechaAlta(new Date());
-//        usuario.setIsFirstTime(true);
-//        usuario.setEmailVerified(false);
-//        usuario.setListaTransacciones(new ArrayList<>());
-//        usuario.setListaCreditos(new ArrayList<>());
-//        Credito credito = new Credito();
-//        credito.setTipocredito(tipoCredito.COMPRADO);
-//        usuario.getListaCreditos().add(credito);
-//        creditoRepositorio.save(credito);
-//        usuarioRespositorio.save(usuario);
-//
-//        //    notificacionServicio.enviar("Bienvenidos a nuestra plataforma" + usuario.getNombre() + "! Esperemos que disfrutes mucho de nuestro proyecto.", "Te damos la bienvenida a TruecAPP, " + usuario.getNombre(), "bortnicaaron@gmail.com");
-//        notificacionServicio.sendMail("Bienvenidos a nuestra plataforma", usuario);
-//      }
-//
-//      @Transactional
-//      public void modificarUsuario(MultipartFile fotoPerfil, MultipartFile fotoDNI, String id,
-//              String nombre, String apellido, String documento, String telefono,
-//              Date fechaNacimiento, String calle, String numeroCasa, Zona zona,
-//              String mail, String clave, String clave2) throws ErrorServicio {
-//        //validar(nombre, apellido, "0", mail,clave);
-////        if (!clave.equals(clave2)) {
-////           throw new ErrorServicio("Las contraseñas deben coincidir");
-////
-////        }
-////
-//
-//        Optional<Usuario> respuesta = usuarioRespositorio.findById(id);
-//
-//        if (respuesta.isPresent()) {
-//          Usuario usuario = respuesta.get();
-//
-//          usuario.setNombre(nombre);
-//          usuario.setApellido(apellido);
-//          usuario.setDocumento(documento);
-//          usuario.setTelefono(telefono);
-//          usuario.setMail(mail);
-//          String encriptada = new BCryptPasswordEncoder().encode(clave);
-//          usuario.setClave(encriptada);
-//          usuario.setFechaNacimiento(fechaNacimiento);
-//          usuario.setCalle(calle);
-//          usuario.setNumeroCasa(numeroCasa);
-//          usuario.setZona(zona);
-//          String idFoto = usuario.getFotoPerfil().getId();
-//          if (idFoto != null) {
-//            Foto foto = fotoServicio.Actualizar(idFoto, fotoPerfil);
-//            usuario.setFotoPerfil(foto);
-//          } else {
-//            Foto foto = fotoServicio.Guardar(fotoPerfil);
-//            usuario.setFotoPerfil(foto);
-//          }
-//
-//          if (fotoDNI != null) {
-//            Foto fotodni = fotoServicio.Guardar(fotoDNI);
-//            usuario.setFotoDNI(fotodni);
-//          }
-//
-//          usuarioRespositorio.save(usuario);
-//        } else {
-//          throw new ErrorServicio("No se encontró el usuario solicitado");
+
+    Optional<User> respuesta = userRepository.findById(id);
+
+    if (respuesta.isPresent()) {
+      User usuario = respuesta.get();
+
+      usuario.setName(nombre);
+      usuario.setLastName(apellido);
+      usuario.setCellphone(telefono);
+      usuario.setEmail(mail);
+      String encriptada = new BCryptPasswordEncoder().encode(clave);
+      usuario.setPassword(encriptada);
+      usuario.setBirthday(fechaNacimiento);
+      usuario.setAddress(address);
+      usuario.setArea(zona);
+      String idFoto = usuario.getProfilePic().getId();
+      if (idFoto != null) {
+        Photo foto = photoService.update(idFoto, fotoPerfil);
+        usuario.setProfilePic(foto);
+      } else {
+        Photo foto = photoService.save(fotoPerfil);
+        usuario.setProfilePic(foto);
+      }
+
+      if (fotoDNI != null) {
+        Photo fotodni = photoService.save(fotoDNI);
+        usuario.setIdPic(fotodni);
+      }
+
+      userRepository.save(usuario);
+    } else {
+      throw new ServiceError("No se encontró el usuario solicitado");
+
+    }
+
+  }
+
+  @Transactional
+  public void completarUsuario(MultipartFile fotoPerfil, MultipartFile fotoDNI, String id,
+                               String address, String telefono) throws ServiceError {
+    //validar(nombre, apellido, "0", mail,clave);
+//        if (!clave.equals(clave2)) {
+//           throw new ErrorServicio("Las contraseñas deben coincidir");
 //
 //        }
 //
-//      }
-//
-//      @Transactional
-//      public void completarUsuario(MultipartFile fotoPerfil, MultipartFile fotoDNI, String id,
-//              String calle, String numeroCasa, String telefono) throws ErrorServicio {
-//        //validar(nombre, apellido, "0", mail,clave);
-////        if (!clave.equals(clave2)) {
-////           throw new ErrorServicio("Las contraseñas deben coincidir");
-////
-////        }
-////
-//
-//        Optional<Usuario> respuesta = usuarioRespositorio.findById(id);
-//
-//        if (respuesta.isPresent()) {
-//          Usuario usuario = respuesta.get();
-//
-//          usuario.setTelefono(telefono);
-//
-//          usuario.setCalle(calle);
-//          usuario.setNumeroCasa(numeroCasa);
-//
-//          if (fotoPerfil != null) {
-//            Foto foto = fotoServicio.Guardar(fotoPerfil);
-//            usuario.setFotoPerfil(foto);
-//          }
-//
-//          if (fotoDNI != null) {
-//            Foto fotodni = fotoServicio.Guardar(fotoDNI);
-//            usuario.setFotoDNI(fotodni);
-//          }
-//          usuario.setIsFirstTime(false);
-//          usuarioRespositorio.save(usuario);
-//        } else {
-//          throw new ErrorServicio("No se encontró el usuario solicitado");
-//
-//        }
-//
-//      }
-//
-//      //si solo queremos guardar la foto del usuario.
-//      @Transactional
-//      public void GuardarFotoPerfil(MultipartFile archivo, String idUsuario) throws ErrorServicio {
-//
-//        Optional<Usuario> respuesta = usuarioRespositorio.findById(idUsuario);
-//
-//        if (respuesta.isPresent()) {
-//          Usuario usuario = respuesta.get();
-//
-//          Foto foto = fotoServicio.Guardar(archivo);
-//          usuario.setFotoPerfil(foto);
-//          usuarioRespositorio.save(usuario);
-//        } else {
-//          throw new ErrorServicio("No se encontró el usuario solicitado");
-//
-//        }
-//
-//      }
-//
-//      @Transactional
-//      public void GuardarFotoDNI(MultipartFile archivo, String idUsuario) throws ErrorServicio {
-//
-//        Optional<Usuario> respuesta = usuarioRespositorio.findById(idUsuario);
-//
-//        if (respuesta.isPresent()) {
-//          Usuario usuario = respuesta.get();
-//
-//          Foto foto = fotoServicio.Guardar(archivo);
-//          usuario.setFotoDNI(foto);
-//          usuarioRespositorio.save(usuario);
-//        } else {
-//          throw new ErrorServicio("No se encontró el usuario solicitado");
-//
-//        }
-//
-//      }
-//
-//      //si es necesario encontrar a un usuario por su id.
-//      public Usuario consultarUsuarioID(String ID) throws ErrorServicio {
-//        Optional<Usuario> respuesta = usuarioRespositorio.findById(ID);
-//        if (respuesta.isPresent()) {
-//          Usuario usuario = respuesta.get();
-//          return usuario;
-//        } else {
-//          throw new ErrorServicio("Ese usuario no existe");
-//        }
-//      }
-//
-//      @Async
-//      public void enviarMailVerificacion(String ID) throws ErrorServicio {
-//        Optional<Usuario> respuesta = usuarioRespositorio.findById(ID);
-//        if (respuesta.isPresent()) {
-//          Usuario usuario = respuesta.get();
-//          System.out.println(usuario.getMail());
-//          System.out.println(usuario.getId());
-//          notificacionServicio.send("Gracias por completar tu registro! " + usuario.getNombre()
-//                                    + "! Para Verificar tu mail haz click aquí: http://localhost:8081/verificarUsuario/"
-//                                    + usuario.getId(), "Verifica tu mail para poder comenzar a truecar!", usuario.getMail());
-//
-//        } else {
-//          throw new ErrorServicio("Ese usuario no existe");
-//        }
-//      }
-//
-//      //una vez que el mail se verifica, se corre este metodo.
-//      @Transactional
-//      public void EmailVerificado(String ID) throws ErrorServicio {
-//        Optional<Usuario> respuesta = usuarioRespositorio.findById(ID);
-//        if (respuesta.isPresent()) {
-//          Usuario usuario = respuesta.get();
-//          usuario.setEmailVerified(Boolean.TRUE);
-//          usuarioRespositorio.save(usuario);
-//        } else {
-//          throw new ErrorServicio("Ese usuario no existe");
-//        }
-//      }
-//
-//      //correr este metodo cuando el usuario se loguea correctamente a la plataforma. esto
-//      //sirve para darle un mensaje de bienvenida.
-//      @Transactional
-//      public void SetFirstTime(String ID) throws ErrorServicio {
-//        Optional<Usuario> respuesta = usuarioRespositorio.findById(ID);
-//        if (respuesta.isPresent()) {
-//          Usuario usuario = respuesta.get();
-//          usuario.setIsFirstTime(Boolean.FALSE);
-//          usuarioRespositorio.save(usuario);
-//        } else {
-//          throw new ErrorServicio("Ese usuario no existe");
-//        }
-//      }
-//
-//      //este metodo devuelve un booleano, de si ese mail ya existe en la base de datos
-//      public Boolean verificarEmail(String mail) {
-//        try {
-//          String id = usuarioRespositorio.buscarUsuarioPorMail(mail.toLowerCase()).getId();
-//          System.out.println("");
-//          Optional<Usuario> respuesta = usuarioRespositorio.findById(id);
-//          Usuario usuario = respuesta.get();
-//
-//          if (respuesta.isPresent()) {
-//            System.out.println("Usuario encontrado");
-//            return true;
-//          } else {
-//            System.out.println("Usuario no encontrado");
-//            return false;
-//          }
-////          throw new ErrorServicio("Hola, "+usuario.getNombre()+" "+usuario.getApellido()+"! Parece que ya tenés cuenta con nosotros. Porqué no probas Iniciando Sesión?");
-//
-//        } catch (Exception e) {
-//          return false;
-//        }
-//
-//      }
-//
-//      //verifica que ambas claves sean las mismas
-//      public void verificarClave(String Clave1, String Clave2) throws ErrorServicio {
-//        if (Clave1.equals(Clave2)) {
-//          System.out.println("Contraseñas OK");
-//
-//        } else {
-//          throw new ErrorServicio("Las contraseñas deben coincidir");
-//
-//        }
-//
-//      }
-//
-//      @Transactional
-//      public void bajaUsuario(String ID) throws ErrorServicio {
-//        Optional<Usuario> respuesta = usuarioRespositorio.findById(ID);
-//        if (respuesta.isPresent()) {
-//          Usuario usuario = respuesta.get();
-//          usuario.setFechaBaja(new Date());
-//          usuarioRespositorio.save(usuario);
-//        } else {
-//          throw new ErrorServicio("Ese usuario no existe");
-//        }
-//      }
-//
-//      @Transactional
-//      public void rehabilitarUsuario(String ID) throws ErrorServicio {
-//        Optional<Usuario> respuesta = usuarioRespositorio.findById(ID);
-//        if (respuesta.isPresent()) {
-//          Usuario usuario = respuesta.get();
-//          usuario.setFechaBaja(null);
-//          usuarioRespositorio.save(usuario);
-//        } else {
-//          throw new ErrorServicio("Ese usuario no existe");
-//        }
-//      }
-//
-//      @Transactional
-//      public void cargarProducto(String userId, String productID) throws ErrorServicio {
-//        Optional<Usuario> respuesta = usuarioRespositorio.findById(userId);
-//        if (respuesta.isPresent()) {
-//          Usuario usuario = respuesta.get();
-//
-//          Optional<Producto> respuestaProducto = productoRepositorio.findById(productID);
-//          if (respuestaProducto.isPresent()) {
-//
-//            Producto producto = respuestaProducto.get();
-//
-//            if (usuario.getListaProductos() == null) {
-//              List<Producto> listaNueva = new ArrayList<Producto>();
-//              usuario.setListaProductos(listaNueva);
-//
-//            }
-//            List<Producto> listaActualizada = usuario.getListaProductos();
-//            if (listaActualizada.contains(producto)) {
-//              listaActualizada.remove(producto);
-//              listaActualizada.add(producto);
-//            } else {
-//              listaActualizada.add(producto);
-//            }
-//
-//            usuario.setListaProductos(listaActualizada);
-//
-//          } else {
-//
-//            throw new ErrorServicio("Ese Producto no existe");
-//
-//          }
-//
-//          usuarioRespositorio.save(usuario);
-//        } else {
-//          throw new ErrorServicio("Ese usuario no existe");
-//        }
-//
-//      }
-//
-//      private void validar(String nombre, String apellido, String documento, String mail, String clave) throws ErrorServicio {
-//        if (nombre == null || nombre.isEmpty()) {
-//          throw new ErrorServicio("El nombre no puede ser vacío");
-//
-//        }
-//        if (apellido == null || apellido.isEmpty()) {
-//          throw new ErrorServicio("El apellido no puede ser vacío");
-//
-//        }
-//        if (documento == null || documento.isEmpty()) {
-//          throw new ErrorServicio("El documento no puede estar vacío");
-//
-//        }
-//        if (mail == null || mail.isEmpty()) {
-//          throw new ErrorServicio("Debe indicar una dirección de correo electrónico");
-//
-//        }
-//        if (clave == null || clave.length() < 6) {
-//          throw new ErrorServicio("La clave debe contener al menos 6 caracteres.");
-//
-//        }
-//
-//      }
-//
-//      @Override
-//      public UserDetails loadUserByUsername(String mail) throws UsernameNotFoundException {
-//        User usuario = usuarioRespositorio.buscarUsuarioPorMail(mail);
-//        if (usuario != null) {
-//          List<GrantedAuthority> permisos = new ArrayList<>();
-//          GrantedAuthority p1 = new SimpleGrantedAuthority("ROLE_CLIENTE");
-//          permisos.add(p1);
-//
-//          ServletRequestAttributes attr = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
-//          HttpSession session = attr.getRequest().getSession();
-//          session.setAttribute("UsuarioSession", usuario);
-//
-//          User user = new User(usuario.getEmail(), usuario.getClave(), permisos);
-//          return user;
-//        } else {
-//          return null;
-//        }
-//
-//      }
-//    }
-//
-//  }
+
+    Optional<User> respuesta = userRepository.findById(id);
+
+    if (respuesta.isPresent()) {
+      User usuario = respuesta.get();
+
+      usuario.setCellphone(telefono);
+
+      usuario.setAddress(address);
+
+      if (fotoPerfil != null) {
+        Photo foto = photoService.save(fotoPerfil);
+        usuario.setProfilePic(foto);
+      }
+
+      if (fotoDNI != null) {
+        Photo fotodni = photoService.save(fotoDNI);
+        usuario.setIdPic(fotodni);
+      }
+      usuario.setFirstTime(false);
+      userRepository.save(usuario);
+    } else {
+      throw new ServiceError("No se encontró el usuario solicitado");
+
+    }
+
+  }
+
+  //si solo queremos guardar la foto del usuario.
+  @Transactional
+  public void savePhotoProfile(MultipartFile archivo, String idUsuario) throws ServiceError {
+
+    Optional<User> respuesta = userRepository.findById(idUsuario);
+
+    if (respuesta.isPresent()) {
+      User usuario = respuesta.get();
+
+      Photo foto = photoService.save(archivo);
+      usuario.setProfilePic(foto);
+      userRepository.save(usuario);
+    } else {
+      throw new ServiceError("No se encontró el usuario solicitado");
+
+    }
+
+  }
+
+  @Transactional
+  public void saveIdPhoto(MultipartFile archivo, String idUsuario) throws ServiceError {
+
+    Optional<User> respuesta = userRepository.findById(idUsuario);
+
+    if (respuesta.isPresent()) {
+      User usuario = respuesta.get();
+
+      Photo foto = photoService.save(archivo);
+      usuario.setIdPic(foto);
+      userRepository.save(usuario);
+    } else {
+      throw new ServiceError("No se encontró el usuario solicitado");
+
+    }
+
+  }
+
+  //si es necesario encontrar a un usuario por su id.
+  public User consultarUsuarioID(String ID) throws ServiceError {
+    Optional<User> respuesta = userRepository.findById(ID);
+    if (respuesta.isPresent()) {
+      User usuario = respuesta.get();
+      return usuario;
+    } else {
+      throw new ServiceError("Ese usuario no existe");
+    }
+  }
+
+  @Async
+  public void enviarMailVerificacion(String ID) throws ServiceError {
+    Optional<User> respuesta = userRepository.findById(ID);
+    if (respuesta.isPresent()) {
+      User usuario = respuesta.get();
+      System.out.println(usuario.getEmail());
+      System.out.println(usuario.getId());
+      notificationService.send("Gracias por completar tu registro! " + usuario.getName()
+                               + "! Para Verificar tu mail haz click aquí: http://localhost:8081/verificarUsuario/"
+                               + usuario.getId(), "Verifica tu mail para poder comenzar a truecar!", usuario.getEmail());
+
+    } else {
+      throw new ServiceError("Ese usuario no existe");
+    }
+  }
+
+  //una vez que el mail se verifica, se corre este metodo.
+  @Transactional
+  public void EmailVerify(String ID) throws ServiceError {
+    Optional<User> respuesta = userRepository.findById(ID);
+    if (respuesta.isPresent()) {
+      User usuario = respuesta.get();
+      usuario.setEmailVerified(Boolean.TRUE);
+      userRepository.save(usuario);
+    } else {
+      throw new ServiceError("Ese usuario no existe");
+    }
+  }
+
+  //correr este metodo cuando el usuario se loguea correctamente a la plataforma. esto
+  //sirve para darle un mensaje de bienvenida.
+  @Transactional
+  public void SetFirstTime(String ID) throws ServiceError {
+    Optional<User> respuesta = userRepository.findById(ID);
+    if (respuesta.isPresent()) {
+      User usuario = respuesta.get();
+      usuario.setFirstTime(Boolean.FALSE);
+      userRepository.save(usuario);
+    } else {
+      throw new ServiceError("Ese usuario no existe");
+    }
+  }
+
+  //este metodo devuelve un booleano, de si ese mail ya existe en la base de datos
+  public Boolean verificarEmail(String mail) {
+    try {
+      String id = userRepository.getUserByEmail(mail.toLowerCase()).getId();
+      System.out.println("");
+      Optional<User> respuesta = userRepository.findById(id);
+      User usuario = respuesta.get();
+
+      if (respuesta.isPresent()) {
+        System.out.println("Usuario encontrado");
+        return true;
+      } else {
+        System.out.println("Usuario no encontrado");
+        return false;
+      }
+//          throw new ErrorServicio("Hola, "+usuario.getNombre()+" "+usuario.getApellido()+"! Parece que ya tenés cuenta con nosotros. Porqué no probas Iniciando Sesión?");
+
+    } catch (Exception e) {
+      return false;
+    }
+
+  }
+
+  //verifica que ambas claves sean las mismas
+  public void verifyPassword(String pwd1, String pwd2) throws ServiceError {
+    if (pwd1.equals(pwd2)) {
+      System.out.println("Contraseñas OK");
+
+    } else {
+      throw new ServiceError("Las contraseñas deben coincidir");
+
+    }
+
+  }
+
+  @Transactional
+  public void dropUser(String ID) throws ServiceError {
+    Optional<User> respuesta = userRepository.findById(ID);
+    if (respuesta.isPresent()) {
+      User usuario = respuesta.get();
+      usuario.setDeleteUser(new Date());
+      userRepository.save(usuario);
+    } else {
+      throw new ServiceError("Ese usuario no existe");
+    }
+  }
+
+  @Transactional
+  public void enableUser(String ID) throws ServiceError {
+    Optional<User> respuesta = userRepository.findById(ID);
+    if (respuesta.isPresent()) {
+      User usuario = respuesta.get();
+      usuario.setDeleteUser(null);
+      userRepository.save(usuario);
+    } else {
+      throw new ServiceError("Ese usuario no existe");
+    }
+  }
+
+  @Transactional
+  public void loadObjects(String userId, String productID) throws ServiceError {
+    Optional<User> response = userRepository.findById(userId);
+    if (response.isPresent()) {
+      User user = response.get();
+
+      Optional<Object> responseObject = objectRepository.findById(productID);
+      if (responseObject.isPresent()) {
+
+        Object object = responseObject.get();
+
+        if (object.getObjectType() == ObjectType.PRODUCT) {
+          if (user.getProducts() == null) {
+            List<Object> objects = new ArrayList<>();
+            user.setProducts(objects);
+
+          }
+          List<Object> updatedProducts = user.getProducts();
+          if (updatedProducts.contains(object)) {
+            updatedProducts.remove(object);
+            updatedProducts.add(object);
+          } else {
+            updatedProducts.add(object);
+          }
+
+          user.setProducts(updatedProducts);
+
+        } else if (object.getObjectType() == ObjectType.SERVICE) {
+          if (user.getServices() == null) {
+            List<Object> objects = new ArrayList<>();
+            user.setServices(objects);
+
+          }
+          List<Object> updatedServices = user.getServices();
+          if (updatedServices.contains(object)) {
+            updatedServices.remove(object);
+            updatedServices.add(object);
+          } else {
+            updatedServices.add(object);
+          }
+          user.setServices(updatedServices);
+        }
+      } else {
+        throw new ServiceError("Ese Producto no existe");
+      }
+      userRepository.save(user);
+    } else {
+      throw new ServiceError("Ese usuario no existe");
+    }
+
+  }
+
+
+  private void validar(String nombre, String apellido, String documento, String mail, String clave) throws ServiceError {
+    if (nombre == null || nombre.isEmpty()) {
+      throw new ServiceError("El nombre no puede ser vacío");
+
+    }
+    if (apellido == null || apellido.isEmpty()) {
+      throw new ServiceError("El apellido no puede ser vacío");
+
+    }
+    if (documento == null || documento.isEmpty()) {
+      throw new ServiceError("El documento no puede estar vacío");
+
+    }
+    if (mail == null || mail.isEmpty()) {
+      throw new ServiceError("Debe indicar una dirección de correo electrónico");
+
+    }
+    if (clave == null || clave.length() < 6) {
+      throw new ServiceError("La clave debe contener al menos 6 caracteres.");
+
+    }
+
+  }
+
+  @Override
+  public UserDetails loadUserByUsername(String mail) throws UsernameNotFoundException {
+    User usuario = userRepository.getUserByEmail(mail);
+    if (usuario != null) {
+      List<GrantedAuthority> permisos = new ArrayList<>();
+      GrantedAuthority p1 = new SimpleGrantedAuthority("ROLE_CLIENTE");
+      permisos.add(p1);
+
+      ServletRequestAttributes attr = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
+      HttpSession session = attr.getRequest().getSession();
+      session.setAttribute("UsuarioSession", usuario);
+
+      org.springframework.security.core.userdetails.User user =
+              new org.springframework.security.core.userdetails.User(usuario.getEmail(), usuario.getPassword(), permisos);
+      return user;
+    } else {
+      return null;
+    }
+
+  }
 }

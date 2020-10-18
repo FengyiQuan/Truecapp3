@@ -30,6 +30,7 @@ public class User implements Serializable {
   @GenericGenerator(name = "uuid", strategy = "uuid")
   private String id;
   private String address;
+  private Area area;
   private String cellphone;
   @Temporal(TemporalType.DATE)
   private Date birthday;
@@ -60,7 +61,7 @@ public class User implements Serializable {
   @Temporal(TemporalType.TIMESTAMP)
   private Date deleteUser;
   @OneToMany
-  private List <Transaction> transactions;
+  private List<Transaction> transactions;
   @OneToMany
   private List<Notification> notifications;
   private boolean emailVerified;
@@ -251,15 +252,31 @@ public class User implements Serializable {
     this.notifications = notifications;
   }
 
-  public User(String name, String lastName, String address, String cellphone, Date birthday,
-              String email, String password, List<Object> products, List<Object> services,
-              Photo profilePic, Photo idPic, List<Credit> credits, int currentCreditsCount,
-              List<Rating> ratings, int successfulTradesCount, List<Donation> donations,
-              UserType userType, Date newUser, Date deleteUser, List<Notification> notifications,
-              boolean emailVerified, boolean isFirstTime) {
+  public List<Transaction> getTransactions() {
+    return transactions;
+  }
+
+  public void setTransactions(List<Transaction> transactions) {
+    this.transactions = transactions;
+  }
+
+  public Area getArea() {
+    return area;
+  }
+
+  public void setArea(Area area) {
+    this.area = area;
+  }
+
+
+  public User() {
+  }
+
+  public User(String name, String lastName, String address, Area area, String cellphone, Date birthday, String email, String password, List<Object> products, List<Object> services, Photo profilePic, Photo idPic, List<Credit> credits, int currentCreditsCount, List<Rating> ratings, int successfulTradesCount, List<Donation> donations, UserType userType, Date newUser, Date deleteUser, List<Transaction> transactions, List<Notification> notifications, boolean emailVerified, boolean isFirstTime) {
     this.name = name;
     this.lastName = lastName;
     this.address = address;
+    this.area = area;
     this.cellphone = cellphone;
     this.birthday = birthday;
     this.email = email;
@@ -276,19 +293,9 @@ public class User implements Serializable {
     this.userType = userType;
     this.newUser = newUser;
     this.deleteUser = deleteUser;
+    this.transactions = transactions;
     this.notifications = notifications;
     this.emailVerified = emailVerified;
     this.isFirstTime = isFirstTime;
-  }
-
-  public User() {
-  }
-
-  public List<Transaction> getTransactions() {
-    return transactions;
-  }
-
-  public void setTransactions(List<Transaction> transactions) {
-    this.transactions = transactions;
   }
 }

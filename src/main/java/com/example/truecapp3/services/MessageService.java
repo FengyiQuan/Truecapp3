@@ -35,4 +35,8 @@ public class MessageService {
     repository.markAllRead(sender, receiver);
   }
 
+  public void deleteMsgById(String id) {
+    repository.deleteById(id);
+  }
+
 }

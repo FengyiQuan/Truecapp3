@@ -60,11 +60,12 @@ public class Object {
     this.photos = photo;
   }
 
-  public ObjectType isProduct() {
+
+  public ObjectType getObjectType() {
     return objectType;
   }
 
-  public void setProduct(ObjectType objectType) {
+  public void setObjectType(ObjectType objectType) {
     this.objectType = objectType;
   }
 
@@ -119,4 +120,5 @@ public class Object {
     this.dateCreated = dateCreated;
     this.productArea = productArea;
   }
+
 }

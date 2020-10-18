@@ -3,11 +3,7 @@ package com.example.truecapp3.services;
 import com.example.truecapp3.models.Transaction;
 import com.example.truecapp3.models.User;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.scheduling.annotation.Async;
-import org.springframework.stereotype.Service;
+
 
 import java.util.Properties;
 
@@ -19,6 +15,12 @@ import javax.mail.Transport;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.stereotype.Service;
 
 @Service
 public class NotificationService {
