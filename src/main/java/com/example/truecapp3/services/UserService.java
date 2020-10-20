@@ -57,7 +57,7 @@ public class UserService implements UserDetailsService {
   //la primera vez que se crea un usuario, no se crea con todos los datos, si no con lo minimo
   @Transactional
   public void createNewUser(String name, String lastName, String mail, String pwd) throws ServiceError, MessagingException {
-    validar(name, lastName, "0", mail, pwd);
+    validate(name, lastName, mail, pwd);
 
     User user = new User();
     user.setName(name);
@@ -369,24 +369,21 @@ public class UserService implements UserDetailsService {
   }
 
 
-  private void validar(String nombre, String apellido, String documento, String mail, String clave) throws ServiceError {
+  private void validate(String nombre, String lastName, String mail, String pwd) throws ServiceError {
     if (nombre == null || nombre.isEmpty()) {
       throw new ServiceError("El nombre no puede ser vacío");
 
     }
-    if (apellido == null || apellido.isEmpty()) {
+    if (lastName == null || lastName.isEmpty()) {
       throw new ServiceError("El apellido no puede ser vacío");
 
     }
-    if (documento == null || documento.isEmpty()) {
-      throw new ServiceError("El documento no puede estar vacío");
 
-    }
     if (mail == null || mail.isEmpty()) {
       throw new ServiceError("Debe indicar una dirección de correo electrónico");
 
     }
-    if (clave == null || clave.length() < 6) {
+    if (pwd == null || pwd.length() < 6) {
       throw new ServiceError("La clave debe contener al menos 6 caracteres.");
 
     }

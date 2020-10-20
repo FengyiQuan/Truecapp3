@@ -272,7 +272,13 @@ public class User implements Serializable {
   public User() {
   }
 
-  public User(String name, String lastName, String address, Area area, String cellphone, Date birthday, String email, String password, List<Object> products, List<Object> services, Photo profilePic, Photo idPic, List<Credit> credits, int currentCreditsCount, List<Rating> ratings, int successfulTradesCount, List<Donation> donations, UserType userType, Date newUser, Date deleteUser, List<Transaction> transactions, List<Notification> notifications, boolean emailVerified, boolean isFirstTime) {
+  public User(String name, String lastName, String address, Area area, String cellphone,
+              Date birthday, String email, String password, List<Object> products,
+              List<Object> services, Photo profilePic, Photo idPic, List<Credit> credits,
+              int currentCreditsCount, List<Rating> ratings, int successfulTradesCount,
+              List<Donation> donations, UserType userType, Date newUser, Date deleteUser,
+              List<Transaction> transactions, List<Notification> notifications,
+              boolean emailVerified, boolean isFirstTime) {
     this.name = name;
     this.lastName = lastName;
     this.address = address;
