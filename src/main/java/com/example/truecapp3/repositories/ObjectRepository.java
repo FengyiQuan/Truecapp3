@@ -18,6 +18,6 @@ public interface ObjectRepository extends JpaRepository<Object, String> {
    Object getObjectById(@Param("id") String id);
 
   @Query("SELECT c FROM Object c WHERE c.id = : id ORDER BY dateCreated DESC")
-  List<java.lang.Object> getObjectsById(Pageable pageable, @Param("id") String id);
+  List<Object> getObjectsById(Pageable pageable, @Param("id") String id);
 
 }
