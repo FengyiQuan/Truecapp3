@@ -13,16 +13,20 @@ public class AreaService {
   @Autowired
   AreaRepository areaRepository;
 
+  // if it has already exist, return it; otherwise, create a new area
   @Transactional
-  public void createArea(String areaName, String provinceOrState) throws ServiceError {
-
+  public Area createArea(String areaName, String provinceOrState) throws ServiceError {
     validate(areaName, provinceOrState);
+    Area area = areaRepository.getAreaByAreaNameAndProvinceOrState(areaName, provinceOrState);
+    if (area == null) {
+      Area newArea = new Area();
+      newArea.setAreaName(areaName);
+      newArea.setProvinceOrState(provinceOrState);
 
-    Area area = new Area();
-    area.setAreaName(areaName);
-    area.setProvinceOrState(provinceOrState);
+      return areaRepository.save(newArea);
+    }
+    return area;
 
-    areaRepository.save(area);
   }
 
 

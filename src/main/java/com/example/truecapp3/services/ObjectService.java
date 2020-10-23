@@ -1,47 +1,40 @@
-//package com.example.truecapp3.services;
-//
-//import com.example.truecapp3.errors.ServiceError;
-//import com.example.truecapp3.models.Object;
-//import com.example.truecapp3.repositories.ObjectRepository;
-//
-//import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.stereotype.Service;
-//import org.springframework.transaction.annotation.Transactional;
-//import org.springframework.web.multipart.MultipartFile;
-//
-//import java.util.List;
-//import java.util.Optional;
-//
-//@Service
-//public class ObjectService {
-//  @Autowired
-//  private UserService us;
-//
-//  @Autowired
-//  private ObjectRepository pr;
-//
-//  @Autowired
-//  private PhotoService fs;
-//
-//  @Autowired
-//  private CategoryService cs;
-//
-//  public Object consultarProductoId(String ID) throws ServiceError {
-//
-//    Optional<Object> respuesta = pr.findById(ID);
-//    if (respuesta.isPresent()) {
-//
-//      Object producto = respuesta.get();
-//      return producto;
-//
-//    } else {
-//
-//      throw new ServiceError("Ese Producto no existe");
-//
-//    }
-//
-//  }
-//
+package com.example.truecapp3.services;
+
+import com.example.truecapp3.errors.ServiceError;
+import com.example.truecapp3.models.Object;
+import com.example.truecapp3.repositories.ObjectRepository;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
+import java.util.Optional;
+
+@Service
+public class ObjectService {
+  @Autowired
+  private UserService us;
+
+  @Autowired
+  private ObjectRepository pr;
+
+  @Autowired
+  private PhotoService fs;
+
+  @Autowired
+  private CategoryService cs;
+
+  public Object getObjectById(String ID) throws ServiceError {
+    Optional<Object> optionalObject = pr.findById(ID);
+    if (optionalObject.isPresent()) {
+      return optionalObject.get();
+    } else {
+      throw new ServiceError("Ese Producto no existe");
+    }
+  }
+
 //  public void validar(String titulo, String descripcion, Condicion condicion, String categoriaID) throws ServiceError {
 //
 //    if (titulo == null || titulo.isEmpty()) {
@@ -214,4 +207,4 @@
 //    return productos;
 //
 //  }
-//}
+}

@@ -43,7 +43,7 @@ public class CreditService {
       usuario.setCredits(listaCreditos);
       userRepository.save(usuario);
       creditRepository.save(credito);
-      notificationService.send(
+      notificationService.sendTextMail(
               "Has recibido " + suma + " creditos.", "TruecApp", usuario.getEmail());
     } else {
       throw new ServiceError("No tienes creditos para enviar");
@@ -66,7 +66,7 @@ public class CreditService {
       usuario.setCredits(credits);
       userRepository.save(usuario);
       creditRepository.save(credito);
-      notificationService.send(
+      notificationService.sendTextMail(
               "Has gastado " + subtraction + " creditos.", "TruecApp", usuario.getEmail());
     } else {
       throw new ServiceError("No tienes creditos para gastar");

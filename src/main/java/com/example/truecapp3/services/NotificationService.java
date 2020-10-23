@@ -28,7 +28,7 @@ public class NotificationService {
   private JavaMailSender mailSender;
 
   @Async
-  public void send(String body, String title, String mail) {
+  public void sendTextMail(String body, String title, String mail) {
     SimpleMailMessage message = new SimpleMailMessage();
     message.setTo(mail);
     message.setFrom("no-reply@truecapp");
@@ -40,11 +40,11 @@ public class NotificationService {
   }
 
   @Async
-  public void sendMail(String titulo, User usuario) throws AddressException, javax.mail.MessagingException {
+  public void sendMail(String title, User user) throws AddressException, MessagingException {
 
     // Recipient's email ID needs to be mentioned.
-    //String to = usuario.getMail();
-    String to = "bortnicaaron@gmail.com";
+    String to = user.getEmail();
+//    String to = "bortnicaaron@gmail.com";
     // Sender's email ID needs to be mentioned
     String from = "grupo2egg@gmail.com";
     final String username = "grupo2egg@gmail.com";//change accordingly
@@ -78,7 +78,7 @@ public class NotificationService {
       message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(to));
 
       // Set Subject: header field
-      message.setSubject(titulo);
+      message.setSubject(title);
 
       // Send the actual HTML message, as big as you like
       message.setContent(
@@ -322,7 +322,7 @@ public class NotificationService {
               "                                         <!-- Title -->\n" +
               "                                         <tr>\n" +
               "                                            <td style=\"font-family: Helvetica, arial, sans-serif; font-size: 27px; color: #333333; text-align:center; line-height: 30px;\" st-title=\"fulltext-heading\">!Bienvenidos a nuestra plataforma "
-              + usuario.getName() + "!</td>\n" +
+              + user.getName() + "!</td>\n" +
               "                                         </tr>\n" +
               "                                         <!-- End of Title -->\n" +
               "                                         \n" +

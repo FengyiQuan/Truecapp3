@@ -11,8 +11,11 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface AreaRepository extends JpaRepository<Area, String> {
 
-  @Query("SELECT c FROM Area c WHERE c.id LIKE :id")
+  @Query("SELECT c FROM Area c WHERE c.id = :id")
   Area getAreaById(@Param("id") String id);
+
+  @Query("SELECT c FROM Area c WHERE c.areaName = :areaName AND c.provinceOrState = :provinceOrState")
+  Area getAreaByAreaNameAndProvinceOrState(@Param("areaName") String areaName, @Param("provinceOrState") String provinceOrState);
 
   @Query("SELECT c FROM Area c WHERE c.areaName LIKE :areaName")
   Area getAreaByAreaName(@Param("areaName") String areaName);

@@ -15,8 +15,15 @@ public class MessageService {
   @Autowired
   MessageRepository repository;
 
+  @Autowired
+  private NotificationService notificationService;
+
   public Message createMessage(Message newMessage) {
+    notificationService.sendTextMail("You received a new message from"
+                                     + newMessage.getSender().getName() + ":"
+                                     + newMessage.getContent(), "TruecApp", newMessage.getReceiver().getEmail());
     return repository.save(newMessage);
+
   }
 
   public List<Message> findHistoryMessage(String sender, String receiver) {

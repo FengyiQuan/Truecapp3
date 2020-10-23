@@ -18,6 +18,7 @@ import org.hibernate.annotations.GenericGenerator;
 
 @Entity
 @Table(name="credits")
+
 public class Credit {
 
   @Id

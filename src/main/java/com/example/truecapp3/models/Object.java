@@ -6,11 +6,13 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
@@ -22,6 +24,7 @@ import javax.persistence.TemporalType;
 
 @Entity
 @Table(name = "objects")
+@EntityListeners(AuditingEntityListener.class)
 public class Object {
   @Id
   @GeneratedValue(generator = "uuid")

@@ -4,11 +4,14 @@ import com.example.truecapp3.enums.TransactionState;
 import com.example.truecapp3.enums.TransactionType;
 
 import org.hibernate.annotations.GenericGenerator;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
@@ -19,6 +22,7 @@ import javax.persistence.TemporalType;
 
 @Entity
 @Table(name = "transactions")
+@EntityListeners(AuditingEntityListener.class)
 public class Transaction {
   @Id
   @GeneratedValue(generator = "uuid")
@@ -30,6 +34,7 @@ public class Transaction {
   private User receiver;
   @ManyToOne
   private Area area;
+  @CreatedDate
   @Temporal(TemporalType.TIMESTAMP)
   private Date transactionDate;
   @OneToOne
@@ -49,6 +54,7 @@ public class Transaction {
   @Temporal(TemporalType.TIMESTAMP)
   private Date cancelDate;
   private TransactionType typeOfTransaction;
+
 
   public String getId() {
     return id;
@@ -192,4 +198,5 @@ public class Transaction {
 
   public Transaction() {
   }
+
 }

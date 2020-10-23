@@ -4,14 +4,19 @@ package com.example.truecapp3.models;
 import com.example.truecapp3.enums.UserType;
 
 import org.hibernate.annotations.GenericGenerator;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -22,6 +27,7 @@ import javax.persistence.TemporalType;
 
 @Entity
 @Table(name = "users")
+@EntityListeners(AuditingEntityListener.class)
 public class User implements Serializable {
   private String name;
   private String lastName;
@@ -30,6 +36,7 @@ public class User implements Serializable {
   @GenericGenerator(name = "uuid", strategy = "uuid")
   private String id;
   private String address;
+  @ManyToOne
   private Area area;
   private String cellphone;
   @Temporal(TemporalType.DATE)
@@ -47,25 +54,36 @@ public class User implements Serializable {
   @OneToMany
   private List<Credit> credits;
   private int currentCreditsCount;
-
-
   @OneToMany
   private List<Rating> ratings;
   private int successfulTradesCount;
   @OneToMany
   private List<Donation> donations;
-
   private UserType userType;
+  @CreatedDate
   @Temporal(TemporalType.TIMESTAMP)
   private Date newUser;
   @Temporal(TemporalType.TIMESTAMP)
   private Date deleteUser;
   @OneToMany
   private List<Transaction> transactions;
-  @OneToMany
-  private List<Notification> notifications;
   private boolean emailVerified;
   private boolean isFirstTime;
+
+
+  public User() {
+    this.isFirstTime = true;
+    this.emailVerified = false;
+    this.products = new ArrayList<>();
+    this.services = new ArrayList<>();
+    this.credits = new ArrayList<>();
+    this.currentCreditsCount = 0;
+    this.successfulTradesCount = 0;
+    this.ratings = new ArrayList<>();
+    this.donations = new ArrayList<>();
+    this.transactions = new ArrayList<>();
+    this.userType = UserType.CLIENT;
+  }
 
 
   public int getCurrentCreditsCount() {
@@ -244,13 +262,6 @@ public class User implements Serializable {
     this.deleteUser = deleteUser;
   }
 
-  public List<Notification> getNotifications() {
-    return notifications;
-  }
-
-  public void setNotifications(List<Notification> notifications) {
-    this.notifications = notifications;
-  }
 
   public List<Transaction> getTransactions() {
     return transactions;
@@ -268,9 +279,6 @@ public class User implements Serializable {
     this.area = area;
   }
 
-
-  public User() {
-  }
 
   public User(String name, String lastName, String address, Area area, String cellphone,
               Date birthday, String email, String password, List<Object> products,
@@ -300,7 +308,6 @@ public class User implements Serializable {
     this.newUser = newUser;
     this.deleteUser = deleteUser;
     this.transactions = transactions;
-    this.notifications = notifications;
     this.emailVerified = emailVerified;
     this.isFirstTime = isFirstTime;
   }
