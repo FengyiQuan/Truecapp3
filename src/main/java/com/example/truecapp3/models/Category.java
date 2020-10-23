@@ -57,7 +57,9 @@ public class Category {
 
 
   public Category() {
+    this.objects = new ArrayList<>();
   }
+
 
   public Category(String name, List<Object> objects) {
     this.name = name;

@@ -12,8 +12,8 @@ import java.util.List;
 
 @Repository
 public interface CategoryRepository extends JpaRepository<Category, String> {
-  @Query("SELECT a FROM Category a WHERE a.id = :id")
-  List<Category> getCategoryByID(@Param("id") String id);
+  @Query("SELECT a FROM Category a WHERE a.name = :name")
+  Category getCategoryByName(@Param("name") String name);
 
 
 

@@ -144,6 +144,17 @@ public class UserService implements UserDetailsService {
     }
   }
 
+  @Transactional
+  public User incrementSuccessfulTradesCount(User user) throws ServiceError {
+    if (user == null || !user.checkStatus()) {
+      throw new ServiceError("incrementSuccessfulTradesCount operation fail.");
+    }
+
+    user.setSuccessfulTradesCount(user.getCurrentCreditsCount() + 1);
+    return userRepository.save(user);
+
+  }
+
 
   //si solo queremos guardar la foto del usuario.
   @Transactional
@@ -222,7 +233,7 @@ public class UserService implements UserDetailsService {
   @Transactional
   public void checkStatusOfUser(String id) throws ServiceError {
     User user = getActiveUserById(id);
-    if( user.isEmailVerified() && user.getIdPic() != null && user.getDeleteUser() == null){
+    if (!user.checkStatus()) {
       throw new ServiceError("This account is not able to make transactions.");
     }
   }

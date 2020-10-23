@@ -70,6 +70,11 @@ public class User implements Serializable {
   private boolean emailVerified;
   private boolean isFirstTime;
 
+  // true if this user is ok to make deal
+  public boolean checkStatus() {
+    return emailVerified && idPic != null && deleteUser == null;
+  }
+
 
   public User() {
     this.isFirstTime = true;

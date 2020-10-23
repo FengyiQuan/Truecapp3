@@ -37,23 +37,32 @@ public class Transaction {
   @CreatedDate
   @Temporal(TemporalType.TIMESTAMP)
   private Date transactionDate;
+  @Temporal(TemporalType.TIMESTAMP)
+  private Date deliveryDate;
+  @Temporal(TemporalType.TIMESTAMP)
+  private Date offerDate;
+  @Temporal(TemporalType.TIMESTAMP)
+  private Date cancelDate;
+
   @OneToOne
   private Object sellerObject;
   @OneToOne
   private Object receiverObject;
-  @Temporal(TemporalType.TIMESTAMP)
-  private Date deliveryDate;
   private String message;
   @OneToOne
   private Rating user1;
   @OneToOne
   private Rating user2;
   private TransactionState state;
-  @Temporal(TemporalType.TIMESTAMP)
-  private Date offerDate;
-  @Temporal(TemporalType.TIMESTAMP)
-  private Date cancelDate;
   private TransactionType typeOfTransaction;
+
+
+  public boolean isComplete() {
+    return seller != null && receiver != null && area != null && transactionDate != null &&
+           deliveryDate != null && offerDate != null && cancelDate != null && sellerObject != null
+           && receiverObject != null && message != null && user1 != null && user2 != null
+           && state != null && typeOfTransaction != null;
+  }
 
 
   public String getId() {
