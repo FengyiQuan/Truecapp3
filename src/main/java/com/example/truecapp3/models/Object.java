@@ -1,5 +1,6 @@
 package com.example.truecapp3.models;
 
+import com.example.truecapp3.enums.ObjectCondition;
 import com.example.truecapp3.enums.ObjectType;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -8,6 +9,7 @@ import org.hibernate.annotations.GenericGenerator;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -35,6 +37,7 @@ public class Object {
   private ObjectType objectType;
   private String title;
   private String description;
+  private ObjectCondition condition;
 
   @ManyToOne
   private Category category;
@@ -45,6 +48,19 @@ public class Object {
   private Area productArea;
 
   public Object() {
+    this.photos = new ArrayList<>();
+  }
+
+  public Object(List<Photo> photos, ObjectType objectType, String title, String description,
+                ObjectCondition condition, Category category, Date dateCreated, Area productArea) {
+    this.photos = photos;
+    this.objectType = objectType;
+    this.title = title;
+    this.description = description;
+    this.condition = condition;
+    this.category = category;
+    this.dateCreated = dateCreated;
+    this.productArea = productArea;
   }
 
   public String getId() {
@@ -62,7 +78,6 @@ public class Object {
   public void setPhoto(List<Photo> photo) {
     this.photos = photo;
   }
-
 
   public ObjectType getObjectType() {
     return objectType;
@@ -104,7 +119,6 @@ public class Object {
     this.productArea = productArea;
   }
 
-
   public Category getCategory() {
     return category;
   }
@@ -113,15 +127,11 @@ public class Object {
     this.category = category;
   }
 
-  public Object(List<Photo> photos, ObjectType objectType, String title, String description,
-                Category category, Date dateCreated, Area productArea) {
-    this.photos = photos;
-    this.objectType = objectType;
-    this.title = title;
-    this.description = description;
-    this.category = category;
-    this.dateCreated = dateCreated;
-    this.productArea = productArea;
+  public ObjectCondition getCondition() {
+    return condition;
   }
 
+  public void setCondition(ObjectCondition condition) {
+    this.condition = condition;
+  }
 }

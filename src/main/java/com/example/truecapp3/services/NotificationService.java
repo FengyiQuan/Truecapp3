@@ -506,7 +506,7 @@ public class NotificationService {
   }
 
   @Async
-  public void enviarIniciarOferta(String titulo, Transaction transaccion) throws AddressException, javax.mail.MessagingException {
+  public void enviarIniciarOferta(String titulo, Transaction transaccion) throws AddressException, MessagingException {
 
     // Recipient's email ID needs to be mentioned.
     String to = transaccion.getReceiver().getEmail();
