@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class AreaService {
   @Autowired
-  AreaRepository areaRepository;
+  private AreaRepository areaRepository;
 
   // if it has already exist, return it; otherwise, create a new area
   @Transactional
@@ -26,9 +26,16 @@ public class AreaService {
       return areaRepository.save(newArea);
     }
     return area;
-
   }
 
+  public Area getAreaById(String id) throws ServiceError {
+    Area category = areaRepository.getOne(id);
+    if (category == null) {
+      throw new ServiceError("Area does not exist.");
+    } else {
+      return category;
+    }
+  }
 
   private void validate(String areaName, String provinceOrState) throws ServiceError {
     if (areaName == null || areaName.isEmpty()) {

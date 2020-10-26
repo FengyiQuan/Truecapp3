@@ -1,15 +1,25 @@
 package com.example.truecapp3.controllers;
 
 import com.example.truecapp3.errors.ServiceError;
+import com.example.truecapp3.models.Photo;
 import com.example.truecapp3.models.Transaction;
+
+import com.example.truecapp3.models.Object;
 import com.example.truecapp3.models.User;
 import com.example.truecapp3.services.CreditService;
+import com.example.truecapp3.services.ObjectService;
 import com.example.truecapp3.services.PhotoService;
 import com.example.truecapp3.services.TransactionService;
 import com.example.truecapp3.services.UserService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -25,6 +35,8 @@ public class UserController {
   CreditService creditService;
   @Autowired
   TransactionService transactionService;
+  @Autowired
+  ObjectService objectService;
 
   @Autowired
   PhotoService photoService;
@@ -41,4 +53,17 @@ public class UserController {
     }
 
   }
+//
+//  @GetMapping("fotoProducto/{id}")
+//  public ResponseEntity<byte[]> fotoProducto(@PathVariable String id) throws ServiceError{
+//
+//    Object producto = objectService.getObjectById(id);
+//
+//    Photo foto = producto.getPhoto().get(0);
+//    final HttpHeaders headers = new HttpHeaders();
+//
+//    headers.setContentType(MediaType.IMAGE_JPEG);
+//
+//    return new ResponseEntity<>(foto.getContent(),headers, HttpStatus.OK);
+//  }
 }

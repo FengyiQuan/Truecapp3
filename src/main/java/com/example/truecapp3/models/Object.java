@@ -19,6 +19,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -39,6 +40,8 @@ public class Object {
   private String description;
   @Enumerated(EnumType.STRING)
   private ObjectCondition objectCondition;
+  @OneToOne
+  private User owner;
 
   @ManyToOne
   private Category category;
@@ -52,13 +55,16 @@ public class Object {
     this.photos = new ArrayList<>();
   }
 
+
   public Object(List<Photo> photos, ObjectType objectType, String title, String description,
-                ObjectCondition objectCondition, Category category, Date dateCreated, Area productArea) {
+                ObjectCondition objectCondition, User owner, Category category, Date dateCreated,
+                Area productArea) {
     this.photos = photos;
     this.objectType = objectType;
     this.title = title;
     this.description = description;
     this.objectCondition = objectCondition;
+    this.owner = owner;
     this.category = category;
     this.dateCreated = dateCreated;
     this.productArea = productArea;
@@ -134,5 +140,13 @@ public class Object {
 
   public void setObjectCondition(ObjectCondition objectCondition) {
     this.objectCondition = objectCondition;
+  }
+
+  public User getOwner() {
+    return owner;
+  }
+
+  public void setOwner(User owner) {
+    this.owner = owner;
   }
 }
