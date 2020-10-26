@@ -39,9 +39,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     http.
             headers().frameOptions().sameOrigin().and()
             .authorizeRequests().antMatchers("/css/**", "/js/**", "/libs/**", "/assets/**", "/img/**", "/register", "/registrar", "empresa", "home123", "*/verificarUsuario/**").permitAll().and()
-            .formLogin().loginPage("/login").loginProcessingUrl("/logincheck").usernameParameter("username").passwordParameter("password").defaultSuccessUrl("/Inicio").permitAll()
-            .and().logout().logoutUrl("/logout").logoutSuccessUrl("/").permitAll().and().csrf()
-            .disable();
+            .formLogin().loginPage("/login").loginProcessingUrl("/logincheck").usernameParameter("username").passwordParameter("password").defaultSuccessUrl("/Inicio").permitAll().permitAll().and()
+            .logout().logoutUrl("/logout").logoutSuccessUrl("/").permitAll().and()
+            .csrf().disable()
+            .sessionManagement().maximumSessions(1).maxSessionsPreventsLogin(true);
 
   }
 }
