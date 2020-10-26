@@ -26,7 +26,7 @@ public class Credit {
   @GenericGenerator(name = "uuid", strategy = "uuid2")
   private String id;
 
-  @Enumerated(EnumType.ORDINAL)
+  @Enumerated(EnumType.STRING)
   private CreditType creditType;
   private String description;
   @Temporal(TemporalType.TIMESTAMP)

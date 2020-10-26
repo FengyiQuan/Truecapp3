@@ -12,6 +12,8 @@ import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
@@ -53,7 +55,9 @@ public class Transaction {
   private Rating user1;
   @OneToOne
   private Rating user2;
+  @Enumerated(EnumType.STRING)
   private TransactionState state;
+  @Enumerated(EnumType.STRING)
   private TransactionType typeOfTransaction;
 
 

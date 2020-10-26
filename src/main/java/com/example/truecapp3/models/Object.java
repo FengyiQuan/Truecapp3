@@ -2,8 +2,6 @@ package com.example.truecapp3.models;
 
 import com.example.truecapp3.enums.ObjectCondition;
 import com.example.truecapp3.enums.ObjectType;
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.data.annotation.CreatedDate;
@@ -15,9 +13,10 @@ import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -34,10 +33,12 @@ public class Object {
   private String id;
   @OneToMany
   private List<Photo> photos;
+  @Enumerated(EnumType.STRING)
   private ObjectType objectType;
   private String title;
   private String description;
-  private ObjectCondition condition;
+  @Enumerated(EnumType.STRING)
+  private ObjectCondition objectCondition;
 
   @ManyToOne
   private Category category;
@@ -52,12 +53,12 @@ public class Object {
   }
 
   public Object(List<Photo> photos, ObjectType objectType, String title, String description,
-                ObjectCondition condition, Category category, Date dateCreated, Area productArea) {
+                ObjectCondition objectCondition, Category category, Date dateCreated, Area productArea) {
     this.photos = photos;
     this.objectType = objectType;
     this.title = title;
     this.description = description;
-    this.condition = condition;
+    this.objectCondition = objectCondition;
     this.category = category;
     this.dateCreated = dateCreated;
     this.productArea = productArea;
@@ -127,11 +128,11 @@ public class Object {
     this.category = category;
   }
 
-  public ObjectCondition getCondition() {
-    return condition;
+  public ObjectCondition getObjectCondition() {
+    return objectCondition;
   }
 
-  public void setCondition(ObjectCondition condition) {
-    this.condition = condition;
+  public void setObjectCondition(ObjectCondition objectCondition) {
+    this.objectCondition = objectCondition;
   }
 }

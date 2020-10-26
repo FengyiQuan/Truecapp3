@@ -14,6 +14,8 @@ import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
@@ -59,6 +61,7 @@ public class User implements Serializable {
   private int successfulTradesCount;
   @OneToMany
   private List<Donation> donations;
+  @Enumerated(EnumType.STRING)
   private UserType userType;
   @CreatedDate
   @Temporal(TemporalType.TIMESTAMP)

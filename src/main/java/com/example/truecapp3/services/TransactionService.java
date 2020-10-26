@@ -48,6 +48,7 @@ public class TransactionService {
     return t.isComplete();
   }
 
+  @Transactional
   public Transaction modifyTransaction(String id, Transaction t) throws ServiceError {
     if (transactionRepository.findById(id).isPresent()) {
       return transactionRepository.save(t);
@@ -56,7 +57,7 @@ public class TransactionService {
     }
   }
 
-
+  @Transactional
   public Transaction createNewTransaction(String sellerId, String receiverId, String sellerObjectId,
                                           String receiverObjectId, String message, TransactionState state,
                                           TransactionType type, String areaName, String provinceOrState) throws ServiceError {
@@ -85,6 +86,7 @@ public class TransactionService {
 
   }
 
+  @Transactional
   public Transaction completeTransaction(String transactionId) throws ServiceError {
     Transaction transaction = getExistTransactionById(transactionId);
     if (transaction.isComplete()) {

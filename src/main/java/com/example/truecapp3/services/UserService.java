@@ -74,9 +74,9 @@ public class UserService implements UserDetailsService {
     validateLastName(lastName);
     validateEmail(mail);
     validatePassword(pwd);
-//    if (userRepository.getUserByEmail(mail) != null) {
-//      throw new ServiceError("Email has been registered. Please use another email.");
-//    }
+    if (userRepository.getUserByEmail(mail) != null) {
+      throw new ServiceError("Email has been registered. Please use another email.");
+    }
 
     User user = new User();
     user.setName(name);
@@ -85,7 +85,7 @@ public class UserService implements UserDetailsService {
     String encode = new BCryptPasswordEncoder().encode(pwd);
     user.setPassword(encode);
 
-//    notificationService.sendMail("Bienvenidos a nuestra plataforma", user);
+    notificationService.sendMail("Bienvenidos a nuestra plataforma", user);
     return userRepository.save(user);
   }
 
