@@ -1,7 +1,6 @@
 package com.example.truecapp3.services;
 
 import com.example.truecapp3.errors.ServiceError;
-import com.example.truecapp3.models.Area;
 import com.example.truecapp3.models.Category;
 import com.example.truecapp3.repositories.CategoryRepository;
 

@@ -1,10 +1,8 @@
 package com.example.truecapp3.services;
 
-import com.example.truecapp3.enums.CreditType;
 import com.example.truecapp3.enums.ObjectType;
 import com.example.truecapp3.errors.ServiceError;
 import com.example.truecapp3.models.Area;
-import com.example.truecapp3.models.Credit;
 import com.example.truecapp3.models.Object;
 import com.example.truecapp3.models.Photo;
 import com.example.truecapp3.models.User;

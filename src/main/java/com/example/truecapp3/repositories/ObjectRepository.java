@@ -2,7 +2,6 @@ package com.example.truecapp3.repositories;
 
 import com.example.truecapp3.models.Area;
 import com.example.truecapp3.models.Object;
-import com.example.truecapp3.models.Photo;
 
 import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
