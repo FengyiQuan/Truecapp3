@@ -54,6 +54,15 @@ public class UserService implements UserDetailsService {
       return user;
     }
   }
+  // get user by id with null deleteUser only
+  public User getActiveUserByEmail(String mail) throws ServiceError {
+    User user = userRepository.getActiveUserByEmail(mail);
+    if (user == null) {
+      throw new ServiceError("User does not existed or has been deleted.");
+    } else {
+      return user;
+    }
+  }
 
   // find any user by id include deleted users
   public User findAnyUserById(String ID) throws ServiceError {

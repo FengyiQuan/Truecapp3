@@ -19,6 +19,10 @@ public interface UserRepository extends JpaRepository<User, String> {
   @Query("SELECT c FROM User c WHERE c.id = :id AND c.deleteUser = NULL")
   User getActiveUserById(@Param("id") String id);
 
+  @Query("SELECT c FROM User c WHERE c.email = :email AND c.deleteUser = NULL")
+  User getActiveUserByEmail(@Param("email") String email);
+
+
   @Transactional
   @Modifying
   @Query("UPDATE User u SET u.emailVerified = TRUE WHERE u.id = :id")
