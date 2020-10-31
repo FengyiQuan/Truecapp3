@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.security.Principal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -43,9 +44,10 @@ public class ChatController {
   }
 
   @MessageMapping("/chat")
-  public void chat(Message message, ModelMap model) {
-    Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-    String email = ((UserDetails) principal).getUsername();
+  public void chat(Message message, ModelMap model, Principal principal) {
+//    Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+//    String email = ((UserDetails) principal).getUsername();
+    String email = principal.getName();
     try {
       message.setSender(userService.getActiveUserByEmail(email));
     } catch (ServiceError error) {

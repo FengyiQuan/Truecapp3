@@ -12,7 +12,7 @@ function connect() {
         stompClient.subscribe("/user/queue/chat", function (msg) {
             // console.log(JSON.parse(msg.body));
             showRecentMessageReceiver(JSON.parse(msg.body));
-            markAllRead(receiver).catch(e => console.log(e));
+            markAllRead(receiver.email).catch(e => console.log(e));
         })
     })
 }

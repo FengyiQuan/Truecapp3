@@ -2,6 +2,7 @@ package com.example.truecapp3.models;
 
 
 import com.example.truecapp3.enums.UserType;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.data.annotation.CreatedDate;
@@ -43,22 +44,30 @@ public class User implements Serializable {
   @Temporal(TemporalType.DATE)
   private Date birthday;
   private String email;
+  @JsonIgnore
   private String password;
   @OneToMany
+  @JsonIgnore
   private List<Object> products;
   @OneToMany
+  @JsonIgnore
   private List<Object> services;
   @OneToOne
+  @JsonIgnore
   private Photo profilePic;
   @OneToOne
+  @JsonIgnore
   private Photo idPic;
   @OneToMany
+  @JsonIgnore
   private List<Credit> credits;
   private int currentCreditsCount;
   @OneToMany
+  @JsonIgnore
   private List<Rating> ratings;
   private int successfulTradesCount;
   @OneToMany
+  @JsonIgnore
   private List<Donation> donations;
   @Enumerated(EnumType.STRING)
   private UserType userType;
@@ -68,8 +77,10 @@ public class User implements Serializable {
   @Temporal(TemporalType.TIMESTAMP)
   private Date deleteUser;
   @OneToMany
+  @JsonIgnore
   private List<Transaction> transactions;
   @OneToMany
+  @JsonIgnore
   private List<Notification> notifications;
   private boolean emailVerified;
   private boolean isFirstTime;
@@ -319,7 +330,6 @@ public class User implements Serializable {
   public void setArea(Area area) {
     this.area = area;
   }
-
 
 
   public List<Notification> getNotifications() {
