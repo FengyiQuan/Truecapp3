@@ -9,6 +9,7 @@ import com.example.truecapp3.models.User;
 import com.example.truecapp3.repositories.UserRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -54,6 +55,15 @@ public class UserService implements UserDetailsService {
       return user;
     }
   }
+
+  public void verifyPassword(String Clave1, String Clave2) throws ServiceError {
+    if (Clave1.equals(Clave2)) {
+      System.out.println("Contraseñas OK");
+    } else {
+      throw new ServiceError("Las contraseñas deben coincidir");
+    }
+  }
+
   // get user by id with null deleteUser only
   public User getActiveUserByEmail(String mail) throws ServiceError {
     User user = userRepository.getActiveUserByEmail(mail);
@@ -74,6 +84,12 @@ public class UserService implements UserDetailsService {
     }
   }
 
+  // true means email is valid to register
+  public boolean checkEmail(String mail) {
+    return userRepository.getUserByEmail(mail) == null;
+
+  }
+
   //create a user at first time, do not ask all the information
   @Transactional
   public User createNewUser(String name, String lastName, String mail, String pwd) throws ServiceError, MessagingException {
@@ -81,7 +97,7 @@ public class UserService implements UserDetailsService {
     validateLastName(lastName);
     validateEmail(mail);
     validatePassword(pwd);
-    if (userRepository.getUserByEmail(mail) != null) {
+    if (!checkEmail(mail)) {
       throw new ServiceError("Email has been registered. Please use another email.");
     }
 
@@ -92,18 +108,25 @@ public class UserService implements UserDetailsService {
     String encode = new BCryptPasswordEncoder().encode(pwd);
     user.setPassword(encode);
 
+    User saveUser;
+    try {
+      saveUser = userRepository.save(user);
+    } catch (Exception e) {
+      throw new ServiceError("Operation terminates.");
+    }
     notificationService.sendMail("Bienvenidos a nuestra plataforma", user);
-    return userRepository.save(user);
+    return saveUser;
   }
 
 
   @Transactional
-  public User changePassword(String userId, String oldPassword, String newPassword) throws ServiceError {
-    validatePassword(newPassword);
+  public User changePassword(String userId, String oldPassword, String newPassword1, String newPassword2) throws ServiceError {
+    verifyPassword(newPassword1, newPassword2);
+    validatePassword(newPassword1);
     User user = getActiveUserById(userId);
     String encode = new BCryptPasswordEncoder().encode(oldPassword);
     if (user.getPassword().equals(encode)) {
-      String newEncode = new BCryptPasswordEncoder().encode(newPassword);
+      String newEncode = new BCryptPasswordEncoder().encode(newPassword1);
       user.setPassword(newEncode);
       return userRepository.save(user);
     } else {
@@ -285,6 +308,8 @@ public class UserService implements UserDetailsService {
       throw new ServiceError("Ese usuario no existe");
     }
   }
+
+
 
   @Override
   public UserDetails loadUserByUsername(String mail) throws UsernameNotFoundException {

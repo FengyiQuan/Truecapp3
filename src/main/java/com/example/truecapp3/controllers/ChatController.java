@@ -10,6 +10,7 @@ import com.example.truecapp3.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
@@ -21,7 +22,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.security.Principal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -43,42 +43,85 @@ public class ChatController {
   }
 
   @MessageMapping("/chat")
-  public void chat(Message message) {
+  public void chat(Message message, ModelMap model) {
     Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-    String username = ((UserDetails) principal).getUsername();
-    User user;
+    String email = ((UserDetails) principal).getUsername();
     try {
-      user = userService.getActiveUserByEmail(username);
-    } catch (ServiceError serviceError) {
-      serviceError.printStackTrace();
-      return;
+      message.setSender(userService.getActiveUserByEmail(email));
+    } catch (ServiceError error) {
+      model.put("error", error.getMessage());
     }
-    message.setSender(user);
-    simpMessagingTemplate.convertAndSendToUser(message.getReceiver().getId(), "/queue/chat", message);
+    simpMessagingTemplate.convertAndSendToUser(message.getReceiver().getEmail(), "/queue/chat", message);
 
   }
 
-  @GetMapping("/")
-  public String showChatPage(ModelMap model, @RequestParam(value = "sendTo", required = false) String receiver, Principal principal) {
-    String currentUser = principal.getName();
 
+  @GetMapping("/test")
+  @ResponseBody
+  public Message test() {
+    User u1 = null;
+    User u2 = null;
+    try {
+      u1 = userService.getActiveUserByEmail("840073588z@gmail.com");
+      u2 = userService.getActiveUserByEmail("javaboy@test.com");
+    } catch (ServiceError error) {
+      error.printStackTrace();
+    }
+    Message msg = new Message();
+    msg.setSender(u1);
+    msg.setReceiver(u2);
+    msg.setContent("ha ha ha");
+    return messageService.createMessage(msg);
+  }
+
+  @GetMapping("/chat")
+  public String showChatPage(ModelMap model, @RequestParam(value = "sendTo", required = false) String receiverEmail) {
+    Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    String currentUserEmail = ((UserDetails) principal).getUsername();
+
+    User currentUser;
+    User receiverUser = new User();
+
+    try {
+      currentUser = userService.getActiveUserByEmail(currentUserEmail);
+    } catch (Exception error) {
+      model.put("error", error.getMessage());
+      return "error";
+    }
+    try {
+      receiverUser = userService.getActiveUserByEmail(receiverEmail);
+    } catch (Exception ignored) {
+    }
+
+    String currentUserId = currentUser.getId();
     model.addAttribute("sender", currentUser);
 
 
-    if (receiver != null) {
-      model.addAttribute("receiver", receiver);
-      model.addAttribute("history", messageService.findHistoryMessage(currentUser, receiver));
+    if (receiverUser != null) {
+      model.addAttribute("receiver", receiverUser);
+      try {
+        model.addAttribute("history", messageService.findHistoryMessage(currentUserEmail, receiverEmail));
+      } catch (ServiceError error) {
+        model.put("error", error.getMessage());
+      }
     }
 
-
     Map<String, Integer> contactsAndUnread = new HashMap<>();
-    List<String> contacts = messageService.findAllContactUsers(currentUser);
+    List<String> contacts = messageService.findAllContactsEmail(currentUserId);
     for (String contact : contacts) {
-      contactsAndUnread.put(contact, messageService.getAllUnreadMessageByUser(contact, currentUser));
+      try {
+        contactsAndUnread.put(contact, messageService.getAllUnreadMessageByUser(contact, currentUserEmail));
+      } catch (ServiceError error) {
+        model.put("error", error.getMessage());
+      }
     }
 
     model.addAttribute("contacts", contactsAndUnread);
-    messageService.markAllRead(receiver, currentUser);
+    try {
+      messageService.markAllRead(receiverEmail, currentUserEmail);
+    } catch (ServiceError error) {
+      model.put("error", error.getMessage());
+    }
     return "chat";
   }
 
@@ -87,12 +130,33 @@ public class ChatController {
   public Message createMessage(@RequestBody Message newMessage) {
     return messageService.createMessage(newMessage);
   }
+//  @PostMapping("/api/messages/{sendTo}")
+//  public Message createMessage(ModelMap model,@RequestParam String newMessage, @PathVariable String sendTo) {
+//    Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+//    String currentUserEmail = ((UserDetails) principal).getUsername();
+//
+//    User currentUser;
+//    try {
+//      currentUser = userService.getActiveUserByEmail(currentUserEmail);
+//    } catch (Exception error) {
+//      model.put("error", error.getMessage());
+//      return "error";
+//    }
+//    return messageService.createMessage(newMessage);
+//  }
 
   @PostMapping("/api/messages/markAllRead/{receiver}")
   @ResponseBody
-  public void markUnread(Principal principal, @PathVariable String receiver) {
-    String currentUser = principal.getName();
-    messageService.markAllRead(receiver, currentUser);
+  public void markUnread(@PathVariable String receiver, ModelMap model) {
+    Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    String email = ((UserDetails) principal).getUsername();
+
+    try {
+      messageService.markAllRead(receiver, email);
+    } catch (ServiceError error) {
+      model.put("error", error.getMessage());
+    }
   }
+
 
 }

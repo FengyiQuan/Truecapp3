@@ -14,15 +14,15 @@ import java.util.List;
 @Repository
 public interface ObjectRepository extends JpaRepository<Object, String> {
   @Query("SELECT c FROM Object c WHERE c.id = :id")
-   Object getObjectById(@Param("id") String id);
+  Object getObjectById(@Param("id") String id);
 
   @Query("SELECT c FROM Object c ORDER BY dateCreated DESC")
   List<Object> getObjects(Pageable pageable);
 
   @Query("SELECT c FROM Object c WHERE c.title LIKE '%:title %' ORDER BY dateCreated DESC")
-  List<Object> getObjects(Pageable pageable,@Param("title")String title);
+  List<Object> getObjects(Pageable pageable, @Param("title") String title);
 
-  @Query("SELECT c FROM Object c WHERE c.area LIKE '%:area %' ORDER BY dateCreated DESC")
-  List<Object> getObjects(Pageable pageable,@Param("area") Area area);
+  @Query("SELECT c FROM Object c WHERE c.productArea LIKE '%:area %' ORDER BY dateCreated DESC")
+  List<Object> getObjects(Pageable pageable, @Param("area") Area area);
 
 }

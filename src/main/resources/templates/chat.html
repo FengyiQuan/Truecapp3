@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang='en' xmls:th="https://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Chat</title>
+    <link rel="stylesheet"
+          href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+          crossorigin="anonymous">
+
+</head>
+<body>
+
+<div class="btn-group" role="group">
+    <button type="button" class="btn btn-secondary" id="connect">Connect</button>
+    <button type="button" class="btn btn-secondary" id="disconnect">Disconnect</button>
+</div>
+
+<!--TODO: 1. online offline indicator (how to get online user from spring security)
+          2. how to dynamically add new message to model (message should not in link)
+          3. contacts list is not sorted
+          4. get img from database (truecapp db)
+          5. bind connect and disconnect btn to avoid click every time
+          6. when two are online, msg stored in db should be 'has been read', not unread
+          7. search contacts list does not supported
+          -->
+
+
+<div class="container-fluid h-100">
+    <div class="row justify-content-center h-100">
+        <div class="col-md-4 col-xl-3 chat">
+            <div class="card mb-sm-3 mb-md-0 contacts_card">
+                <div class="card-header">
+                    <div class="input-group">
+                        <input type="text" placeholder="Search..."
+                               class="form-control search">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text search_btn"><i class="fas fa-search"></i></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body contacts_body">
+                    <ul class="contacts">
+
+                        <li th:each="contact: ${contacts}"
+                            th:classappend="${receiver eq contact.key} ? 'active' : ''">
+                            <a class="d-flex bd-highlight"
+                               th:href="@{/chat(sendTo=${contact.key})}">
+                                <div class="img_cont">
+                                    <img src="https://static.turbosquid.com/Preview/001292/481/WV/_D.jpg"
+                                         class="rounded-circle user_img">
+
+                                    <!-- TODO:          check if contacts is online
+                                            online : green spot
+                                            offline : red spot
+                        -->
+                                    <span class="online_icon"></span>
+                                </div>
+                                <div class="user_info">
+                                    <span th:text="${contact.key}"></span>
+                                    <span class="badge badge-danger badge-pill"
+                                          th:classappend="${contact.value == 0} ? 'd-none' : ''"
+                                          th:text="${contact.value}"></span>
+                                </div>
+
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="card-footer"></div>
+            </div>
+        </div>
+        <div class="col-md-8 col-xl-6 chat">
+            <div class="card">
+                <div class="card-header msg_head">
+                    <div class="d-flex bd-highlight">
+                        <div class="img_cont">
+                            <img src="https://static.turbosquid.com/Preview/001292/481/WV/_D.jpg"
+                                 class="rounded-circle user_img">
+                            <span class="online_icon"></span>
+                        </div>
+                        <div class="user_info" th:text="${receiver.name}"></div>
+                    </div>
+                </div>
+
+
+                <div class="card-body msg_card_body">
+                    <div id="conversation">
+                        <div class="d-flex mb-4" th:each="msg: ${history}"
+                             th:classappend="${msg.sender eq sender} ? 'justify-content-end' : 'justify-content-start'">
+                            <div th:if="${msg.sender eq receiver}"
+                                 class="img_cont_msg">
+                                <img src="https://static.turbosquid.com/Preview/001292/481/WV/_D.jpg"
+                                     class="rounded-circle user_img_msg"/>
+                            </div>
+                            <div th:classappend="${msg.sender eq sender} ? 'msg_container_current' : 'msg_container_other'">
+                                <span th:text="${msg.content}"></span>
+                                <span class="msg_time" th:text="${msg.sendingTime}"></span>
+                            </div>
+                            <div th:if="${msg.sender eq sender}"
+                                 class="img_cont_msg">
+                                <img src="https://static.turbosquid.com/Preview/001292/481/WV/_D.jpg"
+                                     class="rounded-circle user_img_msg"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!--                <form class="card-footer" th:action="@{/messages/createMessage}" method="POST">-->
+
+
+                <div class="input-group">
+                    <div class="input-group-append">
+                            <span class="input-group-text attach_btn"><i
+                                    class="fas fa-paperclip"></i></span>
+                    </div>
+                    <textarea id="messageContent"
+                              class="form-control type_msg"
+                              placeholder="Type your message..."></textarea>
+                    <div class="input-group-append" id="sendBtn">
+                            <span class="input-group-text">
+                                <i class="fas fa-location-arrow"></i>
+                            </span>
+                    </div>
+                </div>
+                <!--                </form>-->
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+<script>
+    const currentUser = {
+        id: "[[${sender.id}]]",
+        email: "[[${sender.email}]]"
+    };
+
+    const receiver = {
+        id: "[[${receiver.id}]]",
+        email: "[[${receiver.email}]]"
+    };
+
+
+</script>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"
+        integrity="sha512-iKDtgDyTHjAitUDdLljGhenhPwrbBfqTKWO1mkhSFH3A7blITC9MhYon6SjnMhp4o0rADGw9yAC6EW4t5a4K3g=="
+        crossorigin="anonymous"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+
+<link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css"
+      integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p"
+      crossorigin="anonymous"/>
+
+
+<script type="text/javascript" src="js/services/SockService.js"></script>
+<script type="text/javascript" src="js/services/MessageService.js"></script>
+<script type="text/javascript" src="js/chat.js"></script>
+
+<link rel="stylesheet" href="css/chat.css">
+
+</body>
+</html>

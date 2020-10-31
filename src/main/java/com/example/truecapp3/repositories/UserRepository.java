@@ -1,5 +1,6 @@
 package com.example.truecapp3.repositories;
 
+import com.example.truecapp3.models.Message;
 import com.example.truecapp3.models.User;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -8,6 +9,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, String> {
@@ -22,7 +25,6 @@ public interface UserRepository extends JpaRepository<User, String> {
   @Query("SELECT c FROM User c WHERE c.email = :email AND c.deleteUser = NULL")
   User getActiveUserByEmail(@Param("email") String email);
 
-
   @Transactional
   @Modifying
   @Query("UPDATE User u SET u.emailVerified = TRUE WHERE u.id = :id")
@@ -32,4 +34,7 @@ public interface UserRepository extends JpaRepository<User, String> {
   @Modifying
   @Query("UPDATE User u SET u.isFirstTime = FALSE WHERE u.id = :id")
   void markFirstTime(@Param("id") String id);
+
+
+
 }

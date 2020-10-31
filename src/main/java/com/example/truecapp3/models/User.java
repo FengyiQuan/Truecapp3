@@ -69,6 +69,8 @@ public class User implements Serializable {
   private Date deleteUser;
   @OneToMany
   private List<Transaction> transactions;
+  @OneToMany
+  private List<Notification> notifications;
   private boolean emailVerified;
   private boolean isFirstTime;
 
@@ -88,10 +90,42 @@ public class User implements Serializable {
     this.successfulTradesCount = 0;
     this.ratings = new ArrayList<>();
     this.donations = new ArrayList<>();
+    this.notifications = new ArrayList<>();
     this.transactions = new ArrayList<>();
     this.userType = UserType.CLIENT;
   }
 
+  public User(String name, String lastName, String address, Area area, String cellphone, Date birthday,
+              String email, String password, List<Object> products, List<Object> services, Photo profilePic,
+              Photo idPic, List<Credit> credits, int currentCreditsCount, List<Rating> ratings,
+              int successfulTradesCount, List<Donation> donations, UserType userType, Date newUser,
+              Date deleteUser, List<Transaction> transactions, List<Notification> notifications,
+              boolean emailVerified, boolean isFirstTime) {
+    this.name = name;
+    this.lastName = lastName;
+    this.address = address;
+    this.area = area;
+    this.cellphone = cellphone;
+    this.birthday = birthday;
+    this.email = email;
+    this.password = password;
+    this.products = products;
+    this.services = services;
+    this.profilePic = profilePic;
+    this.idPic = idPic;
+    this.credits = credits;
+    this.currentCreditsCount = currentCreditsCount;
+    this.ratings = ratings;
+    this.successfulTradesCount = successfulTradesCount;
+    this.donations = donations;
+    this.userType = userType;
+    this.newUser = newUser;
+    this.deleteUser = deleteUser;
+    this.transactions = transactions;
+    this.notifications = notifications;
+    this.emailVerified = emailVerified;
+    this.isFirstTime = isFirstTime;
+  }
 
   public int getCurrentCreditsCount() {
     return currentCreditsCount;
@@ -287,35 +321,12 @@ public class User implements Serializable {
   }
 
 
-  public User(String name, String lastName, String address, Area area, String cellphone,
-              Date birthday, String email, String password, List<Object> products,
-              List<Object> services, Photo profilePic, Photo idPic, List<Credit> credits,
-              int currentCreditsCount, List<Rating> ratings, int successfulTradesCount,
-              List<Donation> donations, UserType userType, Date newUser, Date deleteUser,
-              List<Transaction> transactions, List<Notification> notifications,
-              boolean emailVerified, boolean isFirstTime) {
-    this.name = name;
-    this.lastName = lastName;
-    this.address = address;
-    this.area = area;
-    this.cellphone = cellphone;
-    this.birthday = birthday;
-    this.email = email;
-    this.password = password;
-    this.products = products;
-    this.services = services;
-    this.profilePic = profilePic;
-    this.idPic = idPic;
-    this.credits = credits;
-    this.currentCreditsCount = currentCreditsCount;
-    this.ratings = ratings;
-    this.successfulTradesCount = successfulTradesCount;
-    this.donations = donations;
-    this.userType = userType;
-    this.newUser = newUser;
-    this.deleteUser = deleteUser;
-    this.transactions = transactions;
-    this.emailVerified = emailVerified;
-    this.isFirstTime = isFirstTime;
+
+  public List<Notification> getNotifications() {
+    return notifications;
+  }
+
+  public void setNotifications(List<Notification> notifications) {
+    this.notifications = notifications;
   }
 }

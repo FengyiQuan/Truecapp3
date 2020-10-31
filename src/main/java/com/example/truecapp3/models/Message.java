@@ -13,7 +13,7 @@ import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.OneToOne;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -26,28 +26,28 @@ public class Message {
   @GeneratedValue(generator = "uuid")
   @GenericGenerator(name = "uuid", strategy = "uuid2")
   private String id;
-  @OneToOne
+  @ManyToOne
   private User sender;
   @Column(nullable = false)
   private String content;
-  @OneToOne
+  @ManyToOne
   private User receiver;
   @CreatedDate
   @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-  @Column(nullable = false)
   @Temporal(TemporalType.TIMESTAMP)
   private Date sendingTime;
-
   @Column(columnDefinition = "boolean default true")
-  private boolean isUnread = true;
+  private boolean isUnread;
 
   public Message() {
+    this.isUnread = true;
   }
 
   public Message(User sender, String content, User receiver) {
     this.sender = sender;
     this.content = content;
     this.receiver = receiver;
+    this.isUnread = true;
   }
 
   public User getSender() {
