@@ -316,8 +316,17 @@ public class UserService implements UserDetailsService {
     User user = userRepository.getUserByEmail(mail);
     if (user != null) {
       List<GrantedAuthority> permisos = new ArrayList<>();
-      GrantedAuthority p1 = new SimpleGrantedAuthority("ROLE_CLIENT");
-      permisos.add(p1);
+      switch (user.getUserType()){
+
+        case ADMIN:
+          permisos.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
+          break;
+        case CLIENT:
+          permisos.add(new SimpleGrantedAuthority("ROLE_CLIENT"));
+          break;
+        default:
+          break;
+      }
 
       ServletRequestAttributes attr = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
       HttpSession session = attr.getRequest().getSession();
