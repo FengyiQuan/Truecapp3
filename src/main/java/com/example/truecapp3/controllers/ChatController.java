@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.security.Principal;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -58,24 +59,6 @@ public class ChatController {
   }
 
 
-  @GetMapping("/test")
-  @ResponseBody
-  public Message test() {
-    User u1 = null;
-    User u2 = null;
-    try {
-      u1 = userService.getActiveUserByEmail("840073588z@gmail.com");
-      u2 = userService.getActiveUserByEmail("javaboy@test.com");
-    } catch (ServiceError error) {
-      error.printStackTrace();
-    }
-    Message msg = new Message();
-    msg.setSender(u1);
-    msg.setReceiver(u2);
-    msg.setContent("ha ha ha");
-    return messageService.createMessage(msg);
-  }
-
   @GetMapping("/chat")
   public String showChatPage(ModelMap model, @RequestParam(value = "sendTo", required = false) String receiverEmail) {
     Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -109,7 +92,9 @@ public class ChatController {
     }
 
     Map<String, Integer> contactsAndUnread = new HashMap<>();
-    List<String> contacts = messageService.findAllContactsEmail(currentUserId);
+    List<String> contacts = new ArrayList<>();
+    contacts.add(receiverEmail);
+    contacts.addAll(messageService.findAllContactsEmail(currentUserId));
     for (String contact : contacts) {
       try {
         contactsAndUnread.put(contact, messageService.getAllUnreadMessageByUser(contact, currentUserEmail));

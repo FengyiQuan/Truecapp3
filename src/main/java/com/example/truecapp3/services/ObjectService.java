@@ -10,6 +10,7 @@ import com.example.truecapp3.repositories.ObjectRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -38,6 +39,10 @@ public class ObjectService {
     } else {
       throw new ServiceError("Ese Producto no existe");
     }
+  }
+
+  public List<Object> findAll(Sort sort) {
+    return or.findAll(sort);
   }
 
   private void validate(String userId, String title, String description, ObjectCondition condition,
@@ -115,6 +120,7 @@ public class ObjectService {
       throw new ServiceError("Operación Interrumpida");
     }
   }
+
 
   @Transactional
   public void deleteById(String objectId, String userId) throws ServiceError {

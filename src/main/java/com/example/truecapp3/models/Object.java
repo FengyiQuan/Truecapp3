@@ -19,7 +19,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -40,7 +39,7 @@ public class Object {
   private String description;
   @Enumerated(EnumType.STRING)
   private ObjectCondition objectCondition;
-  @OneToOne
+  @ManyToOne
   private User owner;
 
   @ManyToOne

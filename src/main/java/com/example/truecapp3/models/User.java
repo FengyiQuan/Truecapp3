@@ -37,7 +37,8 @@ public class User implements Serializable {
   @GeneratedValue(generator = "uuid")
   @GenericGenerator(name = "uuid", strategy = "uuid")
   private String id;
-  private String address;
+  private String street;
+  private String aptNumber;
   @ManyToOne
   private Area area;
   private String cellphone;
@@ -90,31 +91,11 @@ public class User implements Serializable {
     return emailVerified && idPic != null && deleteUser == null;
   }
 
-
-  public User() {
-    this.isFirstTime = true;
-    this.emailVerified = false;
-    this.products = new ArrayList<>();
-    this.services = new ArrayList<>();
-    this.credits = new ArrayList<>();
-    this.currentCreditsCount = 0;
-    this.successfulTradesCount = 0;
-    this.ratings = new ArrayList<>();
-    this.donations = new ArrayList<>();
-    this.notifications = new ArrayList<>();
-    this.transactions = new ArrayList<>();
-    this.userType = UserType.CLIENT;
-  }
-
-  public User(String name, String lastName, String address, Area area, String cellphone, Date birthday,
-              String email, String password, List<Object> products, List<Object> services, Photo profilePic,
-              Photo idPic, List<Credit> credits, int currentCreditsCount, List<Rating> ratings,
-              int successfulTradesCount, List<Donation> donations, UserType userType, Date newUser,
-              Date deleteUser, List<Transaction> transactions, List<Notification> notifications,
-              boolean emailVerified, boolean isFirstTime) {
+  public User(String name, String lastName, String street, String aptNumber, Area area, String cellphone, Date birthday, String email, String password, List<Object> products, List<Object> services, Photo profilePic, Photo idPic, List<Credit> credits, int currentCreditsCount, List<Rating> ratings, int successfulTradesCount, List<Donation> donations, UserType userType, Date newUser, Date deleteUser, List<Transaction> transactions, List<Notification> notifications, boolean emailVerified, boolean isFirstTime) {
     this.name = name;
     this.lastName = lastName;
-    this.address = address;
+    this.street = street;
+    this.aptNumber = aptNumber;
     this.area = area;
     this.cellphone = cellphone;
     this.birthday = birthday;
@@ -137,6 +118,23 @@ public class User implements Serializable {
     this.emailVerified = emailVerified;
     this.isFirstTime = isFirstTime;
   }
+
+  public User() {
+    this.isFirstTime = true;
+    this.emailVerified = false;
+    this.products = new ArrayList<>();
+    this.services = new ArrayList<>();
+    this.credits = new ArrayList<>();
+    this.currentCreditsCount = 0;
+    this.successfulTradesCount = 0;
+    this.ratings = new ArrayList<>();
+    this.donations = new ArrayList<>();
+    this.notifications = new ArrayList<>();
+    this.transactions = new ArrayList<>();
+    this.userType = UserType.CLIENT;
+  }
+
+
 
   public int getCurrentCreditsCount() {
     return currentCreditsCount;
@@ -186,13 +184,6 @@ public class User implements Serializable {
     this.id = id;
   }
 
-  public String getAddress() {
-    return address;
-  }
-
-  public void setAddress(String address) {
-    this.address = address;
-  }
 
   public String getCellphone() {
     return cellphone;
@@ -338,5 +329,21 @@ public class User implements Serializable {
 
   public void setNotifications(List<Notification> notifications) {
     this.notifications = notifications;
+  }
+
+  public String getStreet() {
+    return street;
+  }
+
+  public void setStreet(String street) {
+    this.street = street;
+  }
+
+  public String getAptNumber() {
+    return aptNumber;
+  }
+
+  public void setAptNumber(String aptNumber) {
+    this.aptNumber = aptNumber;
   }
 }

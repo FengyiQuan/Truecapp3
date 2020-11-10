@@ -118,6 +118,40 @@ public class UserService implements UserDetailsService {
     return saveUser;
   }
 
+  @Transactional
+  public void completarUsuario(MultipartFile fotoPerfil, MultipartFile fotoDNI, String id,
+                               String calle, String numeroCasa, String telefono) throws ServiceError {
+    //validar(nombre, apellido, "0", mail,clave);
+//        if (!clave.equals(clave2)) {
+//           throw new ErrorServicio("Las contraseñas deben coincidir");
+//
+//        }
+//
+    Optional<User> respuesta = userRepository.findById(id);
+
+    if (respuesta.isPresent()) {
+      User usuario = respuesta.get();
+
+      usuario.setCellphone(telefono);
+
+      usuario.setStreet(calle);
+      usuario.setAptNumber(numeroCasa);
+
+      if (fotoPerfil != null) {
+        Photo foto = photoService.save(fotoPerfil);
+        usuario.setProfilePic(foto);
+      }
+
+      if (fotoDNI != null) {
+        Photo fotodni = photoService.save(fotoDNI);
+        usuario.setIdPic(fotodni);
+      }
+      usuario.setFirstTime(false);
+      userRepository.save(usuario);
+    } else {
+      throw new ServiceError("No se encontró el usuario solicitado");
+    }
+  }
 
   @Transactional
   public User changePassword(String userId, String oldPassword, String newPassword1, String newPassword2) throws ServiceError {
@@ -156,7 +190,7 @@ public class UserService implements UserDetailsService {
 
 
   @Transactional
-  public User modifyUser(String userId, String name, String lastName, String address,
+  public User modifyUser(String userId, String name, String lastName, String street, String aptNum,
                          String phone, Date dob) throws ServiceError {
     Optional<User> optionalUser = userRepository.findById(userId);
 
@@ -166,7 +200,8 @@ public class UserService implements UserDetailsService {
       user.setLastName(lastName);
       user.setCellphone(phone);
       user.setBirthday(dob);
-      user.setAddress(address);
+      user.setStreet(street);
+      user.setAptNumber(aptNum);
 
       return userRepository.save(user);
     } else {
@@ -310,13 +345,12 @@ public class UserService implements UserDetailsService {
   }
 
 
-
   @Override
   public UserDetails loadUserByUsername(String mail) throws UsernameNotFoundException {
     User user = userRepository.getUserByEmail(mail);
     if (user != null) {
       List<GrantedAuthority> permisos = new ArrayList<>();
-      switch (user.getUserType()){
+      switch (user.getUserType()) {
 
         case ADMIN:
           permisos.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
@@ -330,7 +364,7 @@ public class UserService implements UserDetailsService {
 
       ServletRequestAttributes attr = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
       HttpSession session = attr.getRequest().getSession();
-      session.setAttribute("UserSession", user);
+      session.setAttribute("UsuarioSession", user);
 
       return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(), permisos);
     } else {

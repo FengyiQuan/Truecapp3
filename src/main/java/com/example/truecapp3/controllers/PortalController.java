@@ -77,14 +77,14 @@ public class PortalController {
 
   }
 
-  @PreAuthorize("hasAnyRole('ROLE_CLIENTE')")
+  @PreAuthorize("hasAnyRole('ROLE_CLIENT')")
   @GetMapping("/home")
   public String home(ModelMap modelo) {
     modelo.put("productos", productorepositorio.findAll(Sort.unsorted()));
     return "index_logueado";
   }
 
-  @PreAuthorize("hasAnyRole('ROLE_CLIENTE')")
+  @PreAuthorize("hasAnyRole('ROLE_CLIENT')")
   @GetMapping("/user_home")
   public String userhome(ModelMap modelo) {
     Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -119,7 +119,7 @@ public class PortalController {
     return "Perfil_Usuario";
   }
 
-  @PreAuthorize("hasAnyRole('ROLE_CLIENTE')")
+  @PreAuthorize("hasAnyRole('ROLE_CLIENT')")
   @GetMapping("/user_listaTrueques")
   public String userListaTrueque() {
     return "user_listaTrueques";
@@ -140,7 +140,7 @@ public class PortalController {
   }
 
 
-  @PreAuthorize("hasAnyRole('ROLE_CLIENTE')")
+  @PreAuthorize("hasAnyRole('ROLE_CLIENT')")
   @GetMapping(value = "/tiendahome")
   public String TiendaHome(ModelMap modelo) {
     modelo.put("productos", productorepositorio.findAll(Sort.unsorted()));
@@ -151,7 +151,7 @@ public class PortalController {
     return "user_tiendahome2";
   }
 
-  @PreAuthorize("hasAnyRole('ROLE_CLIENTE')")
+  @PreAuthorize("hasAnyRole('ROLE_CLIENT')")
   @RequestMapping(value = "/tiendahome2", method = RequestMethod.GET)
   public String TiendaHome2(ModelMap modelo) {
     modelo.put("productos", productorepositorio.findAll(Sort.unsorted()));
@@ -162,7 +162,7 @@ public class PortalController {
     return "user_tiendahome2";
   }
 
-  @PreAuthorize("hasAnyRole('ROLE_CLIENTE')")
+  @PreAuthorize("hasAnyRole('ROLE_CLIENT')")
   @RequestMapping(value = "/listaTrueques", method = RequestMethod.GET)
   public String ListaTrueque(ModelMap modelo) {
     Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -173,7 +173,7 @@ public class PortalController {
   }
 
 
-  @PreAuthorize("hasAnyRole('ROLE_CLIENTE')")
+  @PreAuthorize("hasAnyRole('ROLE_CLIENT')")
   @RequestMapping(value = "/nuevoTrueque", method = RequestMethod.GET)
   public String nuevoTrueque(ModelMap modelo) {
 
@@ -216,7 +216,7 @@ public class PortalController {
     return "login";
   }
 
-  @PreAuthorize("hasAnyRole('ROLE_CLIENTE')")
+  @PreAuthorize("hasAnyRole('ROLE_CLIENT')")
   @RequestMapping(value = "/Inicio", method = RequestMethod.GET)
   public String Redireccion(HttpSession session, ModelMap modelo) {
 
@@ -225,16 +225,16 @@ public class PortalController {
     if (principal instanceof UserDetails) {
       String username = ((UserDetails) principal).getUsername();
       User usuario = usuariorepositorio.getUserByEmail(username);
-      Boolean isFirst = usuario.isFirstTime();
+      boolean isFirst = usuario.isFirstTime();
 
 
-      if (isFirst == true) {
+      if (isFirst) {
         return "new_user_info";
       } else {
 
         try {
           List<Transaction> Transacciones = usuario.getTransactions();
-          List<Transaction> ofrecidas = new ArrayList();
+          List<Transaction> ofrecidas = new ArrayList<>();
 
           for (Transaction transaccion : Transacciones) {
             if (transaccion.getUser1().equals(usuario)||transaccion.getUser2().equals(usuario)) {
@@ -268,7 +268,7 @@ public class PortalController {
 
     try {
       User usuario = usuarioServicio.getActiveUserById(id);
-      if (usuario.isEmailVerified()== true) {
+      if (usuario.isEmailVerified()) {
         modelo.put("error", "Tu email ya ha sido verificado anteriormente. Iniciá Sesión para continuar");
         return "login";
       } else {
@@ -312,7 +312,7 @@ return "user_home";
     return "new_user_info";
   }
 
-  @PreAuthorize("hasAnyRole('ROLE_CLIENTE')")
+  @PreAuthorize("hasAnyRole('ROLE_CLIENT')")
   @GetMapping(value = "/delete/{id}")
   public String eliminarListaProducto(@PathVariable(value = "id") String idProducto) throws ServiceError {
     Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();

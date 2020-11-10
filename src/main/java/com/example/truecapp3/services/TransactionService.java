@@ -11,10 +11,15 @@ import com.example.truecapp3.models.User;
 import com.example.truecapp3.repositories.TransactionRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
+
+import javax.mail.MessagingException;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -29,6 +34,8 @@ public class TransactionService {
   AreaService areaService;
   @Autowired
   RatingService ratingService;
+  @Autowired
+  NotificationService notificationService;
 
   public Transaction getExistTransactionById(String id) throws ServiceError {
     Optional<Transaction> response = transactionRepository.findById(id);
@@ -56,6 +63,51 @@ public class TransactionService {
       throw new ServiceError("Transaction does not exist. ");
     }
   }
+
+  @Transactional
+  public Transaction startTransaction(String objeto1id, String objeto2id) throws ServiceError, MessagingException {
+    //vaidacion de datos
+
+    try {
+      Object productoEmisor = objectService.getObjectById(objeto2id);
+      Object productoReceptor = objectService.getObjectById(objeto1id);
+      User usuario1 = userService.getActiveUserById(productoEmisor.getOwner().getId());
+      User usuario2 = userService.getActiveUserById(productoReceptor.getOwner().getId());
+//        if(usuario1.getListaProductos().contains(productoEmisor)){
+//            if(usuario2.getListaProductos().contains(productoReceptor)){
+//
+//            }else{
+//                throw new ErrorServicio("No se puede cancelar esta transacción");
+//            }
+//        }else{
+//        throw new ErrorServicio("No se puede cancelar esta transacción");
+//         }
+
+
+      //...............................
+      Transaction transaccion = new Transaction();
+      transaccion.setSeller(usuario1);
+      transaccion.setReceiver(usuario2);
+      transaccion.setSellerObject(productoEmisor);
+      transaccion.setReceiverObject(productoReceptor);
+
+      transaccion.setTypeOfTransaction(TransactionType.BARTER);
+      transaccion.setState(TransactionState.STARTED);
+
+      transactionRepository.save(transaccion);
+
+      //notificacionServicio.enviar(usuario1.getNombre()+" quiere intercambiar su "+productoEmisor.getTitulo()+" por tu "+productoReceptor.getTitulo(), "Alguien se encuentra interesado en hacer un Trueque", usuario2.getMail());
+      //notificacionServicio.enviar(usuario1.getNombre()+" quieres intercambiar "+productoEmisor.getTitulo()+" por un "+productoReceptor.getTitulo(), "Pedido de trueque mandado exitosamente", usuario1.getMail());
+      notificationService.enviarIniciarOferta("¡Nuevo Truque!", transaccion);
+
+      return transaccion;
+
+
+    } catch (ServiceError e) {
+      throw new ServiceError("Operación Interrumpida");
+    }
+  }
+
 
   @Transactional
   public Transaction createNewTransaction(String sellerId, String receiverId, String sellerObjectId,
