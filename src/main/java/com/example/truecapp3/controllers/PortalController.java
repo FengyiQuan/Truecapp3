@@ -1,5 +1,7 @@
 package com.example.truecapp3.controllers;
 
+import com.example.truecapp3.errors.ServiceError;
+import com.example.truecapp3.models.Transaction;
 import com.example.truecapp3.models.User;
 import com.example.truecapp3.repositories.ObjectRepository;
 import com.example.truecapp3.repositories.TransactionRepository;
@@ -8,6 +10,8 @@ import com.example.truecapp3.services.CreditService;
 import com.example.truecapp3.services.ObjectService;
 import com.example.truecapp3.services.PhotoService;
 import com.example.truecapp3.services.UserService;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -24,6 +28,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.servlet.http.HttpSession;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.multipart.MultipartFile;
 
 @Controller
 @RequestMapping("/")
@@ -70,42 +77,42 @@ public class PortalController {
 
   }
 
-//  @PreAuthorize("hasAnyRole('ROLE_CLIENTE')")
-//  @GetMapping("/home")
-//  public String home(ModelMap modelo) {
-//    modelo.put("productos", productorepositorio.findAll(Sort.unsorted()));
-//    return "index_logueado";
-//  }
-//
-//  @PreAuthorize("hasAnyRole('ROLE_CLIENTE')")
-//  @GetMapping("/user_home")
-//  public String userhome(ModelMap modelo) {
-//    Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-//    String username = ((UserDetails) principal).getUsername();
-//    User usuario = usuariorepositorio.buscarUsuarioPorMail(username);
-//
-//    try {
-//      List<Transaction> Transacciones = usuario.getListaTransacciones();
-//      List<Transaction> ofrecidas = new ArrayList();
-//
-//      for (Transaction transaccion : Transacciones) {
-//        if (transaccion.getUsuariosInvolucrados().contains(usuario)) {
-//
-//          ofrecidas.add(transaccion);
-//
-//        }
-//        if (!ofrecidas.isEmpty()) {
-//          modelo.put("transacciones", ofrecidas);
-//        }
-//      }
-//
-//
-//    } catch (Exception e) {
-//    }
-//
-//
-//    return "user_home";
-//  }
+  @PreAuthorize("hasAnyRole('ROLE_CLIENTE')")
+  @GetMapping("/home")
+  public String home(ModelMap modelo) {
+    modelo.put("productos", productorepositorio.findAll(Sort.unsorted()));
+    return "index_logueado";
+  }
+
+  @PreAuthorize("hasAnyRole('ROLE_CLIENTE')")
+  @GetMapping("/user_home")
+  public String userhome(ModelMap modelo) {
+    Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    String username = ((UserDetails) principal).getUsername();
+    User usuario = usuariorepositorio.getUserByEmail(username);
+
+    try {
+      List<Transaction> Transacciones = usuario.getTransactions();
+      List<Transaction> ofrecidas = new ArrayList();
+
+      for (Transaction transaccion : Transacciones) {
+        if (transaccion.getUser1().equals(usuario)||transaccion.getUser2().equals(usuario)) {
+
+          ofrecidas.add(transaccion);
+
+        }
+        if (!ofrecidas.isEmpty()) {
+          modelo.put("transacciones", ofrecidas);
+        }
+      }
+
+
+    } catch (Exception e) {
+    }
+
+
+    return "user_home";
+  }
 
   @GetMapping("/Perfil_Usuario")
   public String PerfilFreelancerPublico() {
@@ -133,37 +140,37 @@ public class PortalController {
   }
 
 
-//  @PreAuthorize("hasAnyRole('ROLE_CLIENTE')")
-//  @GetMapping(value = "/tiendahome")
-//  public String TiendaHome(ModelMap modelo) {
-//    modelo.put("productos", productorepositorio.findAll(Sort.unsorted()));
-//    Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-//    String username = ((UserDetails) principal).getUsername();
-//    Usuario usuario = usuariorepositorio.buscarUsuarioPorMail(username);
-//    modelo.put("productosU", usuario.getListaProductos());
-//    return "user_tiendahome2";
-//  }
-//
-//  @PreAuthorize("hasAnyRole('ROLE_CLIENTE')")
-//  @RequestMapping(value = "/tiendahome2", method = RequestMethod.GET)
-//  public String TiendaHome2(ModelMap modelo) {
-//    modelo.put("productos", productorepositorio.findAll(Sort.unsorted()));
-//    Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-//    String username = ((UserDetails) principal).getUsername();
-//    Usuario usuario = usuariorepositorio.buscarUsuarioPorMail(username);
-//    modelo.put("productosU", usuario.getListaProductos());
-//    return "user_tiendahome2";
-//  }
-//
-//  @PreAuthorize("hasAnyRole('ROLE_CLIENTE')")
-//  @RequestMapping(value = "/listaTrueques", method = RequestMethod.GET)
-//  public String ListaTrueque(ModelMap modelo) {
-//    Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-//    String username = ((UserDetails) principal).getUsername();
-//    Usuario usuario = usuariorepositorio.buscarUsuarioPorMail(username);
-//    modelo.put("productos", usuario.getListaProductos());
-//    return "user_listaTrueques";
-//  }
+  @PreAuthorize("hasAnyRole('ROLE_CLIENTE')")
+  @GetMapping(value = "/tiendahome")
+  public String TiendaHome(ModelMap modelo) {
+    modelo.put("productos", productorepositorio.findAll(Sort.unsorted()));
+    Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    String username = ((UserDetails) principal).getUsername();
+    User usuario = usuariorepositorio.getUserByEmail(username);
+    modelo.put("productosU", usuario.getProducts());
+    return "user_tiendahome2";
+  }
+
+  @PreAuthorize("hasAnyRole('ROLE_CLIENTE')")
+  @RequestMapping(value = "/tiendahome2", method = RequestMethod.GET)
+  public String TiendaHome2(ModelMap modelo) {
+    modelo.put("productos", productorepositorio.findAll(Sort.unsorted()));
+    Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    String username = ((UserDetails) principal).getUsername();
+    User usuario = usuariorepositorio.getUserByEmail(username);
+    modelo.put("productosU", usuario.getProducts());
+    return "user_tiendahome2";
+  }
+
+  @PreAuthorize("hasAnyRole('ROLE_CLIENTE')")
+  @RequestMapping(value = "/listaTrueques", method = RequestMethod.GET)
+  public String ListaTrueque(ModelMap modelo) {
+    Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    String username = ((UserDetails) principal).getUsername();
+    User usuario = usuariorepositorio.getUserByEmail(username);
+    modelo.put("productos", usuario.getProducts());
+    return "user_listaTrueques";
+  }
 
 
   @PreAuthorize("hasAnyRole('ROLE_CLIENTE')")
@@ -209,120 +216,113 @@ public class PortalController {
     return "login";
   }
 
-//  @PreAuthorize("hasAnyRole('ROLE_CLIENTE')")
-//  @RequestMapping(value = "/Inicio", method = RequestMethod.GET)
-//  public String Redireccion(HttpSession session, ModelMap modelo) {
-//
-//
-//    Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-//    if (principal instanceof UserDetails) {
-//      String username = ((UserDetails) principal).getUsername();
-//      Usuario usuario = usuariorepositorio.buscarUsuarioPorMail(username);
-//      Boolean isFirst = usuario.getIsFirstTime();
-//
-//
-//      if (isFirst == true) {
-//        return "new_user_info";
-//      } else {
-//
-//        try {
-//          List<Transaccion> Transacciones = usuario.getListaTransacciones();
-//          List<Transaccion> ofrecidas = new ArrayList();
-//
-//          for (Transaccion transaccion : Transacciones) {
-//            if (transaccion.getUsuariosInvolucrados().contains(usuario)) {
-//
-//              ofrecidas.add(transaccion);
-//
-//            }
-//            if (!ofrecidas.isEmpty()) {
-//              modelo.put("transacciones", ofrecidas);
-//            }
-//          }
-//
-//
-//        } catch (Exception e) {
-//        }
-//
-//
-//        return "user_home";
-//      }
-//
-//
-//    }
-//    return "user_home";
-//
-//  }
-//
-//
-//  @GetMapping("/verificarUsuario/{id}")
-//  public String verificarUsuario(@PathVariable String id, ModelMap modelo) throws ErrorServicio {
-//    System.out.println(id);
-//
-//    try {
-//      Usuario usuario = usuarioServicio.consultarUsuarioID(id);
-//      if (usuario.getEmailVerified() == true) {
-//        modelo.put("error", "Tu email ya ha sido verificado anteriormente. Iniciá Sesión para continuar");
-//        return "login";
-//      } else {
+  @PreAuthorize("hasAnyRole('ROLE_CLIENTE')")
+  @RequestMapping(value = "/Inicio", method = RequestMethod.GET)
+  public String Redireccion(HttpSession session, ModelMap modelo) {
+
+
+    Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    if (principal instanceof UserDetails) {
+      String username = ((UserDetails) principal).getUsername();
+      User usuario = usuariorepositorio.getUserByEmail(username);
+      Boolean isFirst = usuario.isFirstTime();
+
+
+      if (isFirst == true) {
+        return "new_user_info";
+      } else {
+
+        try {
+          List<Transaction> Transacciones = usuario.getTransactions();
+          List<Transaction> ofrecidas = new ArrayList();
+
+          for (Transaction transaccion : Transacciones) {
+            if (transaccion.getUser1().equals(usuario)||transaccion.getUser2().equals(usuario)) {
+
+              ofrecidas.add(transaccion);
+
+            }
+            if (!ofrecidas.isEmpty()) {
+              modelo.put("transacciones", ofrecidas);
+            }
+          }
+
+
+        } catch (Exception e) {
+        }
+
+
+        return "user_home";
+      }
+
+
+    }
+    return "user_home";
+
+  }
+
+
+  @GetMapping("/verificarUsuario/{id}")
+  public String verificarUsuario(@PathVariable String id, ModelMap modelo) throws ServiceError {
+    System.out.println(id);
+
+    try {
+      User usuario = usuarioServicio.getActiveUserById(id);
+      if (usuario.isEmailVerified()== true) {
+        modelo.put("error", "Tu email ya ha sido verificado anteriormente. Iniciá Sesión para continuar");
+        return "login";
+      } else {
 //        usuarioServicio.EmailVerificado(id);
-//        modelo.put("bienvenida", "Tu email ha sido verificado correctamente! Iniciá Sesión para continuar");
-//        return "login";
-//      }
-//
-//
-//    } catch (ErrorServicio e) {
-//      modelo.put("error", e.getMessage());
-//      return "login";
-//    }
-//
-//
-//  }
-//
-//
-//  @PostMapping("/completarRegistro")
-//  public String completarRegistro(ModelMap modelo, @RequestParam(required = false) String calle, @RequestParam(required = false) String numeroCasa, @RequestParam(required = false) MultipartFile perfil, @RequestParam(required = false) MultipartFile dni, @RequestParam(required = false) String telefono) {
-//
-//    System.out.println(calle);
-//    System.out.println(numeroCasa);
-//    System.out.println(telefono);
-//
-//    Boolean exito = false;
-//
-//
-//    Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-//    if (principal instanceof UserDetails) {
-//      String username = ((UserDetails) principal).getUsername();
-//      Usuario usuario = usuariorepositorio.buscarUsuarioPorMail(username);
-//
-//      try {
-//        System.out.println(usuario.getMail());
-//        usuarioServicio.completarUsuario(perfil, dni, usuario.getId(), calle, numeroCasa, telefono);
+        modelo.put("bienvenida", "Tu email ha sido verificado correctamente! Iniciá Sesión para continuar");
+        return "login";
+      }
+
+
+    } catch (ServiceError e) {
+      modelo.put("error", e.getMessage());
+      return "login";
+    }
+
+
+  }
+
+
+  @PostMapping("/completarRegistro")
+  public String completarRegistro(ModelMap modelo, @RequestParam(required = false) String calle, @RequestParam(required = false) String numeroCasa, @RequestParam(required = false) MultipartFile perfil, @RequestParam(required = false) MultipartFile dni, @RequestParam(required = false) String telefono) throws ServiceError {
+
+    System.out.println(calle);
+    System.out.println(numeroCasa);
+    System.out.println(telefono);
+
+    Boolean exito = false;
+
+
+    Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    if (principal instanceof UserDetails) {
+      String username = ((UserDetails) principal).getUsername();
+      User usuario = usuariorepositorio.getUserByEmail(username);
+
+      System.out.println(usuario.getEmail());
+      //        usuarioServicio.(perfil, dni, usuario.getId(), calle, numeroCasa, telefono);
 //        usuarioServicio.enviarMailVerificacion(usuario.getId());
-//        return "user_home";
-//      } catch (ErrorServicio ex) {
-//        modelo.put("error", ex.getMessage());
-//        System.out.println(ex.getStackTrace().toString());
-//        System.out.println(ex.getMessage());
-//        return "new_user_info";
-//      }
-//    }
-//
-//
-//    return "new_user_info";
-//  }
-//
-//  @PreAuthorize("hasAnyRole('ROLE_CLIENTE')")
-//  @GetMapping(value = "/delete/{id}")
-//  public String eliminarListaProducto(@PathVariable(value = "id") String idProducto) throws ErrorServicio {
-//    Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-//    if (principal instanceof UserDetails) {
-//      String username = ((UserDetails) principal).getUsername();
-//      Usuario usuario = usuariorepositorio.buscarUsuarioPorMail(username);
-//      String idUsuario = usuario.getId();
-//      productoServicio.bajarProducto(idProducto, idUsuario);
-//      System.out.println("Producto Eliminado con exito");
-//    }
-//    return "user_listaTrueques";
-//  }
+return "user_home";
+    }
+
+
+    return "new_user_info";
+  }
+
+  @PreAuthorize("hasAnyRole('ROLE_CLIENTE')")
+  @GetMapping(value = "/delete/{id}")
+  public String eliminarListaProducto(@PathVariable(value = "id") String idProducto) throws ServiceError {
+    Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    if (principal instanceof UserDetails) {
+      String username = ((UserDetails) principal).getUsername();
+      User usuario = usuariorepositorio.getUserByEmail(username);
+      String idUsuario = usuario.getId();
+      productoServicio.deleteById(idProducto, idUsuario);
+      System.out.println("Producto Eliminado con exito");
+    }
+    return "user_listaTrueques";
+  }
 }
