@@ -11,10 +11,10 @@
 </head>
 <body>
 
-<div class="btn-group" role="group">
-    <button type="button" class="btn btn-secondary" id="connect">Connect</button>
-    <button type="button" class="btn btn-secondary" id="disconnect">Disconnect</button>
-</div>
+<!--<div class="btn-group" role="group">-->
+<!--    <button type="button" class="btn btn-secondary" id="connect">Connect</button>-->
+<!--    <button type="button" class="btn btn-secondary" id="disconnect">Disconnect</button>-->
+<!--</div>-->
 
 <!--TODO: 1. online offline indicator (how to get online user from spring security)
           2. how to dynamically add new message to model (message should not in link)
@@ -40,7 +40,7 @@
                     </div>
                 </div>
                 <div class="card-body contacts_body">
-                    <ul class="contacts">
+                    <ul id="contacts" class="contacts">
 
                         <li th:each="contact: ${contacts}"
                             th:classappend="${receiver eq contact.key} ? 'active' : ''">
@@ -128,7 +128,7 @@
         </div>
     </div>
 
-
+    <!--    "[[${contacts}]]";-->
 </div>
 
 <script>
@@ -140,10 +140,16 @@
     const receiver = {
         id: "[[${receiver.id}]]",
         email: "[[${receiver.email}]]"
-
     };
 
+</script>
+<script th:inline="javascript">
+    let contacts = [];
 
+    /*[# th:each="n : ${contacts}"]*/
+    contacts.push("[(${n.key})]");
+    /*[/]*/
+    console.log(contacts);
 </script>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>

@@ -167,7 +167,7 @@
                             <div class="dropdown-menu dropdown-menu-sm dropdown-menu-right dropdown-menu-arrow p-3">
                                 <h6 class="dropdown-header px-0 mb-2 text-primary">
                                     <td
-                                        th:text="${'Hola ' + session.UsuarioSession.nombre + ' ' + session.UsuarioSession.apellido}">
+                                        th:text="${'Hola ' + session.UsuarioSession.name + ' ' + session.UsuarioSession.lastName}">
                                     </td>
                                 </h6>
                                 <a href="user_home" class="dropdown-item">
@@ -255,7 +255,7 @@
                                     <div class="row align-items-center">
                                         <div class="col-auto">
                                             <span class="avatar avatar-sm bg-primary rounded-circle"><img th:src="@{'/fotoPerfil/'+${producto.usuario.id}}"></span> 
-                                            <span class="text-sm mb-0 avatar-content"><td th:text="${producto.usuario.nombre+ ' ' + producto.usuario.apellido}"></td> </span>
+                                            <span class="text-sm mb-0 avatar-content"><td th:text="${producto.usuario.name+ ' ' + producto.usuario.lastName}"></td> </span>
                                         </div>
                                         <div class="col text-right text-right">
                                             <a href="#" class="btn btn-sm btn-soft-primary">Truecar</a>

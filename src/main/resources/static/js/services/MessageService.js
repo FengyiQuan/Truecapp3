@@ -18,14 +18,17 @@ const createMessage = (msg) => {
 };
 
 const markAllRead = (receiver) => {
-    console.log('call mark all read from js')
-    return fetch(`${url}/api/messages/markAllRead/${receiver}`,
-                 {
-                     method: 'POST',
-                     headers: {
-                         'content-type': 'application/json'
-                     },
-                     credentials: 'include'
-                 });
+    if (receiver != null && receiver !== ''){
+        // console.log('call mark all read from js')
+        return fetch(`${url}/api/messages/markAllRead/${receiver}`,
+                     {
+                         method: 'POST',
+                         headers: {
+                             'content-type': 'application/json'
+                         },
+                         credentials: 'include'
+                     });
+    }
+
 }
 

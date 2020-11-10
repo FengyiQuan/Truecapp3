@@ -10,6 +10,7 @@ import com.example.truecapp3.services.CreditService;
 import com.example.truecapp3.services.ObjectService;
 import com.example.truecapp3.services.PhotoService;
 import com.example.truecapp3.services.UserService;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,7 +29,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import javax.servlet.http.HttpSession;
+
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -93,10 +96,10 @@ public class PortalController {
 
     try {
       List<Transaction> Transacciones = usuario.getTransactions();
-      List<Transaction> ofrecidas = new ArrayList();
+      List<Transaction> ofrecidas = new ArrayList<>();
 
       for (Transaction transaccion : Transacciones) {
-        if (transaccion.getUser1().equals(usuario)||transaccion.getUser2().equals(usuario)) {
+        if (transaccion.getUser1().equals(usuario) || transaccion.getUser2().equals(usuario)) {
 
           ofrecidas.add(transaccion);
 
@@ -237,7 +240,7 @@ public class PortalController {
           List<Transaction> ofrecidas = new ArrayList<>();
 
           for (Transaction transaccion : Transacciones) {
-            if (transaccion.getUser1().equals(usuario)||transaccion.getUser2().equals(usuario)) {
+            if (transaccion.getUser1().equals(usuario) || transaccion.getUser2().equals(usuario)) {
 
               ofrecidas.add(transaccion);
 
@@ -272,7 +275,7 @@ public class PortalController {
         modelo.put("error", "Tu email ya ha sido verificado anteriormente. Iniciá Sesión para continuar");
         return "login";
       } else {
-//        usuarioServicio.EmailVerificado(id);
+        usuarioServicio.setEmailVerifySuccess(id);
         modelo.put("bienvenida", "Tu email ha sido verificado correctamente! Iniciá Sesión para continuar");
         return "login";
       }
@@ -294,7 +297,6 @@ public class PortalController {
     System.out.println(numeroCasa);
     System.out.println(telefono);
 
-    Boolean exito = false;
 
 
     Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -303,9 +305,9 @@ public class PortalController {
       User usuario = usuariorepositorio.getUserByEmail(username);
 
       System.out.println(usuario.getEmail());
-      //        usuarioServicio.(perfil, dni, usuario.getId(), calle, numeroCasa, telefono);
-//        usuarioServicio.enviarMailVerificacion(usuario.getId());
-return "user_home";
+      usuarioServicio.completeUser(perfil, dni, usuario.getId(), calle, numeroCasa, telefono);
+      usuarioServicio.sendEmailVerification(usuario.getId());
+      return "user_home";
     }
 
 

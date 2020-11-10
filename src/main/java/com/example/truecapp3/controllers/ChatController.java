@@ -32,7 +32,6 @@ import java.util.Map;
 public class ChatController {
   @Autowired
   SimpMessagingTemplate simpMessagingTemplate;
-
   @Autowired
   MessageService messageService;
   @Autowired
@@ -58,7 +57,7 @@ public class ChatController {
 
   }
 
-
+  @PreAuthorize("hasAnyRole('ROLE_CLIENT')")
   @GetMapping("/chat")
   public String showChatPage(ModelMap model, @RequestParam(value = "sendTo", required = false) String receiverEmail) {
     Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -67,15 +66,18 @@ public class ChatController {
     User currentUser;
     User receiverUser = new User();
 
+
     try {
       currentUser = userService.getActiveUserByEmail(currentUserEmail);
     } catch (Exception error) {
       model.put("error", error.getMessage());
       return "error";
     }
-    try {
-      receiverUser = userService.getActiveUserByEmail(receiverEmail);
-    } catch (Exception ignored) {
+    if (!receiverEmail.equals(currentUserEmail)) {
+      try {
+        receiverUser = userService.getActiveUserByEmail(receiverEmail);
+      } catch (Exception ignored) {
+      }
     }
 
     String currentUserId = currentUser.getId();
@@ -93,7 +95,10 @@ public class ChatController {
 
     Map<String, Integer> contactsAndUnread = new HashMap<>();
     List<String> contacts = new ArrayList<>();
-    contacts.add(receiverEmail);
+    if (!receiverEmail.equals(currentUserEmail)) {
+      contacts.add(receiverEmail);
+    }
+
     contacts.addAll(messageService.findAllContactsEmail(currentUserId));
     for (String contact : contacts) {
       try {
