@@ -73,7 +73,9 @@ public class ChatController {
       model.put("error", error.getMessage());
       return "error";
     }
-    if (!receiverEmail.equals(currentUserEmail)) {
+    final boolean validReceiverEmail = receiverEmail != null && !receiverEmail.equals("")
+                                       && !receiverEmail.equals(currentUserEmail);
+    if (validReceiverEmail) {
       try {
         receiverUser = userService.getActiveUserByEmail(receiverEmail);
       } catch (Exception ignored) {
@@ -95,7 +97,7 @@ public class ChatController {
 
     Map<String, Integer> contactsAndUnread = new HashMap<>();
     List<String> contacts = new ArrayList<>();
-    if (!receiverEmail.equals(currentUserEmail)) {
+    if (validReceiverEmail) {
       contacts.add(receiverEmail);
     }
 
