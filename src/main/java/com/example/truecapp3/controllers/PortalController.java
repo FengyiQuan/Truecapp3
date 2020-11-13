@@ -1,21 +1,25 @@
 package com.example.truecapp3.controllers;
 
 import com.example.truecapp3.errors.ServiceError;
+import com.example.truecapp3.models.Area;
 import com.example.truecapp3.models.Transaction;
 import com.example.truecapp3.models.User;
 import com.example.truecapp3.repositories.ObjectRepository;
 import com.example.truecapp3.repositories.TransactionRepository;
 import com.example.truecapp3.repositories.UserRepository;
+import com.example.truecapp3.services.AreaService;
 import com.example.truecapp3.services.CreditService;
 import com.example.truecapp3.services.ObjectService;
 import com.example.truecapp3.services.PhotoService;
 import com.example.truecapp3.services.UserService;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -44,6 +48,8 @@ public class PortalController {
   CreditService creditoServicio;
   @Autowired
   ObjectService productoServicio;
+  @Autowired
+  AreaService areaService;
 
 
   @Autowired
@@ -93,13 +99,14 @@ public class PortalController {
     Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     String username = ((UserDetails) principal).getUsername();
     User usuario = usuariorepositorio.getUserByEmail(username);
+//    modelo.put("currentUser", usuario);
 
     try {
       List<Transaction> Transacciones = usuario.getTransactions();
       List<Transaction> ofrecidas = new ArrayList<>();
 
       for (Transaction transaccion : Transacciones) {
-        if (transaccion.getUser1().equals(usuario) || transaccion.getUser2().equals(usuario)) {
+        if (transaccion.getReceiver().equals(usuario) || transaccion.getSeller().equals(usuario)) {
 
           ofrecidas.add(transaccion);
 
@@ -110,9 +117,8 @@ public class PortalController {
       }
 
 
-    } catch (Exception e) {
+    } catch (Exception ignored) {
     }
-
 
     return "user_home";
   }
@@ -141,7 +147,6 @@ public class PortalController {
 
     return "new_user";
   }
-
 
   @PreAuthorize("hasAnyRole('ROLE_CLIENT')")
   @GetMapping(value = "/tiendahome")
@@ -240,7 +245,8 @@ public class PortalController {
           List<Transaction> ofrecidas = new ArrayList<>();
 
           for (Transaction transaccion : Transacciones) {
-            if (transaccion.getUser1().equals(usuario) || transaccion.getUser2().equals(usuario)) {
+            if (transaccion.getSeller().equals(usuario)
+                || transaccion.getReceiver().equals(usuario)) {
 
               ofrecidas.add(transaccion);
 
@@ -251,7 +257,7 @@ public class PortalController {
           }
 
 
-        } catch (Exception e) {
+        } catch (Exception ignored) {
         }
 
 
@@ -291,21 +297,26 @@ public class PortalController {
 
 
   @PostMapping("/completarRegistro")
-  public String completarRegistro(ModelMap modelo, @RequestParam(required = false) String calle, @RequestParam(required = false) String numeroCasa, @RequestParam(required = false) MultipartFile perfil, @RequestParam(required = false) MultipartFile dni, @RequestParam(required = false) String telefono) throws ServiceError {
-
-    System.out.println(calle);
-    System.out.println(numeroCasa);
-    System.out.println(telefono);
-
-
+  public String completarRegistro(ModelMap modelo, @RequestParam String calle,
+                                  @RequestParam String numeroCasa,
+                                  @RequestParam(required = false) MultipartFile perfil,
+                                  @RequestParam(required = false) MultipartFile dni,
+                                  @RequestParam(required = false) String telefono,
+                                  @RequestParam String areaName,
+                                  @RequestParam String zona,
+                                  @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date dob) throws ServiceError {
 
     Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    System.out.println(dob);
     if (principal instanceof UserDetails) {
       String username = ((UserDetails) principal).getUsername();
       User usuario = usuariorepositorio.getUserByEmail(username);
 
       System.out.println(usuario.getEmail());
-      usuarioServicio.completeUser(perfil, dni, usuario.getId(), calle, numeroCasa, telefono);
+      Area zone = areaService.createArea(areaName, zona);
+
+
+      usuarioServicio.completeUser(perfil, dni, usuario.getId(), calle, numeroCasa, telefono, zone, dob);
       usuarioServicio.sendEmailVerification(usuario.getId());
       return "user_home";
     }

@@ -3,8 +3,8 @@
  */
 
 
-// const url = 'http://localhost:8080';
-const url = 'https://truecapp-demo.herokuapp.com';
+const url = 'http://localhost:8080';
+// const url = 'https://truecapp-demo.herokuapp.com';
 
 const createMessage = (msg) => {
     return fetch(`${url}/api/messages`,

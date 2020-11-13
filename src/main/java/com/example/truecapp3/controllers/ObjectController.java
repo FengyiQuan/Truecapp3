@@ -2,9 +2,12 @@ package com.example.truecapp3.controllers;
 
 import com.example.truecapp3.enums.ObjectCondition;
 import com.example.truecapp3.enums.ObjectType;
+import com.example.truecapp3.models.Area;
+import com.example.truecapp3.models.Category;
 import com.example.truecapp3.models.Object;
 import com.example.truecapp3.models.User;
 import com.example.truecapp3.repositories.UserRepository;
+import com.example.truecapp3.services.CategoryService;
 import com.example.truecapp3.services.CreditService;
 import com.example.truecapp3.services.ObjectService;
 import com.example.truecapp3.services.PhotoService;
@@ -32,6 +35,8 @@ import javax.servlet.http.HttpSession;
 public class ObjectController {
   @Autowired
   UserService usuarioServicio;
+  @Autowired
+  CategoryService categoryService;
 
   @Autowired
   CreditService creditoServicio;
@@ -49,7 +54,7 @@ public class ObjectController {
 
   @PreAuthorize("hasAnyRole('ROLE_CLIENT')")
   @PostMapping("/registrarProducto")
-  public String registrarProducto(HttpSession session, ModelMap modelo, @RequestParam List<MultipartFile> archivos, @RequestParam String titulo, @RequestParam String descripcion) {
+  public String registrarProducto(HttpSession session, ModelMap modelo, @RequestParam List<MultipartFile> archivos, @RequestParam String titulo, @RequestParam String descripcion, @RequestParam String categoria) {
 
     java.lang.Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     if (principal instanceof UserDetails) {
@@ -59,13 +64,12 @@ public class ObjectController {
       String idUsuario = usuario.getId();
 
       try {
-
         ObjectCondition condicion = ObjectCondition.NEW;
         ObjectType type = ObjectType.PRODUCT;
-        String areaId = usuario.getArea().getId();
-        String categoriaID = "0";
-        Object producto = productoServicio.addObject(idUsuario, condicion, categoriaID, archivos, titulo, descripcion, type, areaId);
-//                usuarioServicio.cargarProducto(idUsuario, producto.getId());
+        Area area = usuario.getArea();
+        Category category = categoryService.createCategory(categoria);
+        String categoriaID = category.getId();
+        Object producto = productoServicio.addObject(idUsuario, condicion, categoriaID, archivos, titulo, descripcion, type, area);
 
       } catch (Exception ex) {
 
@@ -100,9 +104,9 @@ public class ObjectController {
 
         ObjectCondition condicion = ObjectCondition.NEW;
         ObjectType type = ObjectType.PRODUCT;
-        String areaId = usuario.getArea().getId();
+        Area area = usuario.getArea();
         String categoriaID = "0";
-        Object producto = productoServicio.modifyObject(idUsuario, idProducto, condicion, categoriaID, archivos, titulo, descripcion, type, areaId);
+        Object producto = productoServicio.modifyObject(idUsuario, idProducto, condicion, categoriaID, archivos, titulo, descripcion, type, area);
 //                usuarioServicio.cargarProducto(idUsuario, producto.getId());
 
       } catch (Exception ex) {
@@ -137,7 +141,7 @@ public class ObjectController {
 
       try {
 
-       productoServicio.deleteById(idUsuario, idProducto);
+        productoServicio.deleteById(idUsuario, idProducto);
 //                usuarioServicio.cargarProducto(idUsuario, producto.getId());
 
       } catch (Exception ex) {

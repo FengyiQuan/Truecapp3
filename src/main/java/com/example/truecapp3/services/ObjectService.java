@@ -46,7 +46,7 @@ public class ObjectService {
   }
 
   private void validate(String userId, String title, String description, ObjectCondition condition,
-                        String categoryId, ObjectType objectType, String areaId) throws ServiceError {
+                        String categoryId, ObjectType objectType) throws ServiceError {
     if (userId == null || userId.isEmpty()) {
       throw new ServiceError("Invalid user id.");
     }
@@ -68,24 +68,24 @@ public class ObjectService {
     if (objectType == null) {
       throw new ServiceError("object type cannot be null.");
     }
-    if (areaId == null || areaId.isEmpty()) {
-      throw new ServiceError("invalid area id.");
-    }
+
   }
 
   @Transactional
   public Object addObject(String userId, ObjectCondition condition, String categoryId, List<MultipartFile> files,
-                          String title, String description, ObjectType objectType, String areaId) throws ServiceError {
+                          String title, String description, ObjectType objectType, Area area) throws ServiceError {
     try {
-      validate(userId, title, description, condition, categoryId, objectType, areaId);
+      validate(userId, title, description, condition, categoryId, objectType);
 
       Object newObject = new Object();
       newObject.setDescription(description);
       newObject.setCategory(cs.getCategoryById(categoryId));
       newObject.setObjectCondition(condition);
-      newObject.setProductArea(as.getAreaById(areaId));
+      newObject.setProductArea(area);
       newObject.setObjectCondition(condition);
+      newObject.setObjectType(objectType);
       newObject.setTitle(title);
+      newObject.setOwner(us.getActiveUserById(userId));
       List<Photo> photos = new ArrayList<>();
       for (MultipartFile obj : files) {
         Photo photo = ps.save(obj);
@@ -94,7 +94,8 @@ public class ObjectService {
       newObject.setPhoto(photos);
 
       Object object = or.save(newObject);
-      us.bindObject(userId, object.getId());
+      us.bindObject(userId,newObject.getId());
+
       return object;
     } catch (ServiceError e) {
       throw new ServiceError("Operación Interrumpida");
@@ -105,14 +106,14 @@ public class ObjectService {
   @Transactional
   public Object modifyObject(String objectId, String userId, ObjectCondition condition, String categoryId,
                              List<MultipartFile> files, String title, String description, ObjectType objectType,
-                             String areaId) throws ServiceError {
+                             Area area) throws ServiceError {
     if (objectId == null || objectId.isEmpty()) {
       throw new ServiceError("invalid objectId.");
     }
     try {
       Object object = getObjectById(objectId);
       if (object.getOwner().equals(us.getActiveUserById(userId))) {
-        return addObject(userId, condition, categoryId, files, title, description, objectType, areaId);
+        return addObject(userId, condition, categoryId, files, title, description, objectType, area);
       } else {
         throw new ServiceError("No Tienes Los Permisos Para Realizar Esa Acción");
       }

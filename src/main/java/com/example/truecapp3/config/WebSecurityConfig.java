@@ -42,7 +42,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             .formLogin().loginPage("/login").loginProcessingUrl("/logincheck").usernameParameter("username").passwordParameter("password").defaultSuccessUrl("/Inicio").permitAll().permitAll().and()
             .logout().logoutUrl("/logout").logoutSuccessUrl("/").permitAll().and()
             .csrf().disable()
-            .sessionManagement().maximumSessions(1).maxSessionsPreventsLogin(true);
+            .sessionManagement().maximumSessions(1);
 
   }
 }

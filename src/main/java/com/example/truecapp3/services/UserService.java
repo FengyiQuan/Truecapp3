@@ -117,9 +117,10 @@ public class UserService implements UserDetailsService {
     notificationService.sendMail("Bienvenidos a nuestra plataforma", user);
     return saveUser;
   }
+
   @Transactional
   public void completeUser(MultipartFile fotoPerfil, MultipartFile fotoDNI, String id,
-                           String calle, String numeroCasa, String telefono) throws ServiceError {
+                           String calle, String numeroCasa, String telefono, Area area, Date dob) throws ServiceError {
     //validar(nombre, apellido, "0", mail,clave);
 //        if (!clave.equals(clave2)) {
 //           throw new ErrorServicio("Las contraseñas deben coincidir");
@@ -135,6 +136,10 @@ public class UserService implements UserDetailsService {
 
       usuario.setStreet(calle);
       usuario.setAptNumber(numeroCasa);
+      usuario.setBirthday(dob);
+
+//      Area area = areaService.createArea(areaName, provinceOrState);
+      usuario.setArea(area);
 
       if (!fotoPerfil.isEmpty()) {
         Photo foto = photoService.save(fotoPerfil);
@@ -285,8 +290,6 @@ public class UserService implements UserDetailsService {
     User user = getActiveUserById(ID);
     userRepository.verifySuccessById(user.getId());
   }
-
-
 
 
   @Transactional
