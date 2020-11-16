@@ -54,7 +54,13 @@ public class ObjectController {
 
   @PreAuthorize("hasAnyRole('ROLE_CLIENT')")
   @PostMapping("/registrarProducto")
-  public String registrarProducto(HttpSession session, ModelMap modelo, @RequestParam List<MultipartFile> archivos, @RequestParam String titulo, @RequestParam String descripcion, @RequestParam String categoria) {
+  public String registrarProducto(HttpSession session, ModelMap modelo,
+                                  @RequestParam String condicion,
+                                  @RequestParam String type,
+                                  @RequestParam(required = false) List<MultipartFile> archivos,
+                                  @RequestParam String titulo,
+                                  @RequestParam String descripcion,
+                                  @RequestParam String categoria) {
 
     java.lang.Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     if (principal instanceof UserDetails) {
@@ -64,12 +70,35 @@ public class ObjectController {
       String idUsuario = usuario.getId();
 
       try {
-        ObjectCondition condicion = ObjectCondition.NEW;
-        ObjectType type = ObjectType.PRODUCT;
+
         Area area = usuario.getArea();
         Category category = categoryService.createCategory(categoria);
         String categoriaID = category.getId();
-        Object producto = productoServicio.addObject(idUsuario, condicion, categoriaID, archivos, titulo, descripcion, type, area);
+        ObjectType objectType = ObjectType.PRODUCT;
+        switch (type) {
+          case "service":
+            objectType = ObjectType.SERVICE;
+            break;
+          case "product":
+            objectType = ObjectType.PRODUCT;
+            break;
+          default:
+        }
+        ObjectCondition objectCondition = ObjectCondition.WITH_DETAILS;
+        switch (type) {
+          case "new":
+            objectCondition = ObjectCondition.NEW;
+            break;
+          case "like new":
+            objectCondition = ObjectCondition.OPEN_BOX;
+            break;
+          case "used":
+            objectCondition = ObjectCondition.USED;
+            break;
+          default:
+        }
+
+        Object producto = productoServicio.addObject(idUsuario, objectCondition, categoriaID, archivos, titulo, descripcion, objectType, area);
 
       } catch (Exception ex) {
 

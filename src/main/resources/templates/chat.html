@@ -75,8 +75,8 @@
                 <div class="card-header msg_head">
                     <div class="d-flex bd-highlight">
                         <div class="img_cont">
-                            <img src="https://static.turbosquid.com/Preview/001292/481/WV/_D.jpg"
-                                 class="rounded-circle user_img">
+                            <img th:src="@{'/fotoPerfil/'+${receiver.id}}"
+                                 class="rounded-circle user_img_msg">
                             <span class="online_icon"></span>
                         </div>
                         <div class="user_info" th:text="${receiver.name}"></div>
@@ -90,8 +90,8 @@
                              th:classappend="${msg.sender eq sender} ? 'justify-content-end' : 'justify-content-start'">
                             <div th:if="${msg.sender eq receiver}"
                                  class="img_cont_msg">
-                                <img src="https://static.turbosquid.com/Preview/001292/481/WV/_D.jpg"
-                                     class="rounded-circle user_img_msg"/>
+                                <img th:src="@{'/fotoPerfil/'+${receiver.id}}"
+                                     class="rounded-circle user_img_msg">
                             </div>
                             <div th:classappend="${msg.sender eq sender} ? 'msg_container_current' : 'msg_container_other'">
                                 <span th:text="${msg.content}"></span>
@@ -99,8 +99,8 @@
                             </div>
                             <div th:if="${msg.sender eq sender}"
                                  class="img_cont_msg">
-                                <img src="https://static.turbosquid.com/Preview/001292/481/WV/_D.jpg"
-                                     class="rounded-circle user_img_msg"/>
+                                <img th:src="@{'/fotoPerfil/'+${sender.id}}"
+                                     class="rounded-circle user_img_msg">
                             </div>
                         </div>
                     </div>

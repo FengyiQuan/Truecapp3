@@ -57,20 +57,20 @@ function showRecentMessageSender(msg) {
 }
 
 function showRecentMessageReceiver(msg) {
-    console.log(currentUser.email);
-    console.log(msg.receiver.email);
-    console.log(checkIfNewConnection(msg.receiver.email));
-    console.log(contacts);
+    // console.log(currentUser.email);
+    // console.log(msg.receiver.email);
+    // console.log(checkIfNewConnection(msg.receiver.email));
+    // console.log(contacts);
     if (checkIfNewConnection(msg.receiver.email)) {
-        console.log('check is true');
+        // console.log('check is true');
         $("#contacts")
             .append(
                 '<li>'
                 + '<a class="d-flex bd-highlight" href='
                 + '"/chat?sendTo=' + msg.receiver.email + '">'
                 + '<div class="img_cont">'
-                + '<img src="https://static.turbosquid.com/Preview/001292/481/WV/_D.jpg"'
-                + ' class="rounded-circle user_img">'
+                + '<img src="/fotoPerfil/'  + receiver.id + '"'
+                + ' class="rounded-circle user_img_msg">'
                 + '<span class="online_icon"></span>'
                 + '</div>'
                 + '<div class="user_info">'
@@ -90,7 +90,8 @@ function showRecentMessageReceiver(msg) {
             .append(
                 '<div class="d-flex mb-4 justify-content-start">'
                 + '<div class="img_cont_msg">'
-                + '<img src="https://static.turbosquid.com/Preview/001292/481/WV/_D.jpg" class="rounded-circle user_img_msg"/>'
+                + '<img src="/fotoPerfil/' + currentUser.id + '"'
+                + ' class="rounded-circle user_img_msg">'
                 + '</div>'
                 + '<div class="msg_container_other">'
                 + '<span>' + msg.content + '</span>'

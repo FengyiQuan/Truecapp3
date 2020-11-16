@@ -17,10 +17,10 @@
                                     <div class="row align-items-center">
                                         <div class="col-auto">
                                             <span class="avatar avatar-sm bg-primary rounded-circle">
-                                                <img th:src="@{'/fotoPerfil/'+${producto.usuario.id}}">
+                                                <img th:src="@{'/fotoPerfil/'+${producto.owner.id}}">
                                             </span> 
                                             <span class="text-sm mb-0 avatar-content">
-                                                <td th:text="${producto.usuario.nombre+ ' ' + producto.usuario.apellido}"></td>
+                                                <td th:text="${producto.owner.name+ ' ' + producto.owner.lastName}"></td>
                                             </span>
                                         </div>
                                     </div> 
@@ -28,7 +28,7 @@
                                         <select href="#" class="btn custom-select btn-s btn-neutral btn-icon"
                                             id="iniciarOferta" action="/iniciarOferta" method="POST" enctype="multipart/form-data">
                                                 <option selected>Truecar</option>
-                                                <option><td th:text="${productosU.titulo}" th:value="${productosU.id}" name="idProducto1"></option>
+                                                <option><td th:text="${productosU.title}" th:value="${productosU.id}" name="idProducto1"></option>
                                         </select>
                                     </div>
                                 </div>
