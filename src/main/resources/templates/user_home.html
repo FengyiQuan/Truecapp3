@@ -96,8 +96,6 @@
                         </a>
                     </div>
                 </div>
-                <br>
-                <label class="form-control-label">Editar descripción</label>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-primary">Guardar Cambios</button>
@@ -325,9 +323,9 @@
                                 <div class=card-body>
                                     <div class="row align-items-center">
                                         <div class="col-12 text-center">
-                                            <span class="h1 display-4 mb-0">4</span>
-                                            <span class="h6 d-block font-weight-light text-body">Créditos
-                                                    Disponibles</span>
+                                            <span class="h1 display-4 mb-0" th:text="${currentCreditsCount}"></span>
+                                            <span class="h6 d-block font-weight-light text-body">
+                                                Créditos Disponibles</span>
                                         </div>
                                     </div>
                                     <hr class=my-3>
@@ -405,7 +403,9 @@
                                 <div class=card-body>
                                     <div class="row align-items-center">
                                         <div class="col-12 text-center">
-                                            <span class="h1 display-4 mb-0">10</span>
+                                            <span class="h1 display-4 mb-0"
+                                                  th:text="${successfulTradesCount}">
+                                                  </span>
                                             <span class="h6 d-block font-weight-light text-body">
                                                     Trueques Exitosos
                                                 </span>
@@ -453,7 +453,7 @@
                                                 <div class="col ml-n2">
                                                     <h6 class="text-sm mb-0">
                                                         <td th:if="${transaccion!=null}"
-                                                            th:text="${transaccion.usuariosInvolucrados[0].nombre  + ' Quiere permutar tu '+transaccion.productoReceptor.titulo+' por su ' + transaccion.productoEmisor.titulo }"
+                                                            th:text="${transaccion.usuariosInvolucrados[0].name  + ' Quiere permutar tu '+transaccion.productoReceptor.titulo+' por su ' + transaccion.productoEmisor.titulo }"
                                                             th:value="${transaccion.productoEmisor.id}"
                                                             name="idProducto1"></td>
                                                     </h6>

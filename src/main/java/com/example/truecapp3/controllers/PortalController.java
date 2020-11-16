@@ -99,6 +99,9 @@ public class PortalController {
     Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     String username = ((UserDetails) principal).getUsername();
     User usuario = usuariorepositorio.getUserByEmail(username);
+    modelo.addAttribute("currentCreditsCount",usuario.getCurrentCreditsCount());
+
+    modelo.addAttribute("successfulTradesCount",usuario.getSuccessfulTradesCount());
 //    modelo.put("currentUser", usuario);
 
     try {
