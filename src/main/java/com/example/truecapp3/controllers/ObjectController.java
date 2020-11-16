@@ -85,7 +85,7 @@ public class ObjectController {
           default:
         }
         ObjectCondition objectCondition = ObjectCondition.WITH_DETAILS;
-        switch (type) {
+        switch (condicion) {
           case "new":
             objectCondition = ObjectCondition.NEW;
             break;
