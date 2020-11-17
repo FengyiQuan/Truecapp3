@@ -123,6 +123,7 @@ public class PortalController {
     } catch (Exception ignored) {
     }
 
+
     return "user_home";
   }
 
