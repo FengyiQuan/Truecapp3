@@ -47,12 +47,9 @@ public class User implements Serializable {
   private String email;
   @JsonIgnore
   private String password;
-  @OneToMany
+  @OneToMany(mappedBy = "owner")
   @JsonIgnore
-  private List<Object> products;
-  @OneToMany
-  @JsonIgnore
-  private List<Object> services;
+  private List<Object> objects;
   @OneToOne
   @JsonIgnore
   private Photo profilePic;
@@ -79,9 +76,6 @@ public class User implements Serializable {
   private Date deleteUser;
   @OneToMany
   @JsonIgnore
-  private List<Transaction> transactions;
-  @OneToMany
-  @JsonIgnore
   private List<Notification> notifications;
   private boolean emailVerified;
   private boolean isFirstTime;
@@ -91,7 +85,7 @@ public class User implements Serializable {
     return emailVerified && idPic != null && deleteUser == null;
   }
 
-  public User(String name, String lastName, String street, String aptNumber, Area area, String cellphone, Date birthday, String email, String password, List<Object> products, List<Object> services, Photo profilePic, Photo idPic, List<Credit> credits, int currentCreditsCount, List<Rating> ratings, int successfulTradesCount, List<Donation> donations, UserType userType, Date newUser, Date deleteUser, List<Transaction> transactions, List<Notification> notifications, boolean emailVerified, boolean isFirstTime) {
+  public User(String name, String lastName, String street, String aptNumber, Area area, String cellphone, Date birthday, String email, String password, List<Object> objects, Photo profilePic, Photo idPic, List<Credit> credits, int currentCreditsCount, List<Rating> ratings, int successfulTradesCount, List<Donation> donations, UserType userType, Date newUser, Date deleteUser,  List<Notification> notifications, boolean emailVerified, boolean isFirstTime) {
     this.name = name;
     this.lastName = lastName;
     this.street = street;
@@ -101,8 +95,7 @@ public class User implements Serializable {
     this.birthday = birthday;
     this.email = email;
     this.password = password;
-    this.products = products;
-    this.services = services;
+    this.objects = objects;
     this.profilePic = profilePic;
     this.idPic = idPic;
     this.credits = credits;
@@ -113,7 +106,6 @@ public class User implements Serializable {
     this.userType = userType;
     this.newUser = newUser;
     this.deleteUser = deleteUser;
-    this.transactions = transactions;
     this.notifications = notifications;
     this.emailVerified = emailVerified;
     this.isFirstTime = isFirstTime;
@@ -122,18 +114,15 @@ public class User implements Serializable {
   public User() {
     this.isFirstTime = true;
     this.emailVerified = false;
-    this.products = new ArrayList<>();
-    this.services = new ArrayList<>();
+    this.objects = new ArrayList<>();
     this.credits = new ArrayList<>();
     this.currentCreditsCount = 0;
     this.successfulTradesCount = 0;
     this.ratings = new ArrayList<>();
     this.donations = new ArrayList<>();
     this.notifications = new ArrayList<>();
-    this.transactions = new ArrayList<>();
     this.userType = UserType.CLIENT;
   }
-
 
 
   public int getCurrentCreditsCount() {
@@ -217,20 +206,12 @@ public class User implements Serializable {
     this.password = password;
   }
 
-  public List<Object> getProducts() {
-    return products;
+  public List<Object> getObjects() {
+    return objects;
   }
 
-  public void setProducts(List<Object> products) {
-    this.products = products;
-  }
-
-  public List<Object> getServices() {
-    return services;
-  }
-
-  public void setServices(List<Object> services) {
-    this.services = services;
+  public void setObjects(List<Object> objects) {
+    this.objects = objects;
   }
 
   public Photo getProfilePic() {
@@ -306,13 +287,6 @@ public class User implements Serializable {
   }
 
 
-  public List<Transaction> getTransactions() {
-    return transactions;
-  }
-
-  public void setTransactions(List<Transaction> transactions) {
-    this.transactions = transactions;
-  }
 
   public Area getArea() {
     return area;

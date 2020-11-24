@@ -33,7 +33,7 @@ public class PhotoController {
 
   @GetMapping("fotoPerfil/{id}")
   public ResponseEntity<byte[]> fotoPerfil(@PathVariable String id) throws ServiceError {
-    System.out.println(id);
+//    System.out.println(id);
     User usuario = usuarioServicio.getActiveUserById(id);
 
     Photo foto = usuario.getProfilePic();
@@ -48,6 +48,25 @@ public class PhotoController {
     }
     return null;
   }
+
+  @GetMapping("fotoDni/{id}")
+  public ResponseEntity<byte[]> fotoDni(@PathVariable String id) throws ServiceError {
+//    System.out.println(id);
+    User usuario = usuarioServicio.getActiveUserById(id);
+
+    Photo foto = usuario.getIdPic();
+
+    if (foto != null) {
+      final HttpHeaders headers = new HttpHeaders();
+
+      headers.setContentType(MediaType.IMAGE_JPEG);
+
+      return new ResponseEntity<>(foto.getContent(), headers, HttpStatus.OK);
+
+    }
+    return null;
+  }
+
 
 
   @GetMapping("fotoProducto/{id}")

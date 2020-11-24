@@ -51,9 +51,9 @@ public class Transaction {
   private Object receiverObject;
   private String message;
   @OneToOne
-  private Rating user1;
+  private Rating sellerRating;
   @OneToOne
-  private Rating user2;
+  private Rating receiverRating;
   @Enumerated(EnumType.STRING)
   private TransactionState state;
   @Enumerated(EnumType.STRING)
@@ -62,9 +62,9 @@ public class Transaction {
 
   public boolean isComplete() {
     return seller != null && receiver != null && area != null && transactionDate != null &&
-           deliveryDate != null && offerDate != null && cancelDate != null && sellerObject != null
-           && receiverObject != null && message != null && user1 != null && user2 != null
-           && state != null && typeOfTransaction != null;
+           deliveryDate != null && offerDate != null && sellerObject != null
+           && receiverObject != null && message != null && state != null
+           && typeOfTransaction != null;
   }
 
 
@@ -125,20 +125,20 @@ public class Transaction {
     this.message = message;
   }
 
-  public Rating getUser1() {
-    return user1;
+  public Rating getSellerRating() {
+    return sellerRating;
   }
 
-  public void setUser1(Rating user1) {
-    this.user1 = user1;
+  public void setSellerRating(Rating sellerRating) {
+    this.sellerRating = sellerRating;
   }
 
-  public Rating getUser2() {
-    return user2;
+  public Rating getReceiverRating() {
+    return receiverRating;
   }
 
-  public void setUser2(Rating user2) {
-    this.user2 = user2;
+  public void setReceiverRating(Rating receiverRating) {
+    this.receiverRating = receiverRating;
   }
 
   public TransactionState getState() {
@@ -190,7 +190,7 @@ public class Transaction {
   }
 
   public Transaction(User seller, User receiver, Area area, Date transactionDate, Object sellerObject,
-                     Object receiverObject, Date deliveryDate, String message, Rating user1, Rating user2,
+                     Object receiverObject, Date deliveryDate, String message, Rating sellerRating, Rating receiverRating,
                      TransactionState state, Date offerDate, Date cancelDate, TransactionType typeOfTransaction) {
     this.seller = seller;
     this.receiver = receiver;
@@ -200,8 +200,8 @@ public class Transaction {
     this.receiverObject = receiverObject;
     this.deliveryDate = deliveryDate;
     this.message = message;
-    this.user1 = user1;
-    this.user2 = user2;
+    this.sellerRating = sellerRating;
+    this.receiverRating = receiverRating;
     this.state = state;
     this.offerDate = offerDate;
     this.cancelDate = cancelDate;

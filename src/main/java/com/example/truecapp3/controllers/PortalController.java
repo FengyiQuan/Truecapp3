@@ -64,6 +64,12 @@ public class PortalController {
   @Autowired
   TransactionRepository transaccionRepositorio;
 
+
+  @GetMapping("test")
+  public String test() {
+    return "test";
+  }
+
   @GetMapping("/")
   public String index(ModelMap modelo) {
     User usuario = null;
@@ -99,13 +105,14 @@ public class PortalController {
     Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     String username = ((UserDetails) principal).getUsername();
     User usuario = usuariorepositorio.getUserByEmail(username);
-    modelo.addAttribute("currentCreditsCount",usuario.getCurrentCreditsCount());
+    modelo.addAttribute("currentCreditsCount", usuario.getCurrentCreditsCount());
 
-    modelo.addAttribute("successfulTradesCount",usuario.getSuccessfulTradesCount());
+    modelo.addAttribute("successfulTradesCount", usuario.getSuccessfulTradesCount());
 //    modelo.put("currentUser", usuario);
 
     try {
-      List<Transaction> Transacciones = usuario.getTransactions();
+      List<Transaction> Transacciones = transaccionRepositorio.getTransactionsByUserId(usuario.getId());
+//              usuario.getTransactions();
       List<Transaction> ofrecidas = new ArrayList<>();
 
       for (Transaction transaccion : Transacciones) {
@@ -159,7 +166,7 @@ public class PortalController {
     Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     String username = ((UserDetails) principal).getUsername();
     User usuario = usuariorepositorio.getUserByEmail(username);
-    modelo.put("productosU", usuario.getProducts());
+    modelo.put("productosU", usuario.getObjects());
     return "user_tiendahome2";
   }
 
@@ -170,7 +177,7 @@ public class PortalController {
     Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     String username = ((UserDetails) principal).getUsername();
     User usuario = usuariorepositorio.getUserByEmail(username);
-    modelo.put("productosU", usuario.getProducts());
+    modelo.put("productosU", usuario.getObjects());
     return "user_tiendahome2";
   }
 
@@ -180,7 +187,7 @@ public class PortalController {
     Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     String username = ((UserDetails) principal).getUsername();
     User usuario = usuariorepositorio.getUserByEmail(username);
-    modelo.put("productos", usuario.getProducts());
+    modelo.put("productos", usuario.getObjects());
     return "user_listaTrueques";
   }
 
@@ -238,6 +245,15 @@ public class PortalController {
       String username = ((UserDetails) principal).getUsername();
       User usuario = usuariorepositorio.getUserByEmail(username);
       boolean isFirst = usuario.isFirstTime();
+      modelo.addAttribute("name", usuario.getName());
+      modelo.addAttribute("lastName", usuario.getLastName());
+      modelo.addAttribute("street", usuario.getStreet());
+      modelo.addAttribute("aptName", usuario.getAptNumber());
+      modelo.addAttribute("dob", usuario.getBirthday());
+      modelo.addAttribute("cellphone", usuario.getCellphone());
+
+      modelo.addAttribute("area", usuario.getArea());
+//                                  != null ? usuario.getArea() : new Area());
 
 
       if (isFirst) {
@@ -245,7 +261,8 @@ public class PortalController {
       } else {
 
         try {
-          List<Transaction> Transacciones = usuario.getTransactions();
+          List<Transaction> Transacciones = transaccionRepositorio.getTransactionsByUserId(usuario.getId());
+//                  usuario.getTransactions();
           List<Transaction> ofrecidas = new ArrayList<>();
 
           for (Transaction transaccion : Transacciones) {
@@ -330,16 +347,35 @@ public class PortalController {
   }
 
   @PreAuthorize("hasAnyRole('ROLE_CLIENT')")
-  @GetMapping(value = "/delete/{id}")
-  public String eliminarListaProducto(@PathVariable(value = "id") String idProducto) throws ServiceError {
+  @PostMapping("/editProfile")
+  public String editProfile(ModelMap modelo, @RequestParam String calle,
+                            @RequestParam String numeroCasa,
+                            @RequestParam String name,
+                            @RequestParam String lastName,
+                            @RequestParam(required = false) MultipartFile perfil,
+                            @RequestParam(required = false) MultipartFile dni,
+                            @RequestParam(required = false) String telefono,
+                            @RequestParam(required = false) String areaName,
+                            @RequestParam(required = false) String zona,
+                            @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date dob)
+          throws ServiceError {
+
     Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+//    System.out.println(dob);
     if (principal instanceof UserDetails) {
       String username = ((UserDetails) principal).getUsername();
       User usuario = usuariorepositorio.getUserByEmail(username);
-      String idUsuario = usuario.getId();
-      productoServicio.deleteById(idProducto, idUsuario);
-      System.out.println("Producto Eliminado con exito");
+
+//      System.out.println(usuario.getEmail());
+      Area zone = areaService.createArea(areaName, zona);
+      usuarioServicio.modifyUser(perfil, dni, usuario.getId(), name, lastName, calle, numeroCasa, telefono, dob, zone);
+
+      return "user_home";
     }
-    return "user_listaTrueques";
+
+
+    return "new_user_info";
   }
+
+
 }

@@ -57,11 +57,11 @@
         }, 300)
     })</script>
 
-    <link rel=icon href="assets/img/brand/favicon.png" type="image/png">
-    <link rel=stylesheet href="assets/libs/@fortawesome/fontawesome-free/css/all.min.css">
+    <link rel=icon href="/assets/img/brand/favicon.png" type="image/png">
+    <link rel=stylesheet href="/assets/libs/@fortawesome/fontawesome-free/css/all.min.css">
     <link href="https://fonts.googleapis.com/css?family=Nunito:400,600,700,800|Roboto:400,500,700"
           rel="stylesheet">
-    <link rel="stylesheet" href="assets/css/quick-website.css" id="stylesheet">
+    <link rel="stylesheet" href="/assets/css/quick-website.css" id="stylesheet">
 
 </head>
 
@@ -84,18 +84,155 @@
                 <h4 class="modal-title">Editá tu perfil</h4>
             </div>
             <div class="modal-body">
-                <div class="order-lg-4 ml-lg-3">
-                    <label class="form-control-label">Cambiar foto de Perfil</label>
-                    <div class="input-group">
-                        <input type="file" class="form-control" name="perfil">
-                        <a class="" href=#modal-profile role=button data-toggle=modal>
-                                <span class="avatar rounded-circle">
+                <form action="/editProfile" method="POST"
+                      enctype="multipart/form-data">
+                    <p th:text="${exito}" style="color:green;"></p>
+                    <p th:text="${error}" style="color:red;"></p>
+                    <div class="row mx-n2">
+                        <div class="col-12 col-lg px-2">
+                            <div class="form-group">
+                                <label class="form-control-label">Name</label>
+                                <div class="input-group">
+                                    <input class="form-control form-control" type="text"
+                                           name="name" th:value="${name}" required>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-lg-3 px-2">
+                            <div class="form-group">
+                                <label class="form-control-label">Last name</label>
+                                <div class="input-group">
+                                    <input class="form-control form-control" type="text"
+                                           name="lastName" th:value="${lastName}"
+                                           required>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mx-n2">
+                        <div class="col-12 col-lg px-2">
+                            <div class="form-group">
+                                <label class="form-control-label">Calle</label>
+                                <div class="input-group">
+                                    <input class="form-control form-control" type="text"
+                                           name="calle" th:value="${aptName}" required>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-lg-3 px-2">
+                            <div class="form-group">
+                                <label class="form-control-label">Casa Nº</label>
+                                <div class="input-group">
+                                    <input class="form-control form-control" type="text"
+                                           name="numeroCasa" th:value="${street}"
+                                           required>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mx-n2">
+                        <div class="col-12 col-lg px-2">
+                            <div class="form-group">
+                                <label class="form-control-label">Area</label>
+                                <div class="input-group">
+                                    <input class="form-control form-control" type="text"
+                                           name="areaName" th:value="${area.areaName}"
+                                           required>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-lg-5 px-2">
+                            <div class="form-group">
+                                <label class="form-control-label">Birthday</label>
+                                <div class="input-group">
+                                    <input class="form-control form-control" type="date"
+                                           name="dob" th:value="${dob}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mx-n2">
+                        <div class="col-12 col-lg px-2">
+                            <div class="form-group">
+                                <label class="form-control-label">Teléfono</label>
+                                <div class="input-group">
+                                    <input class="form-control form-control" type="tel"
+                                           name="telefono" th:value="${cellphone}"
+                                           required>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-lg-5 px-2">
+                            <div class="form-group">
+                                <label class="form-control-label">Localidad</label>
+                                <select class="custom-select" name="zona"  required>
+                                    <option  name="departamento">
+                                        Localidad
+                                    </option>
+                                    <option value="Mendoza" th:selected="${area.provinceOrState} eq 'Mendoza'">Mendoza</option>
+                                    <option value="Guaymallén" th:selected="${area.provinceOrState} eq 'Guaymallén'">Guaymallén</option>
+                                    <option value="Godoy Cruz" th:selected="${area.provinceOrState} eq 'Godoy Cruz'">Godoy Cruz</option>
+                                    <option value="Las Heras" th:selected="${area.provinceOrState} eq 'Las Heras'">Las Heras</option>
+                                    <option value="Luján de Cuyo" th:selected="${area.provinceOrState} eq 'Luján de Cuyo'">Luján de Cuyo</option>
+                                    <option value="Maipú" th:selected="${area.provinceOrState} eq 'Maipú'">Maipú</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr class="my-3">
+                    <div class="row mx-n2">
+                        <div class="col-12 col-lg px-2">
+                            <div class="form-group">
+                                <label class="form-control-label">Subí una foto de tu
+                                    DNI</label>
+                                <div class="input-group">
+                                    <input type="file"
+                                           class="form-control btn btn-sm btn-soft-info"
+                                           name="dni"/>
+                                    <span class="avatar rounded-circle">
+                                    <img alt="Perfil3"
+                                         th:src="@{'/fotoDni/'+${session.UsuarioSession.id}}">
+                                </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-lg px-2">
+                            <div class="form-group">
+                                <label class="form-control-label">Subí una foto de
+                                    perfil</label>
+                                <div class="input-group">
+                                    <input type="file"
+                                           class="form-control btn btn-sm btn-soft-info"
+                                           name="perfil"/>
+                                    <span class="avatar rounded-circle">
                                     <img alt="Perfil3"
                                          th:src="@{'/fotoPerfil/'+${session.UsuarioSession.id}}">
                                 </span>
-                        </a>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                </div>
+                    <div class="form-group">
+                        <div class="mt-4">
+                            <button type="submit" class="btn btn-block btn-primary">
+                                Continuar
+                            </button>
+                        </div>
+                    </div>
+                </form>
+<!--                <div class="order-lg-4 ml-lg-3">-->
+<!--                    <label class="form-control-label">Cambiar foto de Perfil</label>-->
+<!--                    <div class="input-group">-->
+<!--                        <input type="file" class="form-control" name="perfil">-->
+<!--                        <a class="" href=#modal-profile role=button data-toggle=modal>-->
+<!--                                <span class="avatar rounded-circle">-->
+<!--                                    <img alt="Perfil3"-->
+<!--                                         th:src="@{'/fotoPerfil/'+${session.UsuarioSession.id}}">-->
+<!--                                </span>-->
+<!--                        </a>-->
+<!--                    </div>-->
+<!--                </div>-->
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-primary">Guardar Cambios</button>
@@ -105,41 +242,7 @@
     </div>
 </div>
 
-<!-- Modal trueque exitoso -->
-<div class="modal modal-light-warning fade" id="modal_trueque" tabindex="-1" role="dialog"
-     aria-labelledby="modal_trueque" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-body">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-                <div class="text-center">
-                    <h5 class="heading h1 text-primary mt-5">¡Trueque confirmado!</h5>
-                    <p class="mt-2">
-                        Estos son los datos para concretarlo en persona
-                    </p>
-                    <div class=mt-5>
-                        <h5 class="heading h5 text-body">
-                            <td th:if="${transaccion!=null}"
-                                th:text="${transaccion.usuariosInvolucrados[0].nombre + ' '+transaccion.usuarioEmisor.apellido}"></td>
-                        </h5>
-                        <hr class="my-3">
-                        <h5 class="heading h6 text-body">
-                            <td th:if="${transaccion !=null}"
-                                th:text="${transaccion.usuariosInvolucrados[0].mail}"></td>
-                        </h5>
-                        <hr class="my-3">
-                        <h5 class="heading h6 text-body">
-                            <td th:if="${transaccion !=null}"
-                                th:text="${transaccion.usuariosInvolucrados[0].telefono}"></td>
-                        </h5>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+
 
 <!-- </div> -->
 <header class="" id=header-main>
@@ -323,7 +426,8 @@
                                 <div class=card-body>
                                     <div class="row align-items-center">
                                         <div class="col-12 text-center">
-                                            <span class="h1 display-4 mb-0" th:text="${currentCreditsCount}"></span>
+                                            <span class="h1 display-4 mb-0"
+                                                  th:text="${currentCreditsCount}"></span>
                                             <span class="h6 d-block font-weight-light text-body">
                                                 Créditos Disponibles</span>
                                         </div>
@@ -446,18 +550,58 @@
                                                 <div class="col-auto">
                                                     <img th:if="${transaccion!=null}"
                                                          alt="Image placeholder"
-                                                         th:src="@{'/fotoPerfil/'+${transaccion.usuariosInvolucrados[0].id }}"
+                                                         th:src="@{'/fotoPerfil/'+${transaccion.seller.id }}"
                                                          class="rounded-circle img-fluid"
                                                          style="width:40px">
                                                 </div>
                                                 <div class="col ml-n2">
                                                     <h6 class="text-sm mb-0">
                                                         <td th:if="${transaccion!=null}"
-                                                            th:text="${transaccion.usuariosInvolucrados[0].name  + ' Quiere permutar tu '+transaccion.productoReceptor.titulo+' por su ' + transaccion.productoEmisor.titulo }"
-                                                            th:value="${transaccion.productoEmisor.id}"
+                                                            th:text="${transaccion.receiver.name  + ' Quiere permutar tu '+transaccion.receiverObject.title+' por su ' + transaccion.sellerObject.title }"
+                                                            th:value="${transaccion.sellerObject.id}"
                                                             name="idProducto1"></td>
                                                     </h6>
                                                 </div>
+
+                                                <!-- Modal trueque exitoso -->
+                                                <div class="modal modal-light-warning fade" id="modal_trueque" tabindex="-1" role="dialog"
+                                                     aria-labelledby="modal_trueque" aria-hidden="true">
+                                                    <div class="modal-dialog modal-dialog-centered" role="document">
+                                                        <div class="modal-content">
+                                                            <div class="modal-body">
+                                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                    <span aria-hidden="true">&times;</span>
+                                                                </button>
+                                                                <div class="text-center">
+                                                                    <h5 class="heading h1 text-primary mt-5">¡Trueque confirmado!</h5>
+                                                                    <p class="mt-2">
+                                                                        Estos son los datos para concretarlo en persona
+                                                                    </p>
+                                                                    <div class=mt-5>
+                                                                        <h5 class="heading h5 text-body">
+                                                                            <td th:if="${transaccion!=null}"
+                                                                                th:text="${transaccion.seller.name + ' '+transaccion.seller.lastName}"></td>
+                                                                        </h5>
+                                                                        <hr class="my-3">
+                                                                        <h5 class="heading h6 text-body">
+                                                                            <td th:if="${transaccion !=null}"
+                                                                                th:text="${transaccion.seller.email}"></td>
+                                                                        </h5>
+                                                                        <hr class="my-3">
+                                                                        <h5 class="heading h6 text-body">
+                                                                            <td th:if="${transaccion !=null}"
+                                                                                th:text="${transaccion.seller.cellphone}"></td>
+                                                                        </h5>
+                                                                    </div>
+
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+
+
                                                 <!-- Botones -->
                                                 <div th:if="${transaccion !=null}"
                                                      class="col col-auto px-2">
@@ -472,17 +616,15 @@
                                                 <div th:if="${transaccion !=null}"
                                                      class="col col-auto px-2">
                                                     <div class="button">
-                                                        <button class="btn btn-xs btn-outline-danger rounded-pill"
+                                                        <a th:href="@{'/rechazar/' + ${transaccion.id}}"
+                                                                class="btn btn-xs btn-outline-danger rounded-pill"
                                                                 type="button"> Rechazar
-                                                        </button>
+                                                        </a>
                                                     </div>
                                                 </div>
                                             </div>
                                         </li>
-
-
                                     </ul>
-                                </tr>
                                 </tr>
                             </div>
                         </div>

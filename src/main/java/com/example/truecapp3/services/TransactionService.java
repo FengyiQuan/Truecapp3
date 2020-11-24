@@ -17,7 +17,6 @@ import javax.mail.MessagingException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -64,6 +63,10 @@ public class TransactionService {
     }
   }
 
+  public List<Transaction> getTransactionsByUserId(String userId){
+    return transactionRepository.getTransactionsByUserId(userId);
+  }
+
   @Transactional
   public Transaction startTransaction(String objeto1id, String objeto2id) throws ServiceError, MessagingException {
     //vaidacion de datos
@@ -95,6 +98,8 @@ public class TransactionService {
       transaccion.setState(TransactionState.STARTED);
 
       transactionRepository.save(transaccion);
+//      userService.bindTransaction(usuario1, transaccion);
+//      userService.bindTransaction(usuario2, transaccion);
 
       //notificacionServicio.enviar(usuario1.getNombre()+" quiere intercambiar su "+productoEmisor.getTitulo()+" por tu "+productoReceptor.getTitulo(), "Alguien se encuentra interesado en hacer un Trueque", usuario2.getMail());
       //notificacionServicio.enviar(usuario1.getNombre()+" quieres intercambiar "+productoEmisor.getTitulo()+" por un "+productoReceptor.getTitulo(), "Pedido de trueque mandado exitosamente", usuario1.getMail());
@@ -111,8 +116,8 @@ public class TransactionService {
 
   @Transactional
   public Transaction createNewTransaction(String sellerId, String receiverId, String sellerObjectId,
-                                          String receiverObjectId, String message, TransactionState state,
-                                          TransactionType type, String areaName, String provinceOrState) throws ServiceError {
+                                          String receiverObjectId, String message,
+                                           String areaName, String provinceOrState) throws ServiceError {
     if (message == null) {
       throw new ServiceError("message cannot be null.");
     }
@@ -130,8 +135,8 @@ public class TransactionService {
     transaction.setMessage(message);
     transaction.setSellerObject(sellerObject);
     transaction.setReceiverObject(receiverObject);
-    transaction.setState(state);
-    transaction.setTypeOfTransaction(type);
+    transaction.setState(TransactionState.NOT_CONFIRMED);
+    transaction.setTypeOfTransaction(TransactionType.BARTER);
     transaction.setArea(area);
 
     return transactionRepository.save(transaction);
@@ -158,6 +163,7 @@ public class TransactionService {
     } else {
       Transaction transaction = getExistTransactionById(transactionId);
       transaction.setDeliveryDate(deliveryDate);
+      transaction.setState(TransactionState.IN_PROCESS);
       return transactionRepository.save(transaction);
     }
   }
@@ -169,6 +175,7 @@ public class TransactionService {
     } else {
       Transaction transaction = getExistTransactionById(transactionId);
       transaction.setOfferDate(offerDate);
+      transaction.setState(TransactionState.IN_PROCESS);
       return transactionRepository.save(transaction);
     }
 
@@ -180,7 +187,8 @@ public class TransactionService {
       throw new ServiceError("date cannot be null.");
     } else {
       Transaction transaction = getExistTransactionById(transactionId);
-      transaction.setOfferDate(cancelDate);
+      transaction.setCancelDate(cancelDate);
+      transaction.setState(TransactionState.CANCELED);
       return transactionRepository.save(transaction);
     }
   }
@@ -189,7 +197,7 @@ public class TransactionService {
   public Transaction addUser1Rating(String transactionId, int star, String msg) throws ServiceError {
     Rating rating = ratingService.createRating(star, msg);
     Transaction transaction = getExistTransactionById(transactionId);
-    transaction.setUser1(rating);
+    transaction.setSellerRating(rating);
     return transactionRepository.save(transaction);
   }
 
@@ -197,7 +205,7 @@ public class TransactionService {
   public Transaction addUser2Rating(String transactionId, int star, String msg) throws ServiceError {
     Rating rating = ratingService.createRating(star, msg);
     Transaction transaction = getExistTransactionById(transactionId);
-    transaction.setUser2(rating);
+    transaction.setReceiverRating(rating);
     return transactionRepository.save(transaction);
   }
 

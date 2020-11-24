@@ -5,6 +5,7 @@ import com.example.truecapp3.errors.ServiceError;
 import com.example.truecapp3.models.Area;
 import com.example.truecapp3.models.Object;
 import com.example.truecapp3.models.Photo;
+import com.example.truecapp3.models.Transaction;
 import com.example.truecapp3.models.User;
 import com.example.truecapp3.repositories.UserRepository;
 
@@ -193,10 +194,10 @@ public class UserService implements UserDetailsService {
 
 
   @Transactional
-  public User modifyUser(String userId, String name, String lastName, String street, String aptNum,
-                         String phone, Date dob) throws ServiceError {
+  public User modifyUser(MultipartFile fotoPerfil, MultipartFile fotoDNI, String userId, String name,
+                         String lastName, String street, String aptNum, String phone, Date dob,
+                         Area area) throws ServiceError {
     Optional<User> optionalUser = userRepository.findById(userId);
-
     if (optionalUser.isPresent()) {
       User user = optionalUser.get();
       user.setName(name);
@@ -205,12 +206,37 @@ public class UserService implements UserDetailsService {
       user.setBirthday(dob);
       user.setStreet(street);
       user.setAptNumber(aptNum);
+      user.setArea(area);
 
+      if (!fotoPerfil.isEmpty()) {
+        Photo foto = photoService.save(fotoPerfil);
+        user.setProfilePic(foto);
+      }
+
+      if (!fotoDNI.isEmpty()) {
+        Photo fotodni = photoService.save(fotoDNI);
+        user.setIdPic(fotodni);
+      }
+      userRepository.save(user);
       return userRepository.save(user);
     } else {
       throw new ServiceError("No se encontró el usuario solicitado");
     }
+
   }
+
+//  @Transactional
+//  public User bindTransaction(User user, Transaction transaction) throws ServiceError {
+//    if (user!=null&&transaction!=null){
+//      List<Transaction> trans = user.getTransactions();
+//      trans.add(transaction);
+//      user.setTransactions(trans);
+//      return userRepository.save(user);
+//    }else{
+//      throw new ServiceError("User or transaction not exists.");
+//    }
+//
+//  }
 
   @Transactional
   public User incrementSuccessfulTradesCount(User user) throws ServiceError {
@@ -257,29 +283,18 @@ public class UserService implements UserDetailsService {
   @Transactional
   public User bindObject(String userId, String productID) throws ServiceError {
     User user = getActiveUserById(userId);
+
     Object object = objectService.getObjectById(productID);
 
-    if (object.getObjectType() == ObjectType.PRODUCT) {
-      List<Object> updatedProducts = user.getProducts();
-      if (updatedProducts.contains(object)) {
-        updatedProducts.remove(object);
-        updatedProducts.add(object);
-      } else {
-        updatedProducts.add(object);
-      }
-      user.setProducts(updatedProducts);
-    } else if (object.getObjectType() == ObjectType.SERVICE) {
-      List<Object> updatedServices = user.getServices();
-      if (updatedServices.contains(object)) {
-        updatedServices.remove(object);
-        updatedServices.add(object);
-      } else {
-        updatedServices.add(object);
-      }
-      user.setServices(updatedServices);
+    List<Object> updatedProducts = user.getObjects();
+    if (updatedProducts.contains(object)) {
+      updatedProducts.remove(object);
+      updatedProducts.add(object);
     } else {
-      throw new ServiceError("Ese Producto no existe");
+      updatedProducts.add(object);
     }
+    user.setObjects(updatedProducts);
+
     return userRepository.save(user);
   }
 
