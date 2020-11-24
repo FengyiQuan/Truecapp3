@@ -62,8 +62,7 @@ public class Transaction {
 
   public boolean isComplete() {
     return seller != null && receiver != null && area != null && transactionDate != null &&
-           deliveryDate != null && offerDate != null && sellerObject != null
-           && receiverObject != null && message != null && state != null
+           offerDate != null && sellerObject != null && receiverObject != null && state != null
            && typeOfTransaction != null;
   }
 

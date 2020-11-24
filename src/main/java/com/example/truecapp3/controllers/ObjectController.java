@@ -2,6 +2,7 @@ package com.example.truecapp3.controllers;
 
 import com.example.truecapp3.enums.ObjectCondition;
 import com.example.truecapp3.enums.ObjectType;
+import com.example.truecapp3.errors.ServiceError;
 import com.example.truecapp3.models.Area;
 import com.example.truecapp3.models.Category;
 import com.example.truecapp3.models.Object;
@@ -19,6 +20,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -184,6 +187,20 @@ public class ObjectController {
     }
 
     return "user_home";
+  }
+
+  @PreAuthorize("hasAnyRole('ROLE_CLIENT')")
+  @GetMapping(value = "/delete/{id}")
+  public String eliminarListaProducto(@PathVariable(value = "id") String idProducto) throws ServiceError {
+    java.lang.Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    if (principal instanceof UserDetails) {
+      String username = ((UserDetails) principal).getUsername();
+      User usuario = usuarioServicio.getActiveUserByEmail(username);
+      String idUsuario = usuario.getId();
+      productoServicio.deleteById(idProducto, idUsuario);
+      System.out.println("Producto Eliminado con exito");
+    }
+    return "user_listaTrueques";
   }
 
 //  @PreAuthorize("hasAnyRole('ROLE_CLIENT')")

@@ -63,20 +63,6 @@ public class TransactionController {
     return "user_tiendahome2";
   }
 
-  @PreAuthorize("hasAnyRole('ROLE_CLIENT')")
-  @GetMapping(value = "/delete/{id}")
-  public String eliminarListaProducto(@PathVariable(value = "id") String idProducto) throws ServiceError {
-    Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-    if (principal instanceof UserDetails) {
-      String username = ((UserDetails) principal).getUsername();
-      User usuario = usuarioServicio.getActiveUserByEmail(username);
-      String idUsuario = usuario.getId();
-      productoServicio.deleteById(idProducto, idUsuario);
-      System.out.println("Producto Eliminado con exito");
-    }
-    return "user_listaTrueques";
-  }
-
   @RequestMapping(value = "/rechazar/{transactionId}", method = RequestMethod.GET)
   public String rechazarTransaction(ModelMap modelo, @PathVariable String transactionId) {
     try {
@@ -91,7 +77,7 @@ public class TransactionController {
   @RequestMapping(value = "/addDeliveryDate/{transactionId}", method = RequestMethod.GET)
   public String addDeliveryDate(ModelMap modelo, @PathVariable String transactionId) {
     try {
-      transaccionServicio.addCancelDate(transactionId, new Date());
+      transaccionServicio.addDeliveryDate(transactionId, new Date());
     } catch (Exception ex) {
       modelo.put("error", ex.getMessage());
       return "new_user";
@@ -102,9 +88,10 @@ public class TransactionController {
   @RequestMapping(value = "/addOfferDate/{transactionId}", method = RequestMethod.GET)
   public String addOfferDate(ModelMap modelo, @PathVariable String transactionId) {
     try {
-      transaccionServicio.addCancelDate(transactionId, new Date());
+      transaccionServicio.addOfferDate(transactionId, new Date());
     } catch (Exception ex) {
       modelo.put("error", ex.getMessage());
+      System.out.println(ex.getMessage());
       return "new_user";
     }
     return "user_tiendahome2";

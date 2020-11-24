@@ -119,7 +119,7 @@ public class UserService implements UserDetailsService {
   }
 
   @Transactional
-  public void completeUser(MultipartFile fotoPerfil, MultipartFile fotoDNI, String id,
+  public User completeUser(MultipartFile fotoPerfil, MultipartFile fotoDNI, String id,
                            String calle, String numeroCasa, String telefono, Area area, Date dob) throws ServiceError {
     //validar(nombre, apellido, "0", mail,clave);
 //        if (!clave.equals(clave2)) {
@@ -151,7 +151,7 @@ public class UserService implements UserDetailsService {
         usuario.setIdPic(fotodni);
       }
       usuario.setFirstTime(false);
-      userRepository.save(usuario);
+      return userRepository.save(usuario);
     } else {
       throw new ServiceError("No se encontró el usuario solicitado");
     }

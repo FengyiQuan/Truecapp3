@@ -43,32 +43,22 @@ import org.springframework.web.multipart.MultipartFile;
 @RequestMapping("/")
 public class PortalController {
   @Autowired
-  UserService usuarioServicio;
+  private UserService usuarioServicio;
   @Autowired
-  CreditService creditoServicio;
+  private CreditService creditoServicio;
   @Autowired
-  ObjectService productoServicio;
+  private ObjectService productoServicio;
   @Autowired
-  AreaService areaService;
-
-
+  private AreaService areaService;
   @Autowired
-  PhotoService fotoServicio;
-
+  private PhotoService fotoServicio;
   @Autowired
-  UserRepository usuariorepositorio;
-
+  private UserRepository usuariorepositorio;
   @Autowired
-  ObjectRepository productorepositorio;
-
+  private ObjectRepository productorepositorio;
   @Autowired
-  TransactionRepository transaccionRepositorio;
+  private TransactionRepository transaccionRepositorio;
 
-
-  @GetMapping("test")
-  public String test() {
-    return "test";
-  }
 
   @GetMapping("/")
   public String index(ModelMap modelo) {
@@ -105,26 +95,22 @@ public class PortalController {
     Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     String username = ((UserDetails) principal).getUsername();
     User usuario = usuariorepositorio.getUserByEmail(username);
+    modelo.addAttribute("name", usuario.getName());
+    modelo.addAttribute("lastName", usuario.getLastName());
+    modelo.addAttribute("street", usuario.getStreet());
+    modelo.addAttribute("aptName", usuario.getAptNumber());
+    modelo.addAttribute("dob", usuario.getBirthday());
+    modelo.addAttribute("cellphone", usuario.getCellphone());
+    modelo.addAttribute("area", usuario.getArea());
     modelo.addAttribute("currentCreditsCount", usuario.getCurrentCreditsCount());
 
     modelo.addAttribute("successfulTradesCount", usuario.getSuccessfulTradesCount());
-//    modelo.put("currentUser", usuario);
 
     try {
-      List<Transaction> Transacciones = transaccionRepositorio.getTransactionsByUserId(usuario.getId());
+      List<Transaction> transacciones = transaccionRepositorio.getTransactionsByUserId(usuario.getId());
 //              usuario.getTransactions();
-      List<Transaction> ofrecidas = new ArrayList<>();
 
-      for (Transaction transaccion : Transacciones) {
-        if (transaccion.getReceiver().equals(usuario) || transaccion.getSeller().equals(usuario)) {
-
-          ofrecidas.add(transaccion);
-
-        }
-        if (!ofrecidas.isEmpty()) {
-          modelo.put("transacciones", ofrecidas);
-        }
-      }
+      modelo.put("transacciones", transacciones);
 
 
     } catch (Exception ignored) {
@@ -251,9 +237,7 @@ public class PortalController {
       modelo.addAttribute("aptName", usuario.getAptNumber());
       modelo.addAttribute("dob", usuario.getBirthday());
       modelo.addAttribute("cellphone", usuario.getCellphone());
-
       modelo.addAttribute("area", usuario.getArea());
-//                                  != null ? usuario.getArea() : new Area());
 
 
       if (isFirst) {
@@ -337,8 +321,16 @@ public class PortalController {
       Area zone = areaService.createArea(areaName, zona);
 
 
-      usuarioServicio.completeUser(perfil, dni, usuario.getId(), calle, numeroCasa, telefono, zone, dob);
+      User newUser = usuarioServicio.completeUser(perfil, dni, usuario.getId(), calle, numeroCasa, telefono, zone, dob);
       usuarioServicio.sendEmailVerification(usuario.getId());
+
+      modelo.addAttribute("name", newUser.getName());
+      modelo.addAttribute("lastName", newUser.getLastName());
+      modelo.addAttribute("street", newUser.getStreet());
+      modelo.addAttribute("aptName", newUser.getAptNumber());
+      modelo.addAttribute("dob", newUser.getBirthday());
+      modelo.addAttribute("cellphone", newUser.getCellphone());
+      modelo.addAttribute("area", newUser.getArea());
       return "user_home";
     }
 
@@ -368,8 +360,16 @@ public class PortalController {
 
 //      System.out.println(usuario.getEmail());
       Area zone = areaService.createArea(areaName, zona);
-      usuarioServicio.modifyUser(perfil, dni, usuario.getId(), name, lastName, calle, numeroCasa, telefono, dob, zone);
+      System.out.println(zone.getAreaName());
+      User newUser = usuarioServicio.modifyUser(perfil, dni, usuario.getId(), name, lastName, calle, numeroCasa, telefono, dob, zone);
 
+      modelo.addAttribute("name", newUser.getName());
+      modelo.addAttribute("lastName", newUser.getLastName());
+      modelo.addAttribute("street", newUser.getStreet());
+      modelo.addAttribute("aptName", newUser.getAptNumber());
+      modelo.addAttribute("dob", newUser.getBirthday());
+      modelo.addAttribute("cellphone", newUser.getCellphone());
+      modelo.addAttribute("area", newUser.getArea());
       return "user_home";
     }
 

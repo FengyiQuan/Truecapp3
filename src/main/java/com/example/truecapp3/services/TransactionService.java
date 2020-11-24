@@ -96,6 +96,7 @@ public class TransactionService {
 
       transaccion.setTypeOfTransaction(TransactionType.BARTER);
       transaccion.setState(TransactionState.STARTED);
+      transaccion.setArea(usuario1.getArea());
 
       transactionRepository.save(transaccion);
 //      userService.bindTransaction(usuario1, transaccion);
@@ -135,7 +136,7 @@ public class TransactionService {
     transaction.setMessage(message);
     transaction.setSellerObject(sellerObject);
     transaction.setReceiverObject(receiverObject);
-    transaction.setState(TransactionState.NOT_CONFIRMED);
+    transaction.setState(TransactionState.STARTED);
     transaction.setTypeOfTransaction(TransactionType.BARTER);
     transaction.setArea(area);
 
@@ -150,6 +151,7 @@ public class TransactionService {
       transaction.setState(TransactionState.FINISHED);
       userService.incrementSuccessfulTradesCount(transaction.getSeller());
       userService.incrementSuccessfulTradesCount(transaction.getReceiver());
+      addDeliveryDate(transactionId,new Date());
       return transactionRepository.save(transaction);
     } else {
       throw new ServiceError("Transaction is not completed.");

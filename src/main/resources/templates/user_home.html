@@ -165,16 +165,33 @@
                         <div class="col-12 col-lg-5 px-2">
                             <div class="form-group">
                                 <label class="form-control-label">Localidad</label>
-                                <select class="custom-select" name="zona"  required>
-                                    <option  name="departamento">
+                                <select class="custom-select" name="zona" required>
+                                    <option name="departamento">
                                         Localidad
                                     </option>
-                                    <option value="Mendoza" th:selected="${area.provinceOrState} eq 'Mendoza'">Mendoza</option>
-                                    <option value="Guaymallén" th:selected="${area.provinceOrState} eq 'Guaymallén'">Guaymallén</option>
-                                    <option value="Godoy Cruz" th:selected="${area.provinceOrState} eq 'Godoy Cruz'">Godoy Cruz</option>
-                                    <option value="Las Heras" th:selected="${area.provinceOrState} eq 'Las Heras'">Las Heras</option>
-                                    <option value="Luján de Cuyo" th:selected="${area.provinceOrState} eq 'Luján de Cuyo'">Luján de Cuyo</option>
-                                    <option value="Maipú" th:selected="${area.provinceOrState} eq 'Maipú'">Maipú</option>
+                                    <option value="Mendoza"
+                                            th:selected="${area.provinceOrState} eq 'Mendoza'">
+                                        Mendoza
+                                    </option>
+                                    <option value="Guaymallén"
+                                            th:selected="${area.provinceOrState} eq 'Guaymallén'">
+                                        Guaymallén
+                                    </option>
+                                    <option value="Godoy Cruz"
+                                            th:selected="${area.provinceOrState} eq 'Godoy Cruz'">
+                                        Godoy Cruz
+                                    </option>
+                                    <option value="Las Heras"
+                                            th:selected="${area.provinceOrState} eq 'Las Heras'">Las
+                                        Heras
+                                    </option>
+                                    <option value="Luján de Cuyo"
+                                            th:selected="${area.provinceOrState} eq 'Luján de Cuyo'">
+                                        Luján de Cuyo
+                                    </option>
+                                    <option value="Maipú"
+                                            th:selected="${area.provinceOrState} eq 'Maipú'">Maipú
+                                    </option>
                                 </select>
                             </div>
                         </div>
@@ -221,18 +238,18 @@
                         </div>
                     </div>
                 </form>
-<!--                <div class="order-lg-4 ml-lg-3">-->
-<!--                    <label class="form-control-label">Cambiar foto de Perfil</label>-->
-<!--                    <div class="input-group">-->
-<!--                        <input type="file" class="form-control" name="perfil">-->
-<!--                        <a class="" href=#modal-profile role=button data-toggle=modal>-->
-<!--                                <span class="avatar rounded-circle">-->
-<!--                                    <img alt="Perfil3"-->
-<!--                                         th:src="@{'/fotoPerfil/'+${session.UsuarioSession.id}}">-->
-<!--                                </span>-->
-<!--                        </a>-->
-<!--                    </div>-->
-<!--                </div>-->
+                <!--                <div class="order-lg-4 ml-lg-3">-->
+                <!--                    <label class="form-control-label">Cambiar foto de Perfil</label>-->
+                <!--                    <div class="input-group">-->
+                <!--                        <input type="file" class="form-control" name="perfil">-->
+                <!--                        <a class="" href=#modal-profile role=button data-toggle=modal>-->
+                <!--                                <span class="avatar rounded-circle">-->
+                <!--                                    <img alt="Perfil3"-->
+                <!--                                         th:src="@{'/fotoPerfil/'+${session.UsuarioSession.id}}">-->
+                <!--                                </span>-->
+                <!--                        </a>-->
+                <!--                    </div>-->
+                <!--                </div>-->
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-primary">Guardar Cambios</button>
@@ -241,7 +258,6 @@
         </div>
     </div>
 </div>
-
 
 
 <!-- </div> -->
@@ -537,10 +553,10 @@
                                 <div class="card-header">
                                     <h6>Notificaciones</h6>
                                 </div>
-                                <tr th:if="${transacciones !=null}">
                                 <tr th:if="${transaccion !=null}"
                                     th:each="transaccion : ${transacciones}">
-                                    <ul class="list-group list-group-flush">
+                                    <ul
+                                            class="list-group list-group-flush">
 
                                         <li class="list-group-item">
 
@@ -562,20 +578,29 @@
                                                             name="idProducto1"></td>
                                                     </h6>
                                                 </div>
+                                                <div class="col-3 ml-n2"
+                                                     th:text="${transaccion.state}"></div>
 
                                                 <!-- Modal trueque exitoso -->
-                                                <div class="modal modal-light-warning fade" id="modal_trueque" tabindex="-1" role="dialog"
-                                                     aria-labelledby="modal_trueque" aria-hidden="true">
-                                                    <div class="modal-dialog modal-dialog-centered" role="document">
+                                                <div class="modal modal-light-warning fade"
+                                                     id="modal_trueque" tabindex="-1" role="dialog"
+                                                     aria-labelledby="modal_trueque"
+                                                     aria-hidden="true">
+                                                    <div class="modal-dialog modal-dialog-centered"
+                                                         role="document">
                                                         <div class="modal-content">
                                                             <div class="modal-body">
-                                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                <button type="button" class="close"
+                                                                        data-dismiss="modal"
+                                                                        aria-label="Close">
                                                                     <span aria-hidden="true">&times;</span>
                                                                 </button>
                                                                 <div class="text-center">
-                                                                    <h5 class="heading h1 text-primary mt-5">¡Trueque confirmado!</h5>
+                                                                    <h5 class="heading h1 text-primary mt-5">
+                                                                        ¡Trueque confirmado!</h5>
                                                                     <p class="mt-2">
-                                                                        Estos son los datos para concretarlo en persona
+                                                                        Estos son los datos para
+                                                                        concretarlo en persona
                                                                     </p>
                                                                     <div class=mt-5>
                                                                         <h5 class="heading h5 text-body">
@@ -593,6 +618,10 @@
                                                                                 th:text="${transaccion.seller.cellphone}"></td>
                                                                         </h5>
                                                                     </div>
+                                                                    <a class="btn btn-xs btn-outline-success rounded-pill"
+                                                                       th:href="@{'/addOfferDate/' + ${transaccion.id}}">
+                                                                        Start trading</a>
+
 
                                                                 </div>
                                                             </div>
@@ -601,30 +630,50 @@
                                                 </div>
 
 
-
                                                 <!-- Botones -->
-                                                <div th:if="${transaccion !=null}"
-                                                     class="col col-auto px-2">
-                                                    <div class="button">
-                                                        <button class="btn btn-xs btn-outline-success rounded-pill"
-                                                                type="button" data-toggle="modal"
-                                                                data-target="#modal_trueque">
-                                                            Aceptar
-                                                        </button>
+                                                <div th:if="${transaccion.state.toString() eq 'STARTED'}">
+                                                    <div th:if="${transaccion !=null}"
+                                                         class="col col-auto px-2">
+                                                        <div class="button">
+                                                            <button class="btn btn-xs btn-outline-success rounded-pill"
+                                                                    type="button"
+                                                                    data-toggle="modal"
+                                                                    data-target="#modal_trueque">
+                                                                Aceptar
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                    <div th:if="${transaccion !=null}"
+                                                         class="col col-auto px-2">
+                                                        <div class="button">
+                                                            <a th:href="@{'/rechazar/' + ${transaccion.id}}"
+                                                               class="btn btn-xs btn-outline-danger rounded-pill"
+                                                               type="button"> Rechazar
+                                                            </a>
+                                                        </div>
                                                     </div>
                                                 </div>
-                                                <div th:if="${transaccion !=null}"
-                                                     class="col col-auto px-2">
-                                                    <div class="button">
-                                                        <a th:href="@{'/rechazar/' + ${transaccion.id}}"
-                                                                class="btn btn-xs btn-outline-danger rounded-pill"
-                                                                type="button"> Rechazar
-                                                        </a>
+
+                                                <!--  if in progress-->
+
+                                                <div th:if="${transaccion.state.toString() == 'IN_PROCESS'}">
+                                                    <div th:if="${transaccion !=null}"
+                                                         class="col col-auto px-2">
+                                                        <div class="button">
+                                                            <a th:href="@{'/completeTransaction/' + ${transaccion.id}}"
+                                                               class="btn btn-xs btn-outline-sucess rounded-pill"
+                                                               type="button"> Complete
+                                                            </a>
+                                                        </div>
                                                     </div>
                                                 </div>
+
+
                                             </div>
                                         </li>
                                     </ul>
+
+
                                 </tr>
                             </div>
                         </div>

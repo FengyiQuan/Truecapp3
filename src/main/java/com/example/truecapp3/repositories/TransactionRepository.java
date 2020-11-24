@@ -14,6 +14,6 @@ import java.util.List;
 public interface TransactionRepository extends JpaRepository<Transaction, String> {
   @Query("SELECT c FROM Transaction c WHERE c.id =: id")
   Transaction getTransactionById(@Param("id") String id);
-  @Query("SELECT c FROM Transaction c WHERE c.receiver.id = :userId OR c.seller.id = :userId")
+  @Query("SELECT c FROM Transaction c WHERE c.receiver.id = :userId OR c.seller.id = :userId ORDER BY c.transactionDate DESC")
   List<Transaction> getTransactionsByUserId(@Param("userId") String userId);
 }
