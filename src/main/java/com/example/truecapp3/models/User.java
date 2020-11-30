@@ -60,9 +60,6 @@ public class User implements Serializable {
   @JsonIgnore
   private List<Credit> credits;
   private int currentCreditsCount;
-  @OneToMany
-  @JsonIgnore
-  private List<Rating> ratings;
   private int successfulTradesCount;
   @OneToMany
   @JsonIgnore
@@ -100,7 +97,6 @@ public class User implements Serializable {
     this.idPic = idPic;
     this.credits = credits;
     this.currentCreditsCount = currentCreditsCount;
-    this.ratings = ratings;
     this.successfulTradesCount = successfulTradesCount;
     this.donations = donations;
     this.userType = userType;
@@ -118,7 +114,6 @@ public class User implements Serializable {
     this.credits = new ArrayList<>();
     this.currentCreditsCount = 0;
     this.successfulTradesCount = 0;
-    this.ratings = new ArrayList<>();
     this.donations = new ArrayList<>();
     this.notifications = new ArrayList<>();
     this.userType = UserType.CLIENT;
@@ -238,13 +233,13 @@ public class User implements Serializable {
     this.credits = credits;
   }
 
-  public List<Rating> getRatings() {
-    return ratings;
-  }
-
-  public void setRatings(List<Rating> ratings) {
-    this.ratings = ratings;
-  }
+//  public List<Rating> getRatings() {
+//    return ratings;
+//  }
+//
+//  public void setRatings(List<Rating> ratings) {
+//    this.ratings = ratings;
+//  }
 
   public int getSuccessfulTradesCount() {
     return successfulTradesCount;

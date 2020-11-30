@@ -102,7 +102,7 @@ public class ObjectController {
         }
 
         Object producto = productoServicio.addObject(idUsuario, objectCondition, categoriaID, archivos, titulo, descripcion, objectType, area);
-
+        addDetails(modelo,usuario);
       } catch (Exception ex) {
 
         Logger.getLogger(PortalController.class.getName()).log(Level.SEVERE, null, ex);
@@ -112,12 +112,12 @@ public class ObjectController {
         modelo.put("Título", titulo);
         modelo.put("Descripción", descripcion);
         //            modelo.put("Donación O Trueque", "Trueque");
+
         return "user_nuevoTrueque";
 
       }
 
     }
-
     return "user_home";
 
   }
@@ -151,6 +151,7 @@ public class ObjectController {
         modelo.put("Título", titulo);
         modelo.put("Descripción", descripcion);
 //                modelo.put("Donación O Trueque", dot);
+        addDetails(modelo,usuario);
         return "user_home";
 
       }
@@ -191,7 +192,7 @@ public class ObjectController {
 
   @PreAuthorize("hasAnyRole('ROLE_CLIENT')")
   @GetMapping(value = "/delete/{id}")
-  public String eliminarListaProducto(@PathVariable(value = "id") String idProducto) throws ServiceError {
+  public String eliminarListaProducto(@PathVariable(value = "id") String idProducto,ModelMap modelo) throws ServiceError {
     java.lang.Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     if (principal instanceof UserDetails) {
       String username = ((UserDetails) principal).getUsername();
@@ -199,8 +200,25 @@ public class ObjectController {
       String idUsuario = usuario.getId();
       productoServicio.deleteById(idProducto, idUsuario);
       System.out.println("Producto Eliminado con exito");
+      addDetails(modelo,usuario);
     }
+
     return "user_listaTrueques";
+  }
+
+  private void addDetails(ModelMap modelo, User usuario) {
+    java.lang.Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    if (principal instanceof UserDetails) {
+      modelo.addAttribute("name", usuario.getName());
+      modelo.addAttribute("lastName", usuario.getLastName());
+      modelo.addAttribute("street", usuario.getStreet());
+      modelo.addAttribute("aptName", usuario.getAptNumber());
+      modelo.addAttribute("dob", usuario.getBirthday());
+      modelo.addAttribute("cellphone", usuario.getCellphone());
+      modelo.addAttribute("area", usuario.getArea());
+      modelo.addAttribute("currentCreditsCount", usuario.getCurrentCreditsCount());
+      modelo.addAttribute("successfulTradesCount", usuario.getSuccessfulTradesCount());
+    }
   }
 
 //  @PreAuthorize("hasAnyRole('ROLE_CLIENT')")

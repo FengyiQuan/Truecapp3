@@ -95,16 +95,7 @@ public class PortalController {
     Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     String username = ((UserDetails) principal).getUsername();
     User usuario = usuariorepositorio.getUserByEmail(username);
-    modelo.addAttribute("name", usuario.getName());
-    modelo.addAttribute("lastName", usuario.getLastName());
-    modelo.addAttribute("street", usuario.getStreet());
-    modelo.addAttribute("aptName", usuario.getAptNumber());
-    modelo.addAttribute("dob", usuario.getBirthday());
-    modelo.addAttribute("cellphone", usuario.getCellphone());
-    modelo.addAttribute("area", usuario.getArea());
-    modelo.addAttribute("currentCreditsCount", usuario.getCurrentCreditsCount());
-
-    modelo.addAttribute("successfulTradesCount", usuario.getSuccessfulTradesCount());
+    addDetails(modelo, usuario);
 
     try {
       List<Transaction> transacciones = transaccionRepositorio.getTransactionsByUserId(usuario.getId());
@@ -127,7 +118,11 @@ public class PortalController {
 
   @PreAuthorize("hasAnyRole('ROLE_CLIENT')")
   @GetMapping("/user_listaTrueques")
-  public String userListaTrueque() {
+  public String userListaTrueque(ModelMap modelo) {
+    Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    String username = ((UserDetails) principal).getUsername();
+    User usuario = usuariorepositorio.getUserByEmail(username);
+    addDetails(modelo, usuario);
     return "user_listaTrueques";
   }
 
@@ -156,16 +151,17 @@ public class PortalController {
     return "user_tiendahome2";
   }
 
-  @PreAuthorize("hasAnyRole('ROLE_CLIENT')")
-  @RequestMapping(value = "/tiendahome2", method = RequestMethod.GET)
-  public String TiendaHome2(ModelMap modelo) {
-    modelo.put("productos", productorepositorio.findAll(Sort.unsorted()));
-    Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-    String username = ((UserDetails) principal).getUsername();
-    User usuario = usuariorepositorio.getUserByEmail(username);
-    modelo.put("productosU", usuario.getObjects());
-    return "user_tiendahome2";
-  }
+//  @PreAuthorize("hasAnyRole('ROLE_CLIENT')")
+//  @RequestMapping(value = "/tiendahome2", method = RequestMethod.GET)
+//  public String TiendaHome2(ModelMap modelo) {
+//    modelo.put("productos", productorepositorio.findAll(Sort.unsorted()));
+//    Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+//    String username = ((UserDetails) principal).getUsername();
+//    User usuario = usuariorepositorio.getUserByEmail(username);
+//    modelo.put("productosU", usuario.getObjects());
+//    addDetails(modelo, usuario);
+//    return "user_tiendahome2";
+//  }
 
   @PreAuthorize("hasAnyRole('ROLE_CLIENT')")
   @RequestMapping(value = "/listaTrueques", method = RequestMethod.GET)
@@ -174,6 +170,7 @@ public class PortalController {
     String username = ((UserDetails) principal).getUsername();
     User usuario = usuariorepositorio.getUserByEmail(username);
     modelo.put("productos", usuario.getObjects());
+    addDetails(modelo, usuario);
     return "user_listaTrueques";
   }
 
@@ -181,18 +178,23 @@ public class PortalController {
   @PreAuthorize("hasAnyRole('ROLE_CLIENT')")
   @RequestMapping(value = "/nuevoTrueque", method = RequestMethod.GET)
   public String nuevoTrueque(ModelMap modelo) {
-
+    Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    String username = ((UserDetails) principal).getUsername();
+    User usuario = usuariorepositorio.getUserByEmail(username);
+    addDetails(modelo, usuario);
     return "user_nuevoTrueque";
   }
 
-  @PostMapping("/buscar")
-  public String buscar(@RequestParam String Busqueda) {
-    System.out.println(Busqueda);
-    return "tables";
-  }
+
+//  @PostMapping("/buscar")
+//  public String buscar(@RequestParam String Busqueda) {
+//    System.out.println(Busqueda);
+//    return "tables";
+//  }
 
   @PostMapping("/registrar")
-  public String registerClient(ModelMap modelo, @RequestParam String nombre, @RequestParam String apellido, @RequestParam String mail, @RequestParam String clave, @RequestParam String clave2) {
+  public String registerClient(ModelMap modelo, @RequestParam String nombre, @RequestParam String
+          apellido, @RequestParam String mail, @RequestParam String clave, @RequestParam String clave2) {
     System.out.println(mail);
     boolean exito;
 
@@ -231,19 +233,12 @@ public class PortalController {
       String username = ((UserDetails) principal).getUsername();
       User usuario = usuariorepositorio.getUserByEmail(username);
       boolean isFirst = usuario.isFirstTime();
-      modelo.addAttribute("name", usuario.getName());
-      modelo.addAttribute("lastName", usuario.getLastName());
-      modelo.addAttribute("street", usuario.getStreet());
-      modelo.addAttribute("aptName", usuario.getAptNumber());
-      modelo.addAttribute("dob", usuario.getBirthday());
-      modelo.addAttribute("cellphone", usuario.getCellphone());
-      modelo.addAttribute("area", usuario.getArea());
 
 
       if (isFirst) {
         return "new_user_info";
       } else {
-
+        addDetails(modelo, usuario);
         try {
           List<Transaction> Transacciones = transaccionRepositorio.getTransactionsByUserId(usuario.getId());
 //                  usuario.getTransactions();
@@ -309,7 +304,8 @@ public class PortalController {
                                   @RequestParam(required = false) String telefono,
                                   @RequestParam String areaName,
                                   @RequestParam String zona,
-                                  @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date dob) throws ServiceError {
+                                  @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date dob) throws
+          ServiceError {
 
     Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     System.out.println(dob);
@@ -323,14 +319,8 @@ public class PortalController {
 
       User newUser = usuarioServicio.completeUser(perfil, dni, usuario.getId(), calle, numeroCasa, telefono, zone, dob);
       usuarioServicio.sendEmailVerification(usuario.getId());
+      addDetails(modelo, newUser);
 
-      modelo.addAttribute("name", newUser.getName());
-      modelo.addAttribute("lastName", newUser.getLastName());
-      modelo.addAttribute("street", newUser.getStreet());
-      modelo.addAttribute("aptName", newUser.getAptNumber());
-      modelo.addAttribute("dob", newUser.getBirthday());
-      modelo.addAttribute("cellphone", newUser.getCellphone());
-      modelo.addAttribute("area", newUser.getArea());
       return "user_home";
     }
 
@@ -363,13 +353,7 @@ public class PortalController {
       System.out.println(zone.getAreaName());
       User newUser = usuarioServicio.modifyUser(perfil, dni, usuario.getId(), name, lastName, calle, numeroCasa, telefono, dob, zone);
 
-      modelo.addAttribute("name", newUser.getName());
-      modelo.addAttribute("lastName", newUser.getLastName());
-      modelo.addAttribute("street", newUser.getStreet());
-      modelo.addAttribute("aptName", newUser.getAptNumber());
-      modelo.addAttribute("dob", newUser.getBirthday());
-      modelo.addAttribute("cellphone", newUser.getCellphone());
-      modelo.addAttribute("area", newUser.getArea());
+      addDetails(modelo, newUser);
       return "user_home";
     }
 
@@ -377,5 +361,19 @@ public class PortalController {
     return "new_user_info";
   }
 
+  private void addDetails(ModelMap modelo, User usuario) {
+    Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    if (principal instanceof UserDetails) {
+      modelo.addAttribute("name", usuario.getName());
+      modelo.addAttribute("lastName", usuario.getLastName());
+      modelo.addAttribute("street", usuario.getStreet());
+      modelo.addAttribute("aptName", usuario.getAptNumber());
+      modelo.addAttribute("dob", usuario.getBirthday());
+      modelo.addAttribute("cellphone", usuario.getCellphone());
+      modelo.addAttribute("area", usuario.getArea());
+      modelo.addAttribute("currentCreditsCount", usuario.getCurrentCreditsCount());
+      modelo.addAttribute("successfulTradesCount", usuario.getSuccessfulTradesCount());
+    }
+  }
 
 }
