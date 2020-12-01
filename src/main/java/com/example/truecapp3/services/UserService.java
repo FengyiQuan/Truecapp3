@@ -240,7 +240,7 @@ public class UserService implements UserDetailsService {
 
   @Transactional
   public User incrementSuccessfulTradesCount(User user) throws ServiceError {
-    if (user == null || !user.checkStatus()) {
+    if (user == null) {
       throw new ServiceError("incrementSuccessfulTradesCount operation fail.");
     }
 
