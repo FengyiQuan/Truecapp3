@@ -11,10 +11,10 @@ import org.springframework.stereotype.Service;
 @Service
 public class RatingService {
   @Autowired
-  RatingRepository ratingRepository;
+  private RatingRepository ratingRepository;
 
   public Rating createRating(int star, String msg) throws ServiceError {
-    if (msg == null || msg.isEmpty() || star < 0 || star > 5) {
+    if (msg == null || star <= 0 || star > 5) {
       throw new ServiceError("Invalid input.");
     } else {
       Rating rating = new Rating();

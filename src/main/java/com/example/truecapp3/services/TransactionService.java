@@ -45,6 +45,21 @@ public class TransactionService {
     }
   }
 
+  public Transaction bindTransaction(String transactionId, String userId, Rating rating) throws ServiceError {
+    Optional<Transaction> response = transactionRepository.findById(transactionId);
+    if (response.isPresent()) {
+      Transaction transaction = response.get();
+      if (transaction.getSeller().getId().equals(userId)) {
+        transaction.setSellerRating(rating);
+      } else if (transaction.getReceiver().getId().equals(userId)) {
+        transaction.setSellerRating(rating);
+      }
+      return transactionRepository.save(transaction);
+    } else {
+      throw new ServiceError("Transaction does not exist. ");
+    }
+  }
+
   public void deleteTransaction(String id) {
     transactionRepository.deleteById(id);
   }
@@ -63,7 +78,7 @@ public class TransactionService {
     }
   }
 
-  public List<Transaction> getTransactionsByUserId(String userId){
+  public List<Transaction> getTransactionsByUserId(String userId) {
     return transactionRepository.getTransactionsByUserId(userId);
   }
 
@@ -118,7 +133,7 @@ public class TransactionService {
   @Transactional
   public Transaction createNewTransaction(String sellerId, String receiverId, String sellerObjectId,
                                           String receiverObjectId, String message,
-                                           String areaName, String provinceOrState) throws ServiceError {
+                                          String areaName, String provinceOrState) throws ServiceError {
     if (message == null) {
       throw new ServiceError("message cannot be null.");
     }
@@ -148,10 +163,10 @@ public class TransactionService {
   public Transaction completeTransaction(String transactionId) throws ServiceError {
     Transaction transaction = getExistTransactionById(transactionId);
     if (transaction.isComplete()) {
-      transaction.setState(TransactionState.FINISHED);
       userService.incrementSuccessfulTradesCount(transaction.getSeller());
       userService.incrementSuccessfulTradesCount(transaction.getReceiver());
-      addDeliveryDate(transactionId,new Date());
+      addDeliveryDate(transactionId, new Date());
+      transaction.setState(TransactionState.FINISHED);
       return transactionRepository.save(transaction);
     } else {
       throw new ServiceError("Transaction is not completed.");

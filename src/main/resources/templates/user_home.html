@@ -669,6 +669,41 @@
                                                 </div>
 
 
+                                                <div th:if="${transaccion.state.toString() == 'FINISHED'}">
+                                                    <div th:if="${transaccion !=null}"
+                                                         class="col col-auto px-2">
+                                                        <div class="button">
+                                                            <form th:action="@{'/addRating/' + ${transaccion.id} +'/' + ${session.UsuarioSession.id}}">
+                                                                <div class="form-group">
+                                                                    <label class="form-control-label">Star</label>
+                                                                    <select name="star"
+                                                                            class="custom-select">
+                                                                        <option value="5">5</option>
+                                                                        <option value="4">4</option>
+                                                                        <option value="3">3</option>
+                                                                        <option value="2">2</option>
+                                                                        <option value="1">1</option>
+                                                                    </select>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label class="form-control-label">Comment</label>
+                                                                    <input name="msg" type="text"
+                                                                           class="form-control"
+                                                                           placeholder="comment">
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <div class="mt-4">
+                                                                        <button type="submit"
+                                                                                class="btn btn-block btn-primary">
+                                                                            Continuar
+                                                                        </button>
+                                                                    </div>
+                                                                </div>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
                                             </div>
                                         </li>
                                     </ul>
