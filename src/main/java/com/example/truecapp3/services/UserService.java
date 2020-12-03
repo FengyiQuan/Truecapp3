@@ -239,12 +239,13 @@ public class UserService implements UserDetailsService {
 //  }
 
   @Transactional
-  public User incrementSuccessfulTradesCount(User user) throws ServiceError {
+  public User incrementSuccessfulTradesCount(String userId) throws ServiceError {
+    User user = userRepository.getActiveUserById(userId);
     if (user == null) {
       throw new ServiceError("incrementSuccessfulTradesCount operation fail.");
     }
 
-    user.setSuccessfulTradesCount(user.getCurrentCreditsCount() + 1);
+    user.setSuccessfulTradesCount(user.getSuccessfulTradesCount() + 1);
     return userRepository.save(user);
 
   }

@@ -87,6 +87,10 @@ public class TransactionService {
     //vaidacion de datos
 
     try {
+      if (transactionRepository.getTransactionByObjectId(objeto1id) != null
+          || transactionRepository.getTransactionByObjectId(objeto2id) != null) {
+        throw new ServiceError("Object is already in some transaction.");
+      }
       Object productoEmisor = objectService.getObjectById(objeto2id);
       Object productoReceptor = objectService.getObjectById(objeto1id);
       User usuario1 = userService.getActiveUserById(productoEmisor.getOwner().getId());
@@ -163,8 +167,8 @@ public class TransactionService {
   public Transaction completeTransaction(String transactionId) throws ServiceError {
     Transaction transaction = getExistTransactionById(transactionId);
     if (transaction.isComplete()) {
-      userService.incrementSuccessfulTradesCount(transaction.getSeller());
-      userService.incrementSuccessfulTradesCount(transaction.getReceiver());
+      userService.incrementSuccessfulTradesCount(transaction.getSeller().getId());
+      userService.incrementSuccessfulTradesCount(transaction.getReceiver().getId());
       addDeliveryDate(transactionId, new Date());
       transaction.setState(TransactionState.FINISHED);
       return transactionRepository.save(transaction);

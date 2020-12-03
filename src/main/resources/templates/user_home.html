@@ -572,7 +572,13 @@
                                                 </div>
                                                 <div class="col ml-n2">
                                                     <h6 class="text-sm mb-0">
-                                                        <td th:if="${transaccion!=null}"
+                                                        <td th:if="${transaccion.receiver.id eq session.UsuarioSession.id}"
+                                                            th:text="${transaccion.seller.name  + ' Quiere permutar tu '+transaccion.sellerObject.title+' por su ' + transaccion.receiverObject.title }"
+                                                            th:value="${transaccion.sellerObject.id}"
+                                                            name="idProducto1"></td>
+                                                    </h6>
+                                                    <h6 class="text-sm mb-0">
+                                                        <td th:if="${transaccion.seller.id eq session.UsuarioSession.id}"
                                                             th:text="${transaccion.receiver.name  + ' Quiere permutar tu '+transaccion.receiverObject.title+' por su ' + transaccion.sellerObject.title }"
                                                             th:value="${transaccion.sellerObject.id}"
                                                             name="idProducto1"></td>

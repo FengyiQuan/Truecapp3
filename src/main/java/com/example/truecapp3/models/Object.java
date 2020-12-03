@@ -26,6 +26,7 @@ import javax.persistence.TemporalType;
 @Entity
 @Table(name = "objects")
 @EntityListeners(AuditingEntityListener.class)
+//TODO: better to have a filed indicate whether it has been sold
 public class Object {
   @Id
   @GeneratedValue(generator = "uuid")

@@ -1,8 +1,11 @@
 package com.example.truecapp3.controllers;
 
 import com.example.truecapp3.errors.ServiceError;
+import com.example.truecapp3.models.Object;
 import com.example.truecapp3.models.Transaction;
 import com.example.truecapp3.models.User;
+import com.example.truecapp3.repositories.ObjectRepository;
+import com.example.truecapp3.repositories.TransactionRepository;
 import com.example.truecapp3.services.CreditService;
 import com.example.truecapp3.services.ObjectService;
 import com.example.truecapp3.services.PhotoService;
@@ -22,25 +25,30 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Controller
 @RequestMapping("/")
 public class TransactionController {
   @Autowired
-  UserService usuarioServicio;
+  private UserService usuarioServicio;
   @Autowired
-  CreditService creditoServicio;
+  private CreditService creditoServicio;
   @Autowired
-  ObjectService productoServicio;
+  private ObjectService productoServicio;
 
 
   @Autowired
-  PhotoService fotoServicio;
-
+  private PhotoService fotoServicio;
+  @Autowired
+  private ObjectRepository productorepositorio;
 
   @Autowired
-  TransactionService transaccionServicio;
+  private TransactionService transaccionServicio;
+  @Autowired
+  private TransactionRepository transaccionRepositorio;
 
 
   @RequestMapping(value = "/iniciarOferta", method = RequestMethod.GET)
@@ -54,58 +62,97 @@ public class TransactionController {
       modelo.put("error", ex.getMessage());
       return "new_user";
     }
-    modelo.put("productos", productoServicio.findAll(Sort.unsorted()));
-    Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    java.lang.Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     String username = ((UserDetails) principal).getUsername();
     User usuario = usuarioServicio.getActiveUserByEmail(username);
+    List<Object> productos = productorepositorio.findAll(Sort.unsorted());
+    modelo.put("productos", objectFilter(productos, usuario.getId()));
+
     modelo.put("productosU", usuario.getObjects());
     modelo.put("exito", "Tu oferta ha sido enviada. Espera una respuesta del otro usuario pronto.");
     return "user_tiendahome2";
   }
 
   @RequestMapping(value = "/rechazar/{transactionId}", method = RequestMethod.GET)
-  public String rechazarTransaction(ModelMap modelo, @PathVariable String transactionId) {
+  public String rechazarTransaction(ModelMap modelo, @PathVariable String transactionId) throws ServiceError {
     try {
       transaccionServicio.addCancelDate(transactionId, new Date());
     } catch (Exception ex) {
       modelo.put("error", ex.getMessage());
       return "new_user";
     }
+    java.lang.Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    String username = ((UserDetails) principal).getUsername();
+    User usuario = usuarioServicio.getActiveUserByEmail(username);
+    List<Object> productos = productorepositorio.findAll(Sort.unsorted());
+    modelo.put("productos", objectFilter(productos, usuario.getId()));
+
+    modelo.put("productosU", usuario.getObjects());
     return "user_tiendahome2";
   }
 
   @RequestMapping(value = "/addDeliveryDate/{transactionId}", method = RequestMethod.GET)
-  public String addDeliveryDate(ModelMap modelo, @PathVariable String transactionId) {
+  public String addDeliveryDate(ModelMap modelo, @PathVariable String transactionId) throws ServiceError {
     try {
       transaccionServicio.addDeliveryDate(transactionId, new Date());
     } catch (Exception ex) {
       modelo.put("error", ex.getMessage());
       return "new_user";
     }
+    java.lang.Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    String username = ((UserDetails) principal).getUsername();
+    User usuario = usuarioServicio.getActiveUserByEmail(username);
+    List<Object> productos = productorepositorio.findAll(Sort.unsorted());
+    modelo.put("productos", objectFilter(productos, usuario.getId()));
+
+    modelo.put("productosU", usuario.getObjects());
     return "user_tiendahome2";
   }
 
   @RequestMapping(value = "/addOfferDate/{transactionId}", method = RequestMethod.GET)
-  public String addOfferDate(ModelMap modelo, @PathVariable String transactionId) {
+  public String addOfferDate(ModelMap modelo, @PathVariable String transactionId) throws ServiceError {
     try {
       transaccionServicio.addOfferDate(transactionId, new Date());
     } catch (Exception ex) {
       modelo.put("error", ex.getMessage());
       System.out.println(ex.getMessage());
       return "new_user";
-    }
+    }java.lang.Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    String username = ((UserDetails) principal).getUsername();
+    User usuario = usuarioServicio.getActiveUserByEmail(username);
+    List<Object> productos = productorepositorio.findAll(Sort.unsorted());
+    modelo.put("productos", objectFilter(productos, usuario.getId()));
+
+    modelo.put("productosU", usuario.getObjects());
     return "user_tiendahome2";
   }
 
   @RequestMapping(value = "/completeTransaction/{transactionId}", method = RequestMethod.GET)
-  public String completeTransaction(ModelMap modelo, @PathVariable String transactionId) {
+  public String completeTransaction(ModelMap modelo, @PathVariable String transactionId) throws ServiceError {
     try {
       transaccionServicio.completeTransaction(transactionId);
     } catch (Exception ex) {
       modelo.put("error", ex.getMessage());
       return "new_user";
-    }
+    }java.lang.Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    String username = ((UserDetails) principal).getUsername();
+    User usuario = usuarioServicio.getActiveUserByEmail(username);
+    List<Object> productos = productorepositorio.findAll(Sort.unsorted());
+    modelo.put("productos", objectFilter(productos, usuario.getId()));
+
+    modelo.put("productosU", usuario.getObjects());
     return "user_tiendahome2";
+  }
+
+  private List<Object> objectFilter(List<Object> objects, String currentUserId) {
+    List<Object> result = new ArrayList<>();
+    for (Object o : objects) {
+      if (!o.getOwner().getId().equals(currentUserId)
+          && transaccionRepositorio.getTransactionByObjectId(o.getId()) == null) {
+        result.add(o);
+      }
+    }
+    return result;
   }
 
 

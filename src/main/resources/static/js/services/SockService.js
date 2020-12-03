@@ -61,20 +61,21 @@ function showRecentMessageReceiver(msg) {
     // console.log(msg.receiver.email);
     // console.log(checkIfNewConnection(msg.receiver.email));
     // console.log(contacts);
-    if (checkIfNewConnection(msg.receiver.email)) {
+    if (checkIfNewConnection(msg.sender.email)) {
         // console.log('check is true');
         $("#contacts")
             .append(
                 '<li>'
                 + '<a class="d-flex bd-highlight" href='
-                + '"/chat?sendTo=' + msg.receiver.email + '">'
+                + '"/chat?sendTo=' + msg.sender.email + '">'
                 + '<div class="img_cont">'
-                + '<img src="/fotoPerfil/'  + receiver.id + '"'
+                + '<img src="https://static.turbosquid.com/Preview/001292/481/WV/_D.jpg"'
+                // + 'src="/fotoPerfil/'  + receiver.id + '"'
                 + ' class="rounded-circle user_img_msg">'
                 + '<span class="online_icon"></span>'
                 + '</div>'
                 + '<div class="user_info">'
-                + '<span>' + msg.receiver.email + '</span>'
+                + '<span>' + msg.sender.email + '</span>'
                 + '<span class="badge badge-danger badge-pill">1</span>'
                 + '</div>'
                 + '</a>'
@@ -107,6 +108,7 @@ function checkIfNewConnection(email) {
             return false;
         }
     }
+    contacts.push(email);
     return true;
 
 }

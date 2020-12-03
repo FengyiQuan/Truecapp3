@@ -269,8 +269,12 @@
                 <div class="card-columns">
                     <!-- Tarjeta de cada produto -->
                     <tr th:each="producto : ${productos}">
+                        <a th:href="@{'/chat?sendTo='+${producto.owner.email}}"
+                           class="text-muted mb-0">
+                            Chat
+                        </a>
                         <div class="card hover-shadow-lg overflow-hidden" data-toggle="modal"
-                             id="idProducto1" data-target="#myModal" onclick="GuardarID(this.id)"
+                             data-target="#myModal" onclick="GuardarID(this.id)"
                              th:id="${producto.id}">
                             <a href="#" class="d-block">
                                 <!-- img --> <img class="card-img-top"
@@ -293,6 +297,7 @@
                                         <span class="text-sm mb-0 avatar-content"><td
                                                 th:text="${producto.owner.name+ ' ' + producto.owner.lastName}"></td> </span>
                                     </div>
+
                                     <div class="col text-right text-right">
                                         <a href="#" class="btn btn-sm btn-soft-primary">Truecar</a>
                                     </div>

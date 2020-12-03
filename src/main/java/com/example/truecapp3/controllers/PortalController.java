@@ -2,6 +2,7 @@ package com.example.truecapp3.controllers;
 
 import com.example.truecapp3.errors.ServiceError;
 import com.example.truecapp3.models.Area;
+import com.example.truecapp3.models.Object;
 import com.example.truecapp3.models.Transaction;
 import com.example.truecapp3.models.User;
 import com.example.truecapp3.repositories.ObjectRepository;
@@ -65,17 +66,21 @@ public class PortalController {
     User usuario = null;
 
     try {
-      Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+      java.lang.Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
       String username = ((UserDetails) principal).getUsername();
 
       usuario = usuariorepositorio.getActiveUserByEmail(username);
+
     } catch (Exception ignored) {
     }
+    List<Object> productos = productorepositorio.findAll(Sort.unsorted());
     if (usuario == null) {
-      modelo.put("productos", productorepositorio.findAll(Sort.unsorted()));
+      modelo.put("productos", productos);
       return "index";
     } else {
-      modelo.put("productos", productorepositorio.findAll(Sort.unsorted()));
+
+
+      modelo.put("productos", objectFilter(productos, usuario.getId()));
       return "index_logueado";
     }
 
@@ -85,14 +90,31 @@ public class PortalController {
   @PreAuthorize("hasAnyRole('ROLE_CLIENT')")
   @GetMapping("/home")
   public String home(ModelMap modelo) {
-    modelo.put("productos", productorepositorio.findAll(Sort.unsorted()));
-    return "index_logueado";
+    User usuario = null;
+
+    try {
+      java.lang.Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+      String username = ((UserDetails) principal).getUsername();
+
+      usuario = usuariorepositorio.getActiveUserByEmail(username);
+
+    } catch (Exception ignored) {
+    }
+    List<Object> productos = productorepositorio.findAll(Sort.unsorted());
+    if (usuario == null) {
+      modelo.put("productos", productos);
+      return "index";
+    } else {
+
+      modelo.put("productos", objectFilter(productos, usuario.getId()));
+      return "index_logueado";
+    }
   }
 
   @PreAuthorize("hasAnyRole('ROLE_CLIENT')")
   @GetMapping("/user_home")
   public String userhome(ModelMap modelo) {
-    Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    java.lang.Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     String username = ((UserDetails) principal).getUsername();
     User usuario = usuariorepositorio.getUserByEmail(username);
     addDetails(modelo, usuario);
@@ -111,15 +133,15 @@ public class PortalController {
     return "user_home";
   }
 
-  @GetMapping("/Perfil_Usuario")
-  public String PerfilFreelancerPublico() {
-    return "Perfil_Usuario";
-  }
+//  @GetMapping("/Perfil_Usuario")
+//  public String PerfilFreelancerPublico() {
+//    return "Perfil_Usuario";
+//  }
 
   @PreAuthorize("hasAnyRole('ROLE_CLIENT')")
   @GetMapping("/user_listaTrueques")
   public String userListaTrueque(ModelMap modelo) {
-    Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    java.lang.Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     String username = ((UserDetails) principal).getUsername();
     User usuario = usuariorepositorio.getUserByEmail(username);
     addDetails(modelo, usuario);
@@ -143,12 +165,18 @@ public class PortalController {
   @PreAuthorize("hasAnyRole('ROLE_CLIENT')")
   @GetMapping(value = "/tiendahome")
   public String TiendaHome(ModelMap modelo) {
-    modelo.put("productos", productorepositorio.findAll(Sort.unsorted()));
-    Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    java.lang.Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     String username = ((UserDetails) principal).getUsername();
     User usuario = usuariorepositorio.getUserByEmail(username);
-    modelo.put("productosU", usuario.getObjects());
-    return "user_tiendahome2";
+    List<Object> productos = productorepositorio.findAll(Sort.unsorted());
+    if (usuario == null) {
+      modelo.put("productos", productos);
+      return "index";
+    } else {
+      modelo.put("productos", objectFilter(productos, usuario.getId()));
+      modelo.put("productosU", usuario.getObjects());
+      return "user_tiendahome2";
+    }
   }
 
 //  @PreAuthorize("hasAnyRole('ROLE_CLIENT')")
@@ -166,7 +194,7 @@ public class PortalController {
   @PreAuthorize("hasAnyRole('ROLE_CLIENT')")
   @RequestMapping(value = "/listaTrueques", method = RequestMethod.GET)
   public String ListaTrueque(ModelMap modelo) {
-    Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    java.lang.Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     String username = ((UserDetails) principal).getUsername();
     User usuario = usuariorepositorio.getUserByEmail(username);
     modelo.put("productos", usuario.getObjects());
@@ -178,7 +206,7 @@ public class PortalController {
   @PreAuthorize("hasAnyRole('ROLE_CLIENT')")
   @RequestMapping(value = "/nuevoTrueque", method = RequestMethod.GET)
   public String nuevoTrueque(ModelMap modelo) {
-    Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    java.lang.Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     String username = ((UserDetails) principal).getUsername();
     User usuario = usuariorepositorio.getUserByEmail(username);
     addDetails(modelo, usuario);
@@ -228,7 +256,7 @@ public class PortalController {
   public String Redireccion(HttpSession session, ModelMap modelo) {
 
 
-    Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    java.lang.Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     if (principal instanceof UserDetails) {
       String username = ((UserDetails) principal).getUsername();
       User usuario = usuariorepositorio.getUserByEmail(username);
@@ -307,7 +335,7 @@ public class PortalController {
                                   @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date dob) throws
           ServiceError {
 
-    Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    java.lang.Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     System.out.println(dob);
     if (principal instanceof UserDetails) {
       String username = ((UserDetails) principal).getUsername();
@@ -342,7 +370,7 @@ public class PortalController {
                             @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date dob)
           throws ServiceError {
 
-    Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    java.lang.Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 //    System.out.println(dob);
     if (principal instanceof UserDetails) {
       String username = ((UserDetails) principal).getUsername();
@@ -362,7 +390,7 @@ public class PortalController {
   }
 
   private void addDetails(ModelMap modelo, User usuario) {
-    Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    java.lang.Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     if (principal instanceof UserDetails) {
       modelo.addAttribute("name", usuario.getName());
       modelo.addAttribute("lastName", usuario.getLastName());
@@ -374,6 +402,17 @@ public class PortalController {
       modelo.addAttribute("currentCreditsCount", usuario.getCurrentCreditsCount());
       modelo.addAttribute("successfulTradesCount", usuario.getSuccessfulTradesCount());
     }
+  }
+
+  private List<Object> objectFilter(List<Object> objects, String currentUserId) {
+    List<Object> result = new ArrayList<>();
+    for (Object o : objects) {
+      if (!o.getOwner().getId().equals(currentUserId)
+          && transaccionRepositorio.getTransactionByObjectId(o.getId()) == null) {
+            result.add(o);
+          }
+    }
+    return result;
   }
 
 }

@@ -199,6 +199,8 @@ public class ObjectController {
       User usuario = usuarioServicio.getActiveUserByEmail(username);
       String idUsuario = usuario.getId();
       productoServicio.deleteById(idProducto, idUsuario);
+
+      modelo.put("productos", usuario.getObjects());
       System.out.println("Producto Eliminado con exito");
       addDetails(modelo,usuario);
     }
